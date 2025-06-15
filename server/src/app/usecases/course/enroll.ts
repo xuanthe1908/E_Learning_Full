@@ -23,22 +23,43 @@ export const enrollStudentU = async (
       HttpStatusCodes.BAD_REQUEST
     );
   }
+  
   const course = await courseDbRepository.getCourseById(courseId);
+  
   if (course?.isPaid) {
-    const payment = {
-      paymentId: paymentInfo.id,
-      courseId: courseId,
-      studentId: studentId,
-      amount: paymentInfo.amount / 100,
-      currency: paymentInfo.currency,
-      payment_method: paymentInfo.payment_method,
-      status: paymentInfo.status
-    };
+    let payment: any;
+    
+    // Xử lý khác nhau cho Stripe và VNPay
+    if (paymentInfo.paymentMethod === 'vnpay') {
+      // VNPay payment structure
+      payment = {
+        paymentId: paymentInfo.orderId,
+        courseId: courseId,
+        studentId: studentId,
+        amount: paymentInfo.amount,
+        currency: 'VND',
+        payment_method: 'vnpay',
+        status: paymentInfo.status || 'completed'
+      };
+    } else {
+      // Stripe payment structure (legacy)
+      payment = {
+        paymentId: paymentInfo.id,
+        courseId: courseId,
+        studentId: studentId,
+        amount: paymentInfo.amount / 100,
+        currency: paymentInfo.currency,
+        payment_method: paymentInfo.payment_method,
+        status: paymentInfo.status
+      };
+    }
+    
     await Promise.all([
       courseDbRepository.enrollStudent(courseId, studentId),
       paymentDbRepository.savePayment(payment)
     ]);
   } else {
+    // Free course
     await courseDbRepository.enrollStudent(courseId, studentId);
   }
 };

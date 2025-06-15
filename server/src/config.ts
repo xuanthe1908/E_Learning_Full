@@ -41,9 +41,10 @@ const configKeys = {
 
   CLOUDFRONT_DOMAIN_NAME:process.env.CLOUDFRONT_DOMAIN_NAME as string,
 
-  STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY  as string,
-
-  STRIPE_PUBLISHABLE_KEY:process.env.STRIPE_PUBLISHABLE_KEY as string,
+  VNPAY_TMN_CODE: process.env.VNPAY_TMN_CODE,
+  VNPAY_HASH_SECRET: process.env.VNPAY_HASH_SECRET,
+  VNPAY_URL: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+  VNPAY_RETURN_URL: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/vnpay/return',
 
   DB_CLUSTER_URL:process.env.DB_CLUSTER_URL as string,
 

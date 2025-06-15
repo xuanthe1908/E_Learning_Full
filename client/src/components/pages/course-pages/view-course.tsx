@@ -32,7 +32,7 @@ const ViewCourseStudent: React.FC = () => {
   const studentId = useSelector(selectStudentId);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const [loginConfirmation, setLoginConfirmation] = useState(false);
-  const [showPdf, setShowPdf] = useState(false);
+  const [showPdf] = useState(false);
   const [successToastShown, setSuccessToastShown] = useState(false);
 
   const fetchCourse = async (courseId: string): Promise<CourseInterface> => {
@@ -45,9 +45,6 @@ const ViewCourseStudent: React.FC = () => {
       });
       throw error;
     }
-  };
-  const handleLiClick = (): void => {
-    setShowPdf(true);
   };
   const fetchLessons = async (courseId: string) => {
     try {
