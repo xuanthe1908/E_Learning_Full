@@ -30,31 +30,17 @@ const END_POINTS = {
     DELETE_DISCUSSION:'api/courses/lessons/delete-discussion',
     REPLY_TO_DISCUSSION:'api/courses/lessons/reply-discussion',
     GET_REPLIES_BY_DISCUSSION:'api/courses/lesson/replies-based-on-discussion',
-    PAY_USING_STRIPE:'api/payments/stripe/create-payment-intent',
-    GET_CONFIG:'api/payments/stripe/get-config',
+    
+    PAY_USING_VNPAY_QR:'api/payments/vnpay/create-qr-payment',
+    PAY_USING_VNPAY_URL:'api/payments/vnpay/create-payment-url',
+    CHECK_VNPAY_STATUS:'api/payments/vnpay/check-status',
+    VNPAY_RETURN:'api/payments/vnpay/return',
+    
     ENROLL_STUDENT:'api/courses/enroll-student',
     ADD_CATEGORY:'api/category/add-category',
     GET_ALL_CATEGORY:'api/category/get-all-categories',
     GET_CATEGORY_BY_ID:'api/category/get-category',   
-    EDIT_CATEGORY:'api/category/edit-category',
-    GET_RECOMMENDED_COURSES:'api/courses/get-recommended-courses',
-    GET_TRENDING_COURSES:'api/courses/get-trending-courses',
-    CHANGE_PASSWORD:"api/students/change-password",
-    UPDATE_PROFILE:"api/students/update-profile",
-    GET_STUDENT_DETAILS:"api/students/get-student-details",
-    GET_COURSE_BY_STUDENT:"api/courses/get-course-by-student",
-    GET_ALL_STUDENTS:"api/students/get-all-students",
-    BLOCK_STUDENT:"api/students/block-student",
-    UNBLOCK_STUDENT:"api/students/unblock-student",
-    GET_BLOCKED_STUDENTS:"api/students/get-all-blocked-students",
-    ADMIN_DASHBOARD_DATA:"api/admin/dashboard-details",
-    GET_GRAPH_DATA_ADMIN:"api/admin/graph-data",
-    INSTRUCTOR_CHANGE_PASSWORD:"api/instructors/change-password",
-    INSTRUCTOR_UPDATE_PROFILE:"api/instructors/update-profile",
-    GET_MY_STUDENTS:"api/instructors/get-students-by-instructor",
-    GET_INSTRUCTOR_DETAILS:"api/instructors/get-instructor-details",
-    EDIT_COURSE:"api/courses/instructors/edit-course",
-    SEARCH_COURSE:"api/courses/search-course",
-    CONTACT_US:"api/students/contact-us"
-}
-export default END_POINTS
+    EDIT_CATEGORY:'api/category/edit-category'
+};
+
+export default END_POINTS;

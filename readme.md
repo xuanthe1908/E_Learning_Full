@@ -162,4 +162,4 @@ To deploy the online learning platform to a production environment, follow the d
 ## Contributing
 
 Contributions to the project are welcome. To contribute, please follow the guidelines outlined in the [Contributing Documentation](/docs/contributing.md).
--->
+

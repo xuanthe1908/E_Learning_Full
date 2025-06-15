@@ -4,12 +4,13 @@ import ErrorElement from "./components/common/error-element";
 import { Student, Admin } from "./App";
 import { Instructor } from "./App";
 import InstructorDashboard from "./components/pages/instructors/instructor-dash-board";
-import StripeContainer from "./components/pages/payment-stripe/stripe-container";
 import AddCategory from "./components/pages/categories/add-category";
 import EditCategory from "./components/pages/categories/edit-category";
 import ListCategories from "./components/pages/categories/list-category";
 import DashHome from "./components/pages/student-dash/dash-home";
 import InstructorChannels from "./components/pages/channel/instructor-channels";
+import VNPayQRPayment from "./components/pages/payment-vnpay/vnpayQRPayment";
+import VNPayReturnHandler from "components/pages/payment-vnpay/vnpay-return-handler";
 
 const LazyListCourse = lazy(
   () => import("./components/pages/course-pages/list-course")
@@ -239,8 +240,12 @@ const AppRouter = createBrowserRouter([
     ],
   },
   {
-    path: "courses/:courseId/payment",
-    element: <StripeContainer />,
+  path: "/course/:courseId/payment",
+  element: <VNPayQRPayment />, 
+  },
+  {
+  path: "/payment/vnpay/return",
+  element: <VNPayReturnHandler />, 
   },
   {
     path: "/login",

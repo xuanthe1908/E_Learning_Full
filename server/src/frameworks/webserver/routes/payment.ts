@@ -1,22 +1,23 @@
 import express from 'express';
-import { paymentService } from '../../../frameworks/services/paymentService';
-import { paymentServiceInterface } from '../../../app/services/paymentServiceInterface';
-import paymentController from '../../../adapters/controllers/paymentController';
+import { vnpayService } from '../../../frameworks/services/vnpayService';
+import { vnpayServiceInterface } from '../../../app/services/vnpayServiceInterface';
+import vnpayController from '../../../adapters/controllers/vnpayController';
 import { courseDbRepository } from '../../../app/repositories/courseDbRepository';
 import { courseRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/courseReposMongoDb';
 
 const paymentRouter = () => {
   const router = express.Router();
-  const controller = paymentController(
-    paymentServiceInterface,
-    paymentService,
-    courseDbRepository,
-    courseRepositoryMongodb
-  );
+  const controller = vnpayController(
+      vnpayService,
+      vnpayService,
+      courseDbRepository,
+      courseRepositoryMongodb
+    );
 
-  router.get('/stripe/get-config', controller.getConfig);
+  router.post('/vnpay/create-payment-url', controller.createPaymentUrl);
+  router.post('/vnpay/create-qr-payment', controller.createQRPayment);
+  router.get('/vnpay/return', controller.handleReturn);
 
-  router.post('/stripe/create-payment-intent', controller.createPaymentIntent);
 
   return router;
 };
