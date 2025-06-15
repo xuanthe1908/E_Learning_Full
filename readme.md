@@ -163,21 +163,3 @@ To deploy the online learning platform to a production environment, follow the d
 
 Contributions to the project are welcome. To contribute, please follow the guidelines outlined in the [Contributing Documentation](/docs/contributing.md).
 -->
-
-## Contact
-
-For any questions, feedback, or inquiries, please reach out to:
-
-- Abin T H
-  - Email: abinth250@example.com
-  - LinkedIn: [linkedin-profile](https://www.linkedin.com/in/abin-th-170676245/)
-
-## Design Files and API Documentation
-
-* [Figma Design Files](https://www.figma.com/file/xSUUeK3lB9XHqBe3pg7pnM/TutorTrek?type=design&node-id=84%3A7156&t=uJ3S7XQV7OjJphmL-1)
-* [Modules Specifications](https://drive.google.com/file/d/10aB7mVSsG_oG9V9wcK65orqcLoon2Dl4/view?usp=sharing)
-* [API Documentation](https://documenter.getpostman.com/view/23308654/2s93mAVL88)
-* [Database Design](https://drive.google.com/file/d/1N3YZ22s2cJnA1sSa5P5a-1ECzC70ztQu/view?usp=sharing)
-* [Live Link](https://tutortrek.online/)
-
-
