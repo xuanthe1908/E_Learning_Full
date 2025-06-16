@@ -12,6 +12,9 @@ yarn-error.log
 /client/node_modules/
 /client/build/
 
+/client/yarn.lock
+/server/yarn.lock
+
 # Environment variables
 .env
 .db
