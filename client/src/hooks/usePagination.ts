@@ -8,17 +8,30 @@ interface PaginationResult<T> {
   goToPreviousPage: () => void;
   goToNextPage: () => void;
 }
-//todo change the type
+
 const usePagination = <T>(data: T[], itemsPerPage: number): PaginationResult<T> => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [currentData, setCurrentData] = useState<T[]>([]);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(data.length / itemsPerPage));
+    // ✅ Kiểm tra data hợp lệ
+    if (!data || !Array.isArray(data) || itemsPerPage <= 0) {
+      setTotalPages(1);
+      return;
+    }
+    
+    const pages = Math.ceil(data.length / itemsPerPage);
+    setTotalPages(pages > 0 ? pages : 1);
   }, [data, itemsPerPage]);
 
   useEffect(() => {
+    // ✅ Kiểm tra data hợp lệ trước khi slice
+    if (!data || !Array.isArray(data) || itemsPerPage <= 0) {
+      setCurrentData([]);
+      return;
+    }
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     setCurrentData(data.slice(startIndex, endIndex));

@@ -31,6 +31,7 @@ import { formatDate } from "../../../utils/helpers";
 import { Link } from "react-router-dom";
 import usePagination from "../../../hooks/usePagination";
 import useSearch from "../../../hooks/useSearch";
+import { GetCourseByInstructorInterface } from "api/types/apiResponses/api-response-instructors";
 
 const TABS = [
   {
@@ -53,13 +54,13 @@ const ListCourseForInstructors: React.FC = () => {
   // const [courses, setCourses] = useState<
   //   GetCourseByInstructorInterface[] | null
   // >(null);
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<GetCourseByInstructorInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const {
     currentPage,
     totalPages,
     currentData,
-    goToPage,
+    // goToPage,
     goToPreviousPage,
     goToNextPage,
   } = usePagination(courses, 4);
@@ -158,6 +159,7 @@ const ListCourseForInstructors: React.FC = () => {
                     isVerified,
                   },
                   index
+                // eslint-disable-next-line array-callback-return
                 ) => {
                   const isLast = index === currentData.length - 1;
                   const classes = isLast

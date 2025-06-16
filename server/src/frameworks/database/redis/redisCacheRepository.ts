@@ -11,7 +11,7 @@ export function redisCacheRepository(redisClient: RedisClient) {
     key: string;
     expireTimeSec: number;
     data: string;
-  }) => await redisClient.setEx(key, expireTimeSec, data);
+  }) => await redisClient.set(key, data, { ...( { EX: expireTimeSec } as any ) });
 
   const clearCache = async (key: string) => {
     const result = await redisClient.del(key);

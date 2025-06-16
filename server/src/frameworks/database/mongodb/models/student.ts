@@ -60,15 +60,14 @@ const studentSchema = new Schema<IStudent>({
     required: false
   },
   mobile: {
-    type: String,
-    required: function (this: IStudent) {
-      return !this.isGoogleUser; // Required for non-Google users
-    },
-    trim: true,
-    // unique:true,
-    sparse: true, // Allow multiple null values
-    match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit mobile number']
+  type: String,
+  required: function (this: IStudent) {
+    return !this.isGoogleUser; // Required for non-Google users
   },
+  trim: true,
+  sparse: true, // Allow multiple null values
+  match: [/^(0\d{9}|\d{9}|84\d{9})$/, 'Please enter a valid Vietnamese mobile number'] // ✅ Chấp nhận số VN
+},
   interests: {
     type: [String],
     required: true,
