@@ -1,142 +1,99 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { createVNPayQRPayment, checkVNPayStatus } from '../../../api/endpoints/payment/vnpay';
 
-interface VNPayQRPaymentProps {
-  courseId?: string;
-}
-
-const VNPayQRPayment: React.FC<VNPayQRPaymentProps> = ({ courseId = "sample-course-id" }) => {
+const VNPayQRPayment: React.FC = () => {
+  const { courseId } = useParams<{ courseId: string }>();
+  const navigate = useNavigate();
   const [qrCode, setQrCode] = useState<string>('');
   const [orderId, setOrderId] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // API calls
+  useEffect(() => {
+    if (courseId) {
+      createQRPayment();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
+
   const createQRPayment = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/payments/vnpay/create-qr-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ courseId })
-      });
-
-      const data = await response.json();
+      const response = await createVNPayQRPayment(courseId!);
       
-      if (data.status === 'success') {
-        setQrCode(data.data.qrCode);
-        setOrderId(data.data.orderId);
-        setAmount(data.data.amount);
+      if (response.status === 200) {
+        setQrCode(response.data.qrCode);
+        setOrderId(response.data.orderId);
+        setAmount(response.data.amount);
       } else {
         toast.error('Không thể tạo mã QR thanh toán');
       }
-    } catch (error) {
-      alert('Có lỗi xảy ra khi tạo thanh toán');
+    } catch (error: any) {
+      toast.error('Có lỗi xảy ra khi tạo thanh toán');
+      console.error('Payment creation error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const checkPaymentStatus = async () => {
-    // Implement polling để check payment status
-    // Hoặc dùng webhook từ VNPay
     try {
-      const response = await fetch(`/api/payments/vnpay/check-status/${orderId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const response = await checkVNPayStatus(orderId);
       
-      const data = await response.json();
-      
-      if (data.status === 'success' && data.data.paymentStatus === 'completed') {
-        // Enroll student
-        await enrollStudent();
-        alert('Thanh toán thành công!');
-        // navigate(`/course/${courseId}`);
+      if (response.status === 200 && response.data.status === 'completed') {
+        toast.success('Thanh toán thành công!');
+        navigate(`/courses/${courseId}#success`);
       }
     } catch (error) {
-      console.error('Error checking payment status:', error);
+      console.error('Check payment status error:', error);
     }
   };
 
-  const enrollStudent = async () => {
-    try {
-      const response = await fetch(`/api/courses/enroll-student/${courseId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          paymentMethod: 'vnpay',
-          orderId: orderId
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to enroll student');
-      }
-    } catch (error) {
-      alert('Có lỗi khi đăng ký khóa học');
-    }
+  const handleDirectPayment = async () => {
+    setIsProcessing(true);
+    // Redirect to VNPay payment URL
+    window.location.href = qrCode;
   };
 
-  const handleDirectPayment = () => {
-    if (qrCode) {
-      window.open(qrCode, '_blank');
-      setIsProcessing(true);
-      // Start polling for payment status
-      const interval = setInterval(() => {
-        checkPaymentStatus();
-      }, 3000);
-
-      // Stop polling after 10 minutes
-      setTimeout(() => {
-        clearInterval(interval);
-        setIsProcessing(false);
-      }, 600000);
-    }
-  };
-
+  // Poll payment status every 5 seconds when QR is generated
   useEffect(() => {
-    if (courseId) {
-      createQRPayment();
+    let interval: NodeJS.Timeout;
+    if (orderId) {
+      interval = setInterval(checkPaymentStatus, 5000);
     }
-  }, [courseId, createQRPayment]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tạo mã QR thanh toán...</p>
+          <p className="mt-4 text-gray-600">Đang tạo thanh toán...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Thanh toán VNPay
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            Thanh Toán VNPay
           </h2>
-          <p className="text-gray-600 mb-6">
-            Quét mã QR để thanh toán khóa học
-          </p>
-          
+
           {qrCode && (
             <>
               {/* QR Code Display */}
-              <div className="bg-white p-4 rounded-lg border-2 border-gray-200 mb-6">
-                <div className="w-48 h-48 bg-gray-100 mx-auto flex items-center justify-center rounded">
+              <div className="bg-gray-100 p-4 rounded-lg mb-6">
+                <div className="w-48 h-48 mx-auto bg-white border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
                   <span className="text-gray-500 text-sm">QR Code hiển thị tại đây</span>
                 </div>
               </div>
@@ -175,7 +132,7 @@ const VNPayQRPayment: React.FC<VNPayQRPaymentProps> = ({ courseId = "sample-cour
                 </button>
                 
                 <button
-                  onClick={() => window.history.back()}
+                  onClick={() => navigate(`/courses/${courseId}`)}
                   className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
                 >
                   Quay lại

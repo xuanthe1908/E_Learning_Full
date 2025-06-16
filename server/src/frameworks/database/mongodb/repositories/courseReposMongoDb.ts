@@ -43,11 +43,16 @@ export const courseRepositoryMongodb = () => {
   };
 
   const getAmountByCourseId = async (courseId: string) => {
-    const amount = await Course.findOne(
-      { _id: new mongoose.Types.ObjectId(courseId) },
-      { price: 1 }
-    );
-    return amount;
+    try {
+      const course = await Course.findOne(
+        { _id: new mongoose.Types.ObjectId(courseId) },
+        { price: 1, title: 1, isPaid: 1 } // Thêm title để không bị lỗi
+      ).lean();
+      return course;
+    } catch (error) {
+      console.error('getAmountByCourseId error:', error);
+      return null;
+    }
   };
 
   const enrollStudent = async (courseId: string, studentId: string) => {

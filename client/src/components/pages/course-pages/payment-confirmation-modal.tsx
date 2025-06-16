@@ -61,12 +61,12 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   };
 
   const handleCourseEnroll = () => {
-    if (courseDetails.isPaid) {
-      navigate(`/courses/${courseId}/payment`);
-    } else {
-      handleConfirmPayment();
-    }
-  };
+  if (courseDetails.isPaid) {
+    navigate(`/course/${courseId}/payment`);
+  } else {
+    handleConfirmPayment();
+  }
+};
   const isFreeCourse = courseDetails?.isPaid === false;
 
   useEffect(() => {

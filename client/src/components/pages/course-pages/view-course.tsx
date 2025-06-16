@@ -88,7 +88,7 @@ const ViewCourseStudent: React.FC = () => {
     });
     setSuccessToastShown(true);
   }
-  const enrolled = course?.coursesEnrolled.includes(studentId ?? "");
+  const enrolled = (course?.coursesEnrolled || []).includes(studentId);
   return (
     <div className='bg-white w-full'>
       <LoginConfirmation
@@ -237,19 +237,23 @@ const ViewCourseStudent: React.FC = () => {
                 {expandedIndex === 1 && (
                   <li className=''>
                     <ul>
-                      {lessons.map((lesson: any) => {
-                        return (
-                          <Link
-                            to={`watch-lessons/${lesson._id}`}
-                            key={lesson._id}
-                          >
-                            <li className='p-6 border-b flex items-center cursor-pointer hover:bg-customBlueShade'>
-                              <BiVideo className='mr-2 text-blue-500' />
-                              <span className='flex-1'>{lesson.title}</span>
-                            </li>
-                          </Link>
-                        );
-                      })}
+                      {lessons && lessons.length > 0 ? (
+                        lessons.map((lesson: any) => {
+                          return (
+                            <Link
+                              to={`watch-lessons/${lesson._id}`}
+                              key={lesson._id}
+                            >
+                              <li className='p-6 border-b flex items-center cursor-pointer hover:bg-customBlueShade'>
+                                <BiVideo className='mr-2 text-blue-500' />
+                                <span className='flex-1'>{lesson.title}</span>
+                              </li>
+                            </Link>
+                          );
+                        })
+                      ) : (
+                        <div className='p-6 text-gray-500'>No lessons available</div>
+                      )}
                     </ul>
                   </li>
                 )}
@@ -265,7 +269,7 @@ const ViewCourseStudent: React.FC = () => {
             <div className='mb-8'>
               <h4 className='text-2xl font-semibold mb-2'>Requirements</h4>
               <ul className='text-gray-700 bg-white mt-2 border-2 shadow-md  rounded-lg'>
-                {course?.requirements.map((item, index) => {
+                {(course?.requirements || []).map((item, index) => {
                   return (
                     <li className='mb-2 p-3 pt-3' key={index}>
                       <span className='text-blue-500 mr-2 '>&#9679;</span>

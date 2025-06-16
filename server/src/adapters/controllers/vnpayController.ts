@@ -106,79 +106,81 @@ const vnpayController = (
     }
   });
 
-  const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
-    // Validate input
-    const { error, value } = createPaymentSchema.validate(req.body);
-    if (error) {
-      throw new AppError(
-        `Validation error: ${error.details[0].message}`,
-        HttpStatusCodes.BAD_REQUEST
-      );
+const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
+  const studentId = req.user?.id || req.user?.payload?.Id;
+  const { error, value } = createPaymentSchema.validate(req.body);
+  if (error) {
+    console.log('[Validation Error]', error.details[0].message);
+    throw new AppError(`Validation error: ${error.details[0].message}`, HttpStatusCodes.BAD_REQUEST);
+  }
+
+  const { courseId } = value;
+  console.log('[Step 1] courseId:', courseId);
+
+  try {
+    const course = await dbRepositoryCourse.getAmountByCourseId(courseId);
+    if (!course) {
+      console.log('[Step 2] Course not found in DB');
+      throw new AppError('Course not found', HttpStatusCodes.NOT_FOUND);
     }
 
-    const { courseId } = value;
+    console.log('[Step 3] Course:', course);
 
-    try {
-      // Get course details
-      const course = await dbRepositoryCourse.getAmountByCourseId(courseId);
-      if (!course) {
-        throw new AppError(
-          'Course not found',
-          HttpStatusCodes.NOT_FOUND
-        );
-      }
+    if (!course.price || course.price <= 0) {
+      console.log('[Step 4] Invalid price:', course.price);
+      throw new AppError('Invalid course price', HttpStatusCodes.BAD_REQUEST);
+    }
 
-      if (!course.price || course.price <= 0) {
-        throw new AppError(
-          'Invalid course price',
-          HttpStatusCodes.BAD_REQUEST
-        );
-      }
+    const orderId = generateOrderId();
+    const orderInfo = `Thanh toan khoa hoc ${course.title || courseId}`;
+    const paymentRecord = {
+      orderId,
+      courseId,
+      studentId,
+      amount: course.price,
+      currency: 'VND',
+      status: 'pending',
+      paymentMethod: 'vnpay_qr',
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000)
+    };
 
-      // Generate unique order ID
-      const orderId = generateOrderId();
-      const orderInfo = `Thanh toan khoa hoc ${course.title || courseId}`;
-      
-      // Create payment record in database
-      const paymentRecord = {
+    console.log('[Step 5] Saving payment record:', paymentRecord);
+    await dbRepositoryPayment.createPendingPayment(paymentRecord);
+
+    const qrPayment = await vnpayService.createQRPayment(
+      course.price,
+      orderInfo,
+      orderId
+    );
+
+    console.log('[Step 6] QR Payment created:', qrPayment);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'QR payment created successfully',
+      data: {
+        qrCode: qrPayment.qrCode,
         orderId,
-        courseId,
         amount: course.price,
-        currency: 'VND',
-        status: 'pending',
-        paymentMethod: 'vnpay_qr',
-        createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
-      };
-
-      await dbRepositoryPayment.createPendingPayment(paymentRecord);
-      
-      // Create VNPay QR payment
-      const qrPayment = await vnpayService.createQRPayment(
-        course.price,
-        orderInfo,
-        orderId
-      );
-
-      res.status(200).json({
-        status: 'success',
-        message: 'QR payment created successfully',
-        data: {
-          qrCode: qrPayment.qrCode,
-          orderId,
-          amount: course.price,
-          courseId,
-          expiresAt: paymentRecord.expiresAt
-        }
-      });
-    } catch (error) {
-      console.error('Create QR payment error:', error);
-      throw new AppError(
-        'Failed to create QR payment',
-        HttpStatusCodes.INTERNAL_SERVER_ERROR
-      );
-    }
+        courseId,
+        expiresAt: paymentRecord.expiresAt
+      }
+    });
+  } catch (error: any) {
+    console.error('[Step ERROR]', error.message, error.stack);
+    console.error('[💥 QR Payment Error]', {
+    message: error.message,
+    stack: error.stack,
+    name: error.name,
+    cause: error.cause
   });
+    throw new AppError(
+      'Failed to create QR payment',
+      HttpStatusCodes.INTERNAL_SERVER_ERROR
+    );
+  }
+});
 
   const checkPaymentStatus = asyncHandler(async (req: Request, res: Response) => {
     const { orderId } = req.params;

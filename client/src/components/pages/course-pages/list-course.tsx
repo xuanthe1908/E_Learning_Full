@@ -82,7 +82,7 @@ const ListCourse: React.FC = () => {
       <div className='text-customFontColorBlack  '>
         <div className='pt-5 pb-5 pl-9 pr-9 mt-5 mx-auto flex justify-center'>
           <div className='w-10/12 ml-2 pl-1 animate-pulse'>
-            <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-300 to-gray-100 h-8 rounded'></h1>
+            <h1 className='text-3xl font-bold bg-gradient-to-r from-gray-300 to-gray-100 h-8 rounded'>Loading courses...</h1>
             <p className='text-gray-700 mt-2 bg-gradient-to-r from-gray-300 to-gray-100 h-4 rounded'></p>
           </div>
         </div>

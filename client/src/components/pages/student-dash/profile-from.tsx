@@ -5,6 +5,7 @@ import { updateProfile } from "../../../api/endpoints/student";
 import { UpdateProfileInfo } from "../../../api/types/student/student";
 import { Avatar } from "@material-tailwind/react";
 import { useSelector, useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store";
 import {
   selectStudent,
   selectIsFetchingStudent,
@@ -19,12 +20,14 @@ interface Props {
 }
 const ProfileForm:React.FC<Props> = ({editMode,setEditMode}) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [updated, setUpdated] = useState(false);
   const studentInfo = useSelector(selectStudent)?.studentDetails;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let isFetching = useSelector(selectIsFetchingStudent);
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const error = useSelector(selectStudentError);
-  const [updated, setUpdated] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,7 +46,7 @@ const ProfileForm:React.FC<Props> = ({editMode,setEditMode}) => {
  
   useEffect(() =>{
     dispatch(fetchStudentData());
-  }, [updated]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!studentInfo) {
@@ -243,3 +246,4 @@ const ProfileForm:React.FC<Props> = ({editMode,setEditMode}) => {
 };
 
 export default ProfileForm;
+

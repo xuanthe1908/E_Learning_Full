@@ -1,5 +1,3 @@
-
-
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -15,13 +13,20 @@ export const capitalizeFirstLetter = (str: string): string => {
   return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
 };
 
-export function formatToINR(number: number): string {
-  const formatter = new Intl.NumberFormat("en-IN", {
+// Đổi tên và cập nhật function để format VND
+export function formatToVND(number: number): string {
+  const formatter = new Intl.NumberFormat("vi-VN", {
     style: "currency",
-    currency: "INR",
+    currency: "VND",
   });
 
   return formatter.format(number);
+}
+
+// Giữ lại function cũ để backward compatibility
+export function formatToINR(number: number): string {
+  // Có thể chuyển sang VND hoặc giữ nguyên tùy nhu cầu
+  return formatToVND(number);
 }
 
 export const formatTime = (milliseconds: number): string => {
@@ -34,4 +39,3 @@ export const formatTime = (milliseconds: number): string => {
   const formattedTime = `${days}d ${hours}h ${minutes}m ${remainingSeconds}s`;
   return formattedTime;
 };
-

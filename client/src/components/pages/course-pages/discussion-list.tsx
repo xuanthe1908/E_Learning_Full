@@ -234,7 +234,7 @@ const DiscussionListEl: React.FC<Props> = ({
     <li className='border-b mt-3 border-gray-300 p-6'>
       <div className='flex justify-between items-start'>
         <div className='flex'>
-          <img className='w-12 h-12' src={profilePic} alt='image' />
+          <img className='w-12 h-12' src={profilePic} alt='user avatar' />
           <div className='ml-2'>
             <h2 className='font-semibold text-customFontColorBlack'>
               {studentDetails?.firstName + " " + studentDetails?.lastName}

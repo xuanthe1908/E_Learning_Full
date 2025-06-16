@@ -17,27 +17,25 @@ interface PaymentDocument extends Document {
   updatedAt?: Date;
 }
 
-const paymentSchema: Schema<PaymentDocument> = new Schema({
-  orderId: { type: String, sparse: true, index: true }, // VNPay order ID
-  paymentId: { type: String, sparse: true }, // Stripe payment ID (backward compatibility)
-  studentId: { type: String, required: true, index: true },
-  courseId: { type: String, required: true, index: true },
+const paymentSchema = new mongoose.Schema({
+  orderId: { type: String, required: true, unique: true },
+  paymentId: String, // For backward compatibility
+  courseId: { type: String, required: true },
+  studentId: String, // Thêm field này
   amount: { type: Number, required: true },
-  currency: { type: String, required: true, default: 'VND' },
-  paymentMethod: { type: String, required: true }, // vnpay, stripe, etc.
+  currency: { type: String, default: 'VND' },
+  paymentMethod: { type: String, required: true },
   status: { 
     type: String, 
-    required: true, 
     enum: ['pending', 'completed', 'failed', 'expired', 'cancelled'],
-    default: 'pending',
-    index: true
+    default: 'pending'
   },
-  transactionId: { type: String }, // VNPay transaction ID
-  responseCode: { type: String }, // VNPay response code
-  payDate: { type: String }, // VNPay pay date
-  expiresAt: { type: Date, index: true }, // Payment expiration
-  createdAt: { type: Date, required: true, default: Date.now, index: true },
-  updatedAt: { type: Date }
+  transactionId: String,
+  responseCode: String,
+  payDate: String,
+  expiresAt: Date, // Thêm field này
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 // Compound indexes for better query performance

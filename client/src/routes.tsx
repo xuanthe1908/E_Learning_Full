@@ -129,6 +129,10 @@ const LazyContactPage = lazy(
   () => import("./components/pages/contact/contact-us")
 );
 
+const LazyPayment = lazy(
+  () => import("./components/pages/payment-vnpay/vnpayQRPayment")
+);
+
 const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -427,6 +431,15 @@ const AppRouter = createBrowserRouter([
         path: "view-channels",
         element: <InstructorChannels />,
       },
+      {
+      path: "courses/:courseId/payment",
+      element: (
+        <Suspense fallback={<div>Loading...</div>}>
+          <LazyPayment />
+        </Suspense>
+      ),
+      errorElement: <ErrorElement />,
+    },
     ],
   },
 ]);

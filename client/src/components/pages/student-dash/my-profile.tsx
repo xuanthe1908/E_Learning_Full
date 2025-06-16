@@ -4,9 +4,10 @@ import ChangePasswordForm from "./chage-password-form";
 import { fetchStudentData } from "../../../redux/reducers/studentSlice";
 import { useDispatch } from "react-redux";
 import { FiEdit } from "react-icons/fi";
+import { AppDispatch } from "../../../redux/store";
 
 const MyProfile: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   // const [editMode, setEditMode] = useState(false);
   // const [editType, setEditType] = useState("");
   const [editState, setEditState] = useState({ mode: false, type: "" });
