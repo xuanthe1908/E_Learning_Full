@@ -106,26 +106,49 @@ export const vnpayService = () => {
   };
 
   const createQRPayment = async (
-  amount: number,
-  orderInfo: string,
-  orderId: string
-) => {
-  validateConfig(); // Kiểm tra config trước
-  
-  try {
-    // Tạo payment URL giống như createPaymentUrl
-    const paymentUrl = createPaymentUrl(amount, orderInfo, orderId, '127.0.0.1');
+    amount: number,
+    orderInfo: string,
+    orderId: string
+  ) => {
+    validateConfig();
     
-    return {
-      qrCode: paymentUrl, // URL này có thể dùng làm QR code
-      paymentUrl: paymentUrl,
-      orderId: orderId
+    const date = new Date();
+    const createDate = formatDate(date);
+    const expireDate = formatDate(new Date(date.getTime() + 15 * 60 * 1000));
+    
+    const qrData = {
+      vnp_Version: '2.1.0',
+      vnp_Command: 'pay',
+      vnp_TmnCode: vnpayConfig.vnp_TmnCode,
+      vnp_Amount: amount * 100,
+      vnp_CreateDate: createDate,
+      vnp_ExpireDate: expireDate,
+      vnp_CurrCode: 'VND',
+      vnp_IpAddr: '127.0.0.1',
+      vnp_Locale: 'vn',
+      vnp_OrderInfo: orderInfo,
+      vnp_OrderType: 'other',
+      vnp_ReturnUrl: vnpayConfig.vnp_ReturnUrl,
+      vnp_TxnRef: orderId
     };
-  } catch (error) {
-    console.error('createQRPayment error:', error);
-    throw error;
-  }
-};
+
+    const sortedData = sortObject(qrData);
+    const signData = querystring.stringify(sortedData, undefined, undefined, { 
+      encodeURIComponent: (str) => str 
+    });
+    
+    const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    const qrUrl = `${vnpayConfig.vnp_Url}?${signData}&vnp_SecureHash=${signed}`;
+    return {
+      qrCode: qrUrl,
+      paymentData: {
+        ...qrData,
+        vnp_SecureHash: signed
+      }
+    };
+  };
+
   const checkPaymentStatus = async (orderId: string, transDate: string) => {
     validateConfig();
     
