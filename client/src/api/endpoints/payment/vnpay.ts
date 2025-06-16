@@ -6,7 +6,7 @@ import {
 import END_POINTS from "../../../constants/endpoints";
 
 export const createVNPayQRPayment = (courseId: string) => {
- return createVNPayQRPaymentService(END_POINTS.PAY_USING_VNPAY_QR, courseId);
+  return createVNPayQRPaymentService(END_POINTS.PAY_USING_VNPAY_QR, courseId);
 };
 
 export const createVNPayPaymentUrl = (courseId: string) => {
@@ -16,4 +16,3 @@ export const createVNPayPaymentUrl = (courseId: string) => {
 export const checkVNPayStatus = (orderId: string) => {
   return checkVNPayStatusService(END_POINTS.CHECK_VNPAY_STATUS, orderId);
 };
-

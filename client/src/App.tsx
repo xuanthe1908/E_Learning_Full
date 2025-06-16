@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import AdminLoginPage from "./components/pages/admin/admin-login-page";
 // import { Sidenav } from "./components/pages/admin/widgets/layout";  
 import { useSelector, useDispatch } from "react-redux";
+import type { AppDispatch } from "./redux/store";
 import InstructorSideNav from "./components/pages/instructors/instructor-side-nav";
 import InstructorHeader from "./components/pages/instructors/instructor-header";
 import useIsOnline from "./hooks/useOnline";
@@ -23,10 +24,10 @@ import { toast } from "react-toastify";
 export const Student: React.FC = () => {
   const isOnline = useIsOnline();
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const footerVisible = useSelector(selectIsFooterVisible);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const isHeaderVisible = true;
   const user = useSelector(selectUserType);
+  const footerVisible = useSelector(selectIsFooterVisible);
   // usePreventBackButton(isLoggedIn);
   const [showSessionExpired, setShowSessionExpired] = useState(false);
 
@@ -58,7 +59,7 @@ export const Student: React.FC = () => {
     if (isLoggedIn && user === "student") {
       dispatch(fetchStudentData());
     }
-  }, [dispatch]);
+  }, [dispatch, isLoggedIn, user]);
 
   return (
     <>
@@ -88,6 +89,7 @@ export const Instructor: React.FC = () => {
   const user = useSelector(selectUserType);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchInstructor = async () => {
     try {
       const response = await getInstructorDetails();
@@ -99,7 +101,7 @@ export const Instructor: React.FC = () => {
 
   useEffect(() => {
     fetchInstructor();
-  }, []);
+  }, [fetchInstructor]);
 
   return (
     <>

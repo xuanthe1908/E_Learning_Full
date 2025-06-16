@@ -4,7 +4,6 @@ import { courseReducer } from "./reducers/courseSlice";
 import { studentReducer } from "./reducers/studentSlice";
 import { helperReducer } from "./reducers/helperSlice";
 import { instructorReducer } from "./reducers/instructorSlice";
-import * as reduxThunk from "redux-thunk/extend-redux";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
@@ -23,7 +22,13 @@ const persistedReducer = persistReducer(persistConfig, combineReducers({
 }));
 
 const store = configureStore({
-  reducer: persistedReducer, // Use the persisted reducer
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }),
 });
 
 const persistor = persistStore(store); 

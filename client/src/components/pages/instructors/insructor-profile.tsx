@@ -3,12 +3,13 @@ import ProfileForm from "./profile-form";
 import ChangePasswordForm from "./password-form";
 import { fetchStudentData } from "../../../redux/reducers/studentSlice";
 import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store";
 import { FiEdit } from "react-icons/fi";
 
 type Props = {};
 
-const InstructorProfile: React.FC = (props: Props) => {
-  const dispatch = useDispatch();
+const InstructorProfile: React.FC<Props> = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
