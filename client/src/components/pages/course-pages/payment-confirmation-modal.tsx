@@ -1,3 +1,4 @@
+// client/src/components/pages/course-pages/payment-confirmation-modal.tsx
 import React, { useState, useEffect, Fragment } from "react";
 import {
   Button,
@@ -17,6 +18,12 @@ import { selectIsLoggedIn } from "../../../redux/reducers/authSlice";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 
+// ✅ ObjectId validation utility
+const isValidObjectId = (id: string): boolean => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  return objectIdRegex.test(id);
+};
+
 interface PaymentModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +42,8 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   courseDetails,
 }) => {
   const handleOpen = () => setOpen((cur) => !cur);
-  const { courseId } = useParams();
+  const params = useParams<{ courseId: string }>();
+  const courseId = params.courseId;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
@@ -43,24 +51,48 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   const offerExpiration = "2023-08-13T22:59:59.000Z";
   
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
+  // ✅ Debug logs for courseDetails
+  useEffect(() => {
+    if (open) {
+      console.group('💳 Payment Modal Debug');
+      console.log('courseDetails:', courseDetails);
+      console.log('courseDetails.isPaid:', courseDetails.isPaid);
+      console.log('courseDetails.price:', courseDetails.price);
+      console.log('typeof courseDetails.isPaid:', typeof courseDetails.isPaid);
+      console.log('courseId:', courseId);
+      console.log('courseId valid:', courseId ? isValidObjectId(courseId) : false);
+      console.groupEnd();
+    }
+  }, [open, courseDetails, courseId]);
+
+  // ✅ Enhanced isFreeCourse logic
+  const isFreeCourse = courseDetails?.isPaid === false || courseDetails?.price === 0;
+  console.log('🎯 isFreeCourse result:', isFreeCourse);
+
   const handleConfirmPayment = async () => {
+    if (!courseId) {
+      toast.error('Course ID is missing', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const response = await enrollStudent(courseId ?? "");
+      const response = await enrollStudent(courseId);
       setTimeout(() => {
         setUpdated();
         setIsLoading(false);
         setOpen(false);
-        toast.success(response?.message, {
+        toast.success(response?.message || 'Successfully enrolled!', {
           position: toast.POSITION.BOTTOM_RIGHT,
         });
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false);
-      toast.error("Something went wrong ", {
+      toast.error(error?.response?.data?.message || "Something went wrong", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     }
@@ -69,6 +101,20 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   const handleVNPayPayment = async () => {
     if (!isLoggedIn) {
       toast.error('Bạn cần đăng nhập để thực hiện thanh toán', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    if (!courseId) {
+      toast.error('Course ID không hợp lệ', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    if (!isValidObjectId(courseId)) {
+      toast.error('ID khóa học không đúng định dạng', {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
       return;
@@ -85,35 +131,53 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
     try {
       setIsLoading(true);
       
-      console.log('Creating VNPay payment for courseId:', courseId);
-      console.log('User logged in:', isLoggedIn);
-      console.log('Access token exists:', !!tokenString);
+      console.log('🚀 Creating VNPay payment for courseId:', courseId);
+      console.log('✅ User logged in:', isLoggedIn);
+      console.log('✅ Access token exists:', !!tokenString);
+      console.log('✅ Course details:', {
+        id: courseId,
+        price: courseDetails.price,
+        isPaid: courseDetails.isPaid
+      });
       
       // Gọi API tạo QR payment
-      const response = await createVNPayQRPayment(courseId!);
+      const response = await createVNPayQRPayment(courseId);
       
-      console.log('VNPay payment response:', response);
+      console.log('📨 VNPay payment response:', response);
       
       if (response?.status === 200 && response?.data?.status === 'success') {
         const { qrCode } = response.data.data;
+        
+        if (!qrCode) {
+          throw new Error('Không nhận được URL thanh toán từ server');
+        }
         
         // Đóng modal
         setOpen(false);
         
         // Chuyển hướng trực tiếp đến VNPay
-        console.log('Redirecting to VNPay:', qrCode);
+        console.log('🔗 Redirecting to VNPay:', qrCode);
         window.location.href = qrCode;
         
       } else {
-        throw new Error(response?.data?.message || 'Không thể tạo thanh toán VNPay');
+        const errorMessage = response?.data?.message || 'Không thể tạo thanh toán VNPay';
+        throw new Error(errorMessage);
       }
     } catch (error: any) {
-      console.error('VNPay payment error:', error);
+      console.error('❌ VNPay payment error:', error);
       
       let errorMessage = 'Có lỗi xảy ra khi tạo thanh toán';
       
       if (error?.response?.status === 401) {
         errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại';
+      } else if (error?.response?.status === 400) {
+        if (error?.response?.data?.message?.includes('ObjectId')) {
+          errorMessage = 'ID khóa học không đúng định dạng';
+        } else if (error?.response?.data?.message?.includes('Validation error')) {
+          errorMessage = 'Dữ liệu không hợp lệ: ' + error.response.data.message;
+        } else {
+          errorMessage = error?.response?.data?.message || 'Yêu cầu không hợp lệ';
+        }
       } else if (error?.response?.status === 404) {
         errorMessage = 'Không tìm thấy khóa học';
       } else if (error?.response?.data?.message) {
@@ -130,18 +194,37 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
     }
   };
 
-  // ✅ SỬA: Function xử lý enroll course
+  // ✅ Enhanced course enrollment handler
   const handleCourseEnroll = () => {
-    if (courseDetails.isPaid) {
-      // ✅ Gọi function thanh toán VNPay
-      handleVNPayPayment();
-    } else {
+    console.group('🚀 Handle Course Enroll');
+    console.log('courseDetails.isPaid:', courseDetails.isPaid);
+    console.log('courseDetails.price:', courseDetails.price);
+    console.log('isFreeCourse:', isFreeCourse);
+    console.log('Will call:', isFreeCourse ? 'Free Enrollment' : 'VNPay Payment');
+    console.groupEnd();
+
+    if (!courseId || !isValidObjectId(courseId)) {
+      toast.error('ID khóa học không hợp lệ', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    if (!courseDetails) {
+      toast.error('Không tìm thấy thông tin khóa học', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    if (isFreeCourse) {
       // Khóa học miễn phí - gọi enroll trực tiếp
       handleConfirmPayment();
+    } else {
+      // Khóa học trả phí - gọi VNPay payment
+      handleVNPayPayment();
     }
   };
-
-  const isFreeCourse = courseDetails?.isPaid === false;
 
   useEffect(() => {
     if (!isFreeCourse) {
@@ -178,10 +261,24 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
             </Typography>
           </div>
         </DialogHeader>
+        
         <DialogBody divider>
+          {/* ✅ Debug info in development */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="bg-gray-100 p-3 mb-4 rounded text-xs">
+              <strong>Debug Info:</strong><br/>
+              isPaid: {String(courseDetails.isPaid)} ({typeof courseDetails.isPaid})<br/>
+              price: {courseDetails.price}<br/>
+              isFreeCourse: {String(isFreeCourse)}<br/>
+              courseId: {courseId}<br/>
+              courseId valid: {courseId ? String(isValidObjectId(courseId)) : 'N/A'}
+            </div>
+          )}
+
           <Typography variant='paragraph' className='font-semibold text-md' color='gray'>
             Please review the details before proceeding:
           </Typography>
+          
           <Typography variant='paragraph' color='gray' className='mt-2 mb-1'>
             {isFreeCourse ? (
               <span className='font-semibold text-green-500'>
@@ -208,11 +305,13 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
               </div>
             )}
           </Typography>
+          
           <Typography variant='paragraph' color='gray'>
             <span className='font-semibold'>Course Overview:</span><br />
             {courseDetails?.overview}
           </Typography>
         </DialogBody>
+        
         <DialogFooter>
           <Button  
             variant='gradient'

@@ -3,9 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createVNPayQRPayment, checkVNPayStatus } from '../../../api/endpoints/payment/vnpay';
 
+// ✅ ObjectId validation utility
+const isValidObjectId = (id: string): boolean => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  return objectIdRegex.test(id);
+};
+
 const VNPayQRPayment: React.FC = () => {
-  const { courseId } = useParams<{ courseId: string }>();
+  const params = useParams<{ courseId: string }>();
   const navigate = useNavigate();
+  const courseId = params.courseId;
+  
   const [qrCode, setQrCode] = useState<string>('');
   const [orderId, setOrderId] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
@@ -13,29 +21,58 @@ const VNPayQRPayment: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string>('');
 
+  console.log('🔍 VNPayQR - Raw params:', params);
+  console.log('🔍 VNPayQR - Extracted courseId:', courseId);
+
+  // ✅ Enhanced validation on mount
   useEffect(() => {
-    if (courseId) {
-      createQRPayment();
+    console.log('📝 Course ID from params:', courseId);
+    
+    if (!courseId) {
+      setError('Course ID không được cung cấp');
+      toast.error('Course ID không hợp lệ');
+      navigate('/courses');
+      return;
     }
+
+    // ✅ Validate ObjectId format
+    if (!isValidObjectId(courseId)) {
+      console.error('❌ Invalid ObjectId format:', courseId);
+      setError('Course ID không đúng định dạng');
+      toast.error('Course ID không hợp lệ');
+      navigate('/courses');
+      return;
+    }
+
+    console.log('✅ Valid ObjectId format:', courseId);
+    createQRPayment();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
   // Tạo thanh toán VNPay
   const createQRPayment = async () => {
+    if (!courseId) {
+      setError('Course ID không hợp lệ');
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError('');
       
-      // Validation
-      if (!courseId) {
-        throw new Error('Course ID không hợp lệ');
-      }
+      console.log('🚀 Creating QR payment for courseId:', courseId);
+      console.log('📊 CourseId type:', typeof courseId);
+      console.log('📏 CourseId length:', courseId.length);
+      console.log('🔤 CourseId format test:', isValidObjectId(courseId));
       
-      console.log('Creating QR payment for courseId:', courseId);
+      // ✅ Additional validation before API call
+      if (!isValidObjectId(courseId)) {
+        throw new Error('Course ID không đúng định dạng ObjectId');
+      }
       
       const response = await createVNPayQRPayment(courseId);
       
-      console.log('QR Payment response:', response);
+      console.log('📨 QR Payment response:', response);
       
       if (response?.status === 200 && response?.data?.status === 'success') {
         const { qrCode: qrCodeData, orderId: orderIdData, amount: amountData } = response.data.data;
@@ -49,26 +86,37 @@ const VNPayQRPayment: React.FC = () => {
         setOrderId(orderIdData);
         setAmount(amountData || 0);
         
-        console.log('Payment created successfully:', {
+        console.log('✅ Payment created successfully:', {
           orderId: orderIdData,
           amount: amountData,
           paymentUrl: qrCodeData
         });
         
         toast.success('Tạo thanh toán thành công!');
+        
       } else {
-        const errorMsg = response?.data?.message || 'Không thể tạo thanh toán';
-        throw new Error(errorMsg);
+        const errorMessage = response?.data?.message || 'Không thể tạo thanh toán';
+        throw new Error(errorMessage);
       }
+      
     } catch (error: any) {
-      console.error('Payment creation error:', error);
+      console.error('❌ Create QR payment error:', error);
       
       let errorMessage = 'Có lỗi xảy ra khi tạo thanh toán';
       
-      if (error?.response?.status === 401) {
-        errorMessage = 'Bạn cần đăng nhập để thực hiện thanh toán';
+      // ✅ Enhanced error handling
+      if (error?.response?.status === 400) {
+        if (error?.response?.data?.message?.includes('ObjectId')) {
+          errorMessage = 'Course ID không đúng định dạng';
+        } else if (error?.response?.data?.message?.includes('Validation error')) {
+          errorMessage = 'Dữ liệu không hợp lệ: ' + error.response.data.message;
+        } else {
+          errorMessage = error?.response?.data?.message || 'Yêu cầu không hợp lệ';
+        }
       } else if (error?.response?.status === 404) {
         errorMessage = 'Không tìm thấy khóa học';
+      } else if (error?.response?.status === 401) {
+        errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại';
       } else if (error?.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error?.message) {
@@ -77,27 +125,31 @@ const VNPayQRPayment: React.FC = () => {
       
       setError(errorMessage);
       toast.error(errorMessage);
+      
+      // Navigate back on critical errors
+      if (errorMessage.includes('Course ID') || errorMessage.includes('ObjectId')) {
+        setTimeout(() => navigate('/courses'), 2000);
+      }
+      
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Kiểm tra trạng thái thanh toán
+  // Check payment status
   const checkPaymentStatus = async () => {
     if (!orderId) return;
     
     try {
-      console.log('Checking payment status for orderId:', orderId);
-      
       const response = await checkVNPayStatus(orderId);
       
-      if (response.status === 200 && response.data?.data) {
+      if (response?.status === 200) {
         const { status } = response.data.data;
         
-        console.log('Payment status:', status);
+        console.log('📊 Payment status:', status);
         
         if (status === 'completed') {
-          toast.success('Thanh toán thành công!');
+          toast.success('Thanh toán thành công! Chuyển hướng...');
           navigate(`/courses/${courseId}#success`);
         } else if (status === 'expired') {
           toast.error('Thanh toán đã hết hạn. Vui lòng thử lại.');
@@ -109,7 +161,7 @@ const VNPayQRPayment: React.FC = () => {
         // Nếu status là 'pending', tiếp tục polling
       }
     } catch (error) {
-      console.error('Check payment status error:', error);
+      console.error('❌ Check payment status error:', error);
       // Không hiển thị toast lỗi cho việc check status để tránh spam
     }
   };
@@ -124,12 +176,12 @@ const VNPayQRPayment: React.FC = () => {
     setIsProcessing(true);
     
     try {
-      console.log('Redirecting to VNPay:', qrCode);
+      console.log('🔗 Redirecting to VNPay:', qrCode);
       
       // Chuyển hướng đến trang thanh toán VNPay
       window.location.href = qrCode;
     } catch (error) {
-      console.error('Direct payment error:', error);
+      console.error('❌ Direct payment error:', error);
       toast.error('Không thể chuyển hướng đến trang thanh toán');
     } finally {
       setIsProcessing(false);
@@ -162,6 +214,33 @@ const VNPayQRPayment: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, isProcessing]);
 
+  // ✅ Error state for invalid courseId
+  if (error && error.includes('Course ID')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+          <div className="text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+              <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.502 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h3 className="mt-2 text-lg font-medium text-gray-900">Lỗi Course ID</h3>
+            <p className="mt-1 text-sm text-gray-500">{error}</p>
+            <div className="mt-6">
+              <button
+                onClick={() => navigate('/courses')}
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Quay lại danh sách khóa học
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Loading state
   if (isLoading) {
     return (
@@ -175,28 +254,30 @@ const VNPayQRPayment: React.FC = () => {
   }
 
   // Error state
-  if (error && !qrCode) {
+  if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
           <div className="text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              Lỗi Tạo Thanh Toán
-            </h2>
-            <p className="text-red-600 mb-6">{error}</p>
-            <div className="space-y-3">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+              <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.502 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h3 className="mt-2 text-lg font-medium text-gray-900">Có lỗi xảy ra</h3>
+            <p className="mt-1 text-sm text-gray-500">{error}</p>
+            <div className="mt-6 flex space-x-3">
               <button
                 onClick={handleRetry}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                className="flex-1 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Thử Lại
+                Thử lại
               </button>
               <button
                 onClick={handleCancel}
-                className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
+                className="flex-1 inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Quay Lại
+                Hủy
               </button>
             </div>
           </div>
@@ -207,86 +288,61 @@ const VNPayQRPayment: React.FC = () => {
 
   // Main payment interface
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="text-blue-600 text-6xl mb-4">💳</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Thanh Toán VNPay
-          </h2>
-          <p className="text-gray-600">
-            Nhấn nút bên dưới để chuyển đến trang thanh toán VNPay
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow-lg rounded-lg">
+          <div className="px-6 py-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                Thanh toán VNPay
+              </h1>
+              
+              {amount > 0 && (
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                  <p className="text-lg font-semibold text-blue-900">
+                    Số tiền: {amount.toLocaleString('vi-VN')} VND
+                  </p>
+                  {orderId && (
+                    <p className="text-sm text-blue-700 mt-1">
+                      Mã đơn hàng: {orderId}
+                    </p>
+                  )}
+                </div>
+              )}
 
-        {/* Payment Info */}
-        <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <div className="text-sm text-gray-600 space-y-2">
-            <div className="flex justify-between">
-              <span>Mã đơn hàng:</span>
-              <span className="font-mono text-xs text-blue-800">{orderId}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Số tiền:</span>
-              <span className="font-semibold text-red-600">
-                {amount.toLocaleString('vi-VN')} VND
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Phương thức:</span>
-              <span className="font-medium text-blue-600">VNPay QR</span>
+              {qrCode && (
+                <div className="space-y-4">
+                  <p className="text-gray-600">
+                    Nhấn nút bên dưới để chuyển đến trang thanh toán VNPay
+                  </p>
+                  
+                  <button
+                    onClick={handleDirectPayment}
+                    disabled={isProcessing}
+                    className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isProcessing ? 'Đang chuyển hướng...' : 'Thanh toán ngay'}
+                  </button>
+                  
+                  <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      💡 <strong>Lưu ý:</strong> Giao dịch sẽ tự động hết hạn sau 15 phút
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <button
+                  onClick={handleCancel}
+                  className="text-gray-500 hover:text-gray-700 text-sm"
+                >
+                  ← Quay lại khóa học
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <button
-            onClick={handleDirectPayment}
-            disabled={isProcessing || !qrCode}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-          >
-            {isProcessing ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Đang chuyển hướng...
-              </>
-            ) : (
-              <>
-                <span className="mr-2">🚀</span>
-                Thanh Toán VNPay
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={handleCancel}
-            disabled={isProcessing}
-            className="w-full bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            Hủy Thanh Toán
-          </button>
-        </div>
-
-        {/* Payment Instructions */}
-        <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-          <h3 className="font-semibold text-yellow-800 mb-2">📝 Hướng dẫn:</h3>
-          <ul className="text-sm text-yellow-700 space-y-1">
-            <li>• Nhấn "Thanh Toán VNPay" để chuyển đến trang thanh toán</li>
-            <li>• Chọn phương thức thanh toán phù hợp</li>
-            <li>• Hoàn tất thanh toán theo hướng dẫn</li>
-            <li>• Hệ thống sẽ tự động cập nhật kết quả</li>
-          </ul>
-        </div>
-
-        {/* Status Indicator */}
-        {orderId && !isProcessing && (
-          <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
-            <div className="animate-pulse w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            Đang theo dõi trạng thái thanh toán...
-          </div>
-        )}
       </div>
     </div>
   );

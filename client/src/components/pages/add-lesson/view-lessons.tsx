@@ -19,24 +19,62 @@ import {
 } from "@material-tailwind/react";
 import { formatDate } from "../../../utils/helpers";
 import { getLessonsByCourse } from "../../../api/endpoints/course/lesson";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ApiResponseLessons } from "../../../api/types/apiResponses/api-response-instructors";
 import AddLessonForm from "./add-lessons-form";
 import { Link } from "react-router-dom";
 import { LESSON_AVATAR } from "../../../constants/common";
+import { toast } from "react-toastify";
+
+const isValidObjectId = (id: string): boolean => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  return objectIdRegex.test(id);
+};
   
 const ViewLessons: React.FC = () => {
   const [lessons, setLessons] = useState<ApiResponseLessons[] | null>(null);
   const [formVisible, setFormVisible] = useState<boolean>(false);
-  const { courseId } = useParams<{ courseId: string | undefined }>();
+  const params = useParams<{ courseId: string }>();
+  const navigate = useNavigate();
+  const courseId = params.courseId;
+
+  console.log('🔍 ViewLessons - Raw params:', params);
+  console.log('🔍 ViewLessons - Extracted courseId:', courseId);
+
+  useEffect(() => {
+    if (!courseId) {
+      toast.error('Course ID is missing');
+      navigate('/instructor/courses');
+      return;
+    }
+
+    if (!isValidObjectId(courseId)) {
+      toast.error('Invalid course ID format');
+      navigate('/instructor/courses');
+      return;
+    }
+  }, [courseId, navigate]);
 
   const fetchData = async (courseId: string) => {
-    const response = await getLessonsByCourse(courseId);
-    setLessons(response.data);
+    if (!courseId || !isValidObjectId(courseId)) {
+      toast.error('Invalid course ID');
+      return;
+    }
+
+    try {
+      console.log('📤 Fetching lessons for course:', courseId);
+      const response = await getLessonsByCourse(courseId);
+      setLessons(response.data);
+    } catch (error: any) {
+      console.error('❌ Error fetching lessons:', error);
+      toast.error(error?.response?.data?.message || 'Failed to load lessons');
+    }
   };
 
   useEffect(() => {
-    if (courseId) fetchData(courseId);
+    if (courseId && isValidObjectId(courseId)) {
+      fetchData(courseId);
+    }
   }, [courseId]);
 
   return (

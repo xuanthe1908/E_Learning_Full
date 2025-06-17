@@ -22,10 +22,20 @@ import { selectIsLoggedIn } from "../../../redux/reducers/authSlice";
 import LoginConfirmation from "../../common/login-confirmation-modal";
 import PdfViewer from "./pdf-viewer";
 import ViewCourseShimmer from "components/shimmer/view-course-shimmer";
+
+const isValidObjectId = (id: string): boolean => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  return objectIdRegex.test(id);
+};
+
 const ViewCourseStudent: React.FC = () => {
-  const params = useParams();
+  const params = useParams<{ courseId: string }>();
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const courseId: string | undefined = params.courseId;
+  const courseId = params.courseId;
+
+  console.log('🔍 ViewCourse - Raw params:', params);
+  console.log('🔍 ViewCourse - Extracted courseId:', courseId);
+  console.log('🔍 ViewCourse - CourseId type:', typeof courseId);
   const [openPaymentConfirmation, setOpenPaymentConfirmation] =
     useState<boolean>(false);
   const dispatch = useDispatch();
@@ -36,6 +46,9 @@ const ViewCourseStudent: React.FC = () => {
   const [successToastShown, setSuccessToastShown] = useState(false);
 
   const fetchCourse = async (courseId: string): Promise<CourseInterface> => {
+    if (!courseId || !isValidObjectId(courseId)) {
+      throw new Error('Invalid course ID format');
+    }
     try {
       const course = await getIndividualCourse(courseId);
       return course?.data?.data as CourseInterface;
@@ -47,6 +60,9 @@ const ViewCourseStudent: React.FC = () => {
     }
   };
   const fetchLessons = async (courseId: string) => {
+    if (!courseId || !isValidObjectId(courseId)) {
+      throw new Error('Invalid course ID for lessons');
+    }
     try {
       const lessons = await getLessonsByCourse(courseId);
       return lessons.data;
@@ -57,11 +73,17 @@ const ViewCourseStudent: React.FC = () => {
       throw error;
     }
   };
-
-  const { data, isLoading, refreshData } = useApiData(fetchCourse, courseId);
+  
+  const shouldFetch = courseId && isValidObjectId(courseId);
+  
+  const { data, isLoading, refreshData } = useApiData(
+    fetchCourse, 
+    shouldFetch ? courseId : null // Pass null if invalid
+  );
+  
   const { data: lessons, isLoading: isLessonsLoading } = useApiData(
     fetchLessons,
-    courseId
+    shouldFetch ? courseId : null // Pass null if invalid
   );
 
   const course: CourseInterface | null = data;
