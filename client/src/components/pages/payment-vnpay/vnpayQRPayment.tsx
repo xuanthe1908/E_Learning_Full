@@ -20,43 +20,58 @@ const VNPayQRPayment: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseId]);
 
-  // ✅ FIX: Cải thiện error handling
+  // Tạo thanh toán VNPay
   const createQRPayment = async () => {
     try {
       setIsLoading(true);
       setError('');
       
+      // Validation
+      if (!courseId) {
+        throw new Error('Course ID không hợp lệ');
+      }
+      
       console.log('Creating QR payment for courseId:', courseId);
       
-      const response = await createVNPayQRPayment(courseId!);
+      const response = await createVNPayQRPayment(courseId);
       
       console.log('QR Payment response:', response);
       
-      if (response.status === 200 && response.data?.data) {
+      if (response?.status === 200 && response?.data?.status === 'success') {
         const { qrCode: qrCodeData, orderId: orderIdData, amount: amountData } = response.data.data;
+        
+        // Validation response data
+        if (!qrCodeData || !orderIdData) {
+          throw new Error('Dữ liệu thanh toán không hợp lệ từ server');
+        }
         
         setQrCode(qrCodeData);
         setOrderId(orderIdData);
-        setAmount(amountData);
+        setAmount(amountData || 0);
         
-        console.log('QR Payment created successfully:', {
+        console.log('Payment created successfully:', {
           orderId: orderIdData,
           amount: amountData,
-          qrCodeLength: qrCodeData?.length
+          paymentUrl: qrCodeData
         });
         
-        toast.success('Tạo mã QR thanh toán thành công!');
+        toast.success('Tạo thanh toán thành công!');
       } else {
-        throw new Error(response.data?.message || 'Không thể tạo mã QR thanh toán');
+        const errorMsg = response?.data?.message || 'Không thể tạo thanh toán';
+        throw new Error(errorMsg);
       }
     } catch (error: any) {
       console.error('Payment creation error:', error);
       
       let errorMessage = 'Có lỗi xảy ra khi tạo thanh toán';
       
-      if (error.response?.data?.message) {
+      if (error?.response?.status === 401) {
+        errorMessage = 'Bạn cần đăng nhập để thực hiện thanh toán';
+      } else if (error?.response?.status === 404) {
+        errorMessage = 'Không tìm thấy khóa học';
+      } else if (error?.response?.data?.message) {
         errorMessage = error.response.data.message;
-      } else if (error.message) {
+      } else if (error?.message) {
         errorMessage = error.message;
       }
       
@@ -67,7 +82,7 @@ const VNPayQRPayment: React.FC = () => {
     }
   };
 
-  // ✅ FIX: Cải thiện check payment status
+  // Kiểm tra trạng thái thanh toán
   const checkPaymentStatus = async () => {
     if (!orderId) return;
     
@@ -99,22 +114,19 @@ const VNPayQRPayment: React.FC = () => {
     }
   };
 
+  // Chuyển hướng đến VNPay
   const handleDirectPayment = async () => {
     if (!qrCode) {
-      toast.error('Chưa có mã QR để thanh toán');
+      toast.error('Chưa có thông tin thanh toán');
       return;
     }
     
     setIsProcessing(true);
     
     try {
-      // Nếu qrCode là data URL (base64), hiển thị lỗi
-      if (qrCode.startsWith('data:')) {
-        toast.error('Vui lòng quét mã QR bằng ứng dụng ngân hàng');
-        return;
-      }
+      console.log('Redirecting to VNPay:', qrCode);
       
-      // Nếu qrCode là URL, redirect
+      // Chuyển hướng đến trang thanh toán VNPay
       window.location.href = qrCode;
     } catch (error) {
       console.error('Direct payment error:', error);
@@ -124,7 +136,7 @@ const VNPayQRPayment: React.FC = () => {
     }
   };
 
-  // ✅ Retry function
+  // Thử lại tạo thanh toán
   const handleRetry = () => {
     setError('');
     setQrCode('');
@@ -133,7 +145,12 @@ const VNPayQRPayment: React.FC = () => {
     createQRPayment();
   };
 
-  // Poll payment status every 5 seconds when QR is generated
+  // Hủy thanh toán và quay lại
+  const handleCancel = () => {
+    navigate(`/courses/${courseId}`);
+  };
+
+  // Poll payment status every 5 seconds when orderId exists
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (orderId && !isProcessing) {
@@ -145,7 +162,7 @@ const VNPayQRPayment: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, isProcessing]);
 
-  // ✅ Loading state
+  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -157,7 +174,7 @@ const VNPayQRPayment: React.FC = () => {
     );
   }
 
-  // ✅ Error state
+  // Error state
   if (error && !qrCode) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -176,7 +193,7 @@ const VNPayQRPayment: React.FC = () => {
                 Thử Lại
               </button>
               <button
-                onClick={() => navigate(`/courses/${courseId}`)}
+                onClick={handleCancel}
                 className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
               >
                 Quay Lại
@@ -188,108 +205,88 @@ const VNPayQRPayment: React.FC = () => {
     );
   }
 
+  // Main payment interface
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="text-blue-600 text-6xl mb-4">💳</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Thanh Toán VNPay
           </h2>
-
-          {qrCode && (
-            <>
-              {/* ✅ FIX: QR Code Display */}
-              <div className="bg-gray-100 p-4 rounded-lg mb-6">
-                <div className="w-48 h-48 mx-auto bg-white border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden">
-                  {qrCode.startsWith('data:') ? (
-                    // Hiển thị QR code từ base64 data URL
-                    <img 
-                      src={qrCode} 
-                      alt="QR Code thanh toán" 
-                      className="w-full h-full object-contain"
-                    />
-                  ) : (
-                    // Fallback nếu không phải data URL
-                    <div className="text-center">
-                      <span className="text-gray-500 text-sm block mb-2">
-                        QR Code được tạo
-                      </span>
-                      <button
-                        onClick={handleDirectPayment}
-                        className="text-blue-600 text-sm underline"
-                      >
-                        Nhấn để thanh toán
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Payment Info */}
-              <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                <div className="text-sm text-gray-600 space-y-2">
-                  <div className="flex justify-between">
-                    <span>Mã đơn hàng:</span>
-                    <span className="font-mono text-xs">{orderId}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Số tiền:</span>
-                    <span className="font-semibold text-red-600">
-                      {amount.toLocaleString('vi-VN')} VND
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                {/* Chỉ hiển thị nút thanh toán trực tiếp nếu không phải QR code */}
-                {!qrCode.startsWith('data:') && (
-                  <button
-                    onClick={handleDirectPayment}
-                    disabled={isProcessing}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-                  >
-                    {isProcessing ? (
-                      <span className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Đang xử lý thanh toán...
-                      </span>
-                    ) : (
-                      'Thanh toán ngay'
-                    )}
-                  </button>
-                )}
-                
-                <button
-                  onClick={() => navigate(`/courses/${courseId}`)}
-                  className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
-                >
-                  Quay lại
-                </button>
-              </div>
-
-              {/* Instructions */}
-              <div className="mt-6 text-xs text-gray-500">
-                <p className="mb-2">Hướng dẫn thanh toán:</p>
-                <ol className="text-left space-y-1">
-                  <li>1. Mở ứng dụng ngân hàng hoặc ví điện tử</li>
-                  <li>2. Quét mã QR phía trên</li>
-                  <li>3. Xác nhận thanh toán</li>
-                  <li>4. Hệ thống sẽ tự động kích hoạt khóa học</li>
-                </ol>
-              </div>
-
-              {/* ✅ Status indicator */}
-              <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
-                <div className="animate-pulse flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  Đang chờ thanh toán...
-                </div>
-              </div>
-            </>
-          )}
+          <p className="text-gray-600">
+            Nhấn nút bên dưới để chuyển đến trang thanh toán VNPay
+          </p>
         </div>
+
+        {/* Payment Info */}
+        <div className="bg-blue-50 p-4 rounded-lg mb-6">
+          <div className="text-sm text-gray-600 space-y-2">
+            <div className="flex justify-between">
+              <span>Mã đơn hàng:</span>
+              <span className="font-mono text-xs text-blue-800">{orderId}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Số tiền:</span>
+              <span className="font-semibold text-red-600">
+                {amount.toLocaleString('vi-VN')} VND
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Phương thức:</span>
+              <span className="font-medium text-blue-600">VNPay QR</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleDirectPayment}
+            disabled={isProcessing || !qrCode}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+          >
+            {isProcessing ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Đang chuyển hướng...
+              </>
+            ) : (
+              <>
+                <span className="mr-2">🚀</span>
+                Thanh Toán VNPay
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleCancel}
+            disabled={isProcessing}
+            className="w-full bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors"
+          >
+            Hủy Thanh Toán
+          </button>
+        </div>
+
+        {/* Payment Instructions */}
+        <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+          <h3 className="font-semibold text-yellow-800 mb-2">📝 Hướng dẫn:</h3>
+          <ul className="text-sm text-yellow-700 space-y-1">
+            <li>• Nhấn "Thanh Toán VNPay" để chuyển đến trang thanh toán</li>
+            <li>• Chọn phương thức thanh toán phù hợp</li>
+            <li>• Hoàn tất thanh toán theo hướng dẫn</li>
+            <li>• Hệ thống sẽ tự động cập nhật kết quả</li>
+          </ul>
+        </div>
+
+        {/* Status Indicator */}
+        {orderId && !isProcessing && (
+          <div className="mt-4 flex items-center justify-center text-sm text-gray-500">
+            <div className="animate-pulse w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+            Đang theo dõi trạng thái thanh toán...
+          </div>
+        )}
       </div>
     </div>
   );

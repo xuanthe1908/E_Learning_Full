@@ -68,8 +68,8 @@ const END_POINTS = {
     STREAM_VIDEO: 'api/video-streaming/stream-video',
 
     // ========== PAYMENT ENDPOINTS ==========
-    PAY_USING_VNPAY_QR: 'api/payments/vnpay/create-qr-payment',
-    PAY_USING_VNPAY_URL: 'api/payments/vnpay/create-payment-url',
+    PAY_USING_VNPAY_QR: 'api/payments/vnpay/create-qr-payment', // ✅ THÊM
+    PAY_USING_VNPAY_URL: 'api/payments/vnpay/create-payment-url', // ✅ THÊM  
     CHECK_VNPAY_STATUS: 'api/payments/vnpay/status',
     CANCEL_VNPAY_PAYMENT: 'api/payments/vnpay/cancel',
     VNPAY_RETURN: 'api/payments/vnpay/return',

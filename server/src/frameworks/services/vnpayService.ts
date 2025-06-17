@@ -139,9 +139,9 @@ export const vnpayService = () => {
     
     const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
     const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-    const qrUrl = `${vnpayConfig.vnp_Url}?${signData}&vnp_SecureHash=${signed}`;
+
     return {
-      qrCode: qrUrl,
+      qrCode: `${vnpayConfig.vnp_Url}?${signData}&vnp_SecureHash=${signed}`,
       paymentData: {
         ...qrData,
         vnp_SecureHash: signed
