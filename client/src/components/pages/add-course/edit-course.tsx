@@ -4,7 +4,7 @@ import { AddCourseValidationSchema } from "../../../validations/course/AddCourse
 import { Switch } from "@material-tailwind/react";
 import { toast } from "react-toastify";
 import { getIndividualCourse } from "../../../api/endpoints/course/course";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CourseInterface } from "../../../types/course";
 import { ApiResponseCategory } from "../../../api/types/apiResponses/api-response-category";
 import { getAllCategories } from "../../../api/endpoints/category";
@@ -13,6 +13,11 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { AiOutlineClose } from "react-icons/ai";
 import { editCourse } from "../../../api/endpoints/course/course";
 pdfjs.GlobalWorkerOptions.workerSrc = "/path/to/pdf.worker.js";
+
+const isValidObjectId = (id: string): boolean => {
+  const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+  return objectIdRegex.test(id);
+};
 
 interface InitialValType {
   title: string;
@@ -48,9 +53,30 @@ const EditCourse: React.FC = () => {
   const [paid, setPaid] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [guidelines, setGuidelines] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const [course, setCourse] = useState<CourseInterface | null>(null);
-  const { courseId } = useParams();
+  const params = useParams<{ courseId: string }>();
+  const navigate = useNavigate();
+  const courseId = params.courseId;
+
+  console.log('🔍 EditCourse - Raw params:', params);
+  console.log('🔍 EditCourse - Extracted courseId:', courseId);
+
+
+  useEffect(() => {
+    if (!courseId) {
+      toast.error('Course ID is missing');
+      navigate('/instructor/courses');
+      return;
+    }
+
+    if (!isValidObjectId(courseId)) {
+      toast.error('Invalid course ID format');
+      navigate('/instructor/courses');
+      return;
+    }
+  }, [courseId, navigate]);
   const [categories, setCategories] = useState<ApiResponseCategory[] | null>(
     null
   );
@@ -66,16 +92,31 @@ const EditCourse: React.FC = () => {
   };
 
   const fetchCourse = async (courseId: string) => {
+    if (!courseId || !isValidObjectId(courseId)) {
+      toast.error('Invalid course ID');
+      return;
+    }
+
     try {
-      setLoading(true);
+      console.log('📤 Fetching course for editing:', courseId);
       const response = await getIndividualCourse(courseId);
-      setCourse(response?.data?.data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast.error("something went wrong");
+      
+      if (response?.data?.data) {
+        setCourse(response.data.data);
+        setPaid(response.data.data.isPaid || false);
+      } else {
+        toast.error('Course not found');
+        navigate('/instructor/courses');
+      }
+    } catch (error: any) {
+      console.error('❌ Error fetching course:', error);
+      toast.error(error?.response?.data?.message || 'Failed to load course');
+      navigate('/instructor/courses');
     }
   };
+
+  
+  
   useEffect(() => {
     if (course) {
       initialValues.title = course.title;
@@ -116,6 +157,7 @@ const EditCourse: React.FC = () => {
     if (courseId) {
       fetchCourse(courseId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
