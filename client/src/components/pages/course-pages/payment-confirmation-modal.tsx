@@ -11,6 +11,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { formatToINR, formatTime } from "../../../utils/helpers";
 import { enrollStudent } from "../../../api/endpoints/course/course";
+import { createVNPayQRPayment } from "../../../api/endpoints/payment/vnpay"; 
+import { useSelector } from "react-redux"; 
+import { selectIsLoggedIn } from "../../../redux/reducers/authSlice"; 
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 
@@ -34,9 +37,12 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
   const handleOpen = () => setOpen((cur) => !cur);
   const { courseId } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
   const handleClose = () => setOpen(false);
   const offerExpiration = "2023-08-13T22:59:59.000Z";
+  
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
@@ -60,13 +66,81 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
     }
   };
 
+  const handleVNPayPayment = async () => {
+    if (!isLoggedIn) {
+      toast.error('Bạn cần đăng nhập để thực hiện thanh toán', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    const tokenString = localStorage.getItem("accessToken");
+    if (!tokenString) {
+      toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      console.log('Creating VNPay payment for courseId:', courseId);
+      console.log('User logged in:', isLoggedIn);
+      console.log('Access token exists:', !!tokenString);
+      
+      // Gọi API tạo QR payment
+      const response = await createVNPayQRPayment(courseId!);
+      
+      console.log('VNPay payment response:', response);
+      
+      if (response?.status === 200 && response?.data?.status === 'success') {
+        const { qrCode } = response.data.data;
+        
+        // Đóng modal
+        setOpen(false);
+        
+        // Chuyển hướng trực tiếp đến VNPay
+        console.log('Redirecting to VNPay:', qrCode);
+        window.location.href = qrCode;
+        
+      } else {
+        throw new Error(response?.data?.message || 'Không thể tạo thanh toán VNPay');
+      }
+    } catch (error: any) {
+      console.error('VNPay payment error:', error);
+      
+      let errorMessage = 'Có lỗi xảy ra khi tạo thanh toán';
+      
+      if (error?.response?.status === 401) {
+        errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại';
+      } else if (error?.response?.status === 404) {
+        errorMessage = 'Không tìm thấy khóa học';
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage, {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ SỬA: Function xử lý enroll course
   const handleCourseEnroll = () => {
-  if (courseDetails.isPaid) {
-    navigate(`/course/${courseId}/payment`);
-  } else {
-    handleConfirmPayment();
-  }
-};
+    if (courseDetails.isPaid) {
+      // ✅ Gọi function thanh toán VNPay
+      handleVNPayPayment();
+    } else {
+      // Khóa học miễn phí - gọi enroll trực tiếp
+      handleConfirmPayment();
+    }
+  };
+
   const isFreeCourse = courseDetails?.isPaid === false;
 
   useEffect(() => {
@@ -115,24 +189,23 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
               </span>
             ) : (
               <div className="bg-gray-100 p-2">
-              <p className="text-lg font-semibold mb-2">🎉 Limited Time Offer 🎉</p>
-              <p className="text-xl font-bold mb-2">
-                Price:{" "}
-                <span className="text-green-600">
-                  {formatToINR(courseDetails?.price)}
-                </span>{" "}
-                <span className="text-gray-600 line-through">
-                  {formatToINR(courseDetails?.price + 100)}
-                </span>
-              </p>
-              <p className="text-lg">
-                Offer Expires in: 
-                <span className="text-gray-600 font-semibold">
-                  {formatTime(timeLeft)}
-                </span>
-              </p>
-            </div>
-                    
+                <p className="text-lg font-semibold mb-2">🎉 Limited Time Offer 🎉</p>
+                <p className="text-xl font-bold mb-2">
+                  Price:{" "}
+                  <span className="text-green-600">
+                    {formatToINR(courseDetails?.price)}
+                  </span>{" "}
+                  <span className="text-gray-600 line-through">
+                    {formatToINR(courseDetails?.price + 100)}
+                  </span>
+                </p>
+                <p className="text-lg">
+                  Offer Expires in: 
+                  <span className="text-gray-600 font-semibold">
+                    {formatTime(timeLeft)}
+                  </span>
+                </p>
+              </div>
             )}
           </Typography>
           <Typography variant='paragraph' color='gray'>
@@ -145,21 +218,25 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
             variant='gradient'
             color='green'
             onClick={handleCourseEnroll}
+            disabled={isLoading} 
             className='w-full'
           >
             {isLoading ? (
-              <span className='flex items-center'>
+              <span className='flex items-center justify-center'>
                 <span>Processing...</span>
                 <FaSpinner className='animate-spin ml-1' size={20} />
               </span>
             ) : (
-              <span>{isFreeCourse ? "Start Course" : "Confirm Payment"}</span>
+              <span>
+                {isFreeCourse ? "Start Course" : "Confirm Payment"}
+              </span>
             )}
           </Button>
           <Button
             variant='outlined'
             color='blue'
             onClick={handleClose}
+            disabled={isLoading} 
             className='w-full mt-2'
           >
             <span>Cancel</span>

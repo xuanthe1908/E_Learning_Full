@@ -5,9 +5,10 @@ import vnpayController from '../../../adapters/controllers/vnpayController';
 import { courseDbRepository } from '../../../app/repositories/courseDbRepository';
 import { courseRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/courseReposMongoDb';
 
-// Import payment repositories
 import { paymentInterface } from '../../../app/repositories/paymentDbRepository';
 import { paymentRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/paymentRepoMongodb';
+
+import jwtAuthMiddleware from '../middlewares/userAuth';
 
 const paymentRouter = () => {
   const router = express.Router();
@@ -18,15 +19,15 @@ const paymentRouter = () => {
     vnpayService,            // Argument 2: vnpayServiceImpl  
     courseDbRepository,      // Argument 3: courseDbInterface
     courseRepositoryMongodb, // Argument 4: courseDbImpl
-    paymentInterface,        // Argument 5: paymentDbInterface ← Missing này
-    paymentRepositoryMongodb // Argument 6: paymentDbImpl ← Missing này
+    paymentInterface,        // Argument 5: paymentDbInterface
+    paymentRepositoryMongodb // Argument 6: paymentDbImpl
   );
 
-  // Routes
-  router.post('/vnpay/create-payment-url', controller.createPaymentUrl);
-  router.post('/vnpay/create-qr-payment', controller.createQRPayment);
-  router.get('/vnpay/return', controller.handleReturn);
-  router.get('/vnpay/status/:orderId', controller.checkPaymentStatus);
+  // ✅ SỬA: Routes với authentication middleware
+  router.post('/vnpay/create-payment-url', jwtAuthMiddleware, controller.createPaymentUrl);
+  router.post('/vnpay/create-qr-payment', jwtAuthMiddleware, controller.createQRPayment); // ✅ THÊM auth
+  router.get('/vnpay/return', controller.handleReturn); // ✅ Không cần auth cho return URL
+  router.get('/vnpay/status/:orderId', jwtAuthMiddleware, controller.checkPaymentStatus); // ✅ THÊM auth
 
   return router;
 };
