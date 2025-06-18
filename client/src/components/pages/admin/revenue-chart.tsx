@@ -13,7 +13,18 @@ interface Props {
   data: DataPoint[];
 }
 
-const RevenueChart: React.FC<Props> = ({ data }) => {
+const RevenueChart: React.FC<Props> = ({ data = [] }) => {
+  // ✅ Safety check - ensure data is array and has valid structure
+  const safeData = Array.isArray(data) ? data : [];
+  
+  // ✅ Ensure all data points have required properties
+  const validData = safeData.map(d => ({
+    month: d?.month || 'Unknown',
+    revenue: Number(d?.revenue) || 0,
+    coursesAdded: Number(d?.coursesAdded) || 0,
+    coursesEnrolled: Number(d?.coursesEnrolled) || 0,
+  }));
+
   const chartOptions: Partial<ApexOptions> = {
     chart: {
       id: 'revenue-chart',
@@ -24,7 +35,7 @@ const RevenueChart: React.FC<Props> = ({ data }) => {
       },
     },
     xaxis: {
-      categories: data.map((d) => d.month),
+      categories: validData.map((d) => d.month),
     },
     yaxis: {
       title: {
@@ -39,15 +50,15 @@ const RevenueChart: React.FC<Props> = ({ data }) => {
   const chartSeries = [
     {
       name: 'Monthly Revenue',
-      data: data.map((d) => d.revenue),
+      data: validData.map((d) => d.revenue),
     },
     {
       name: 'Courses Added',
-      data: data.map((d) => d.coursesAdded),
+      data: validData.map((d) => d.coursesAdded),
     },
     {
       name: 'Courses Enrolled',
-      data: data.map((d) => d.coursesEnrolled),
+      data: validData.map((d) => d.coursesEnrolled),
     },
   ];
 
