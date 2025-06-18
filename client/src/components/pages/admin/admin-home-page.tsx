@@ -21,14 +21,17 @@ import { formatToINR } from "../../../utils/helpers";
 import { toast } from "react-toastify";
 
 const AdminHomePage: React.FC = () => {
-  const [dashboardData, seDashboardData] = useState<DashData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashData | null>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const fetchDashboardDetails = async () => {
     try {
       const response = await getDashboardData();
-      seDashboardData(response.data);
+      setDashboardData(response.data);
     } catch (error) {
-      toast.error("Something went wrong")
+      toast.error("Something went wrong");
+      console.error("Dashboard data error:", error);
     }
   };
 
@@ -37,16 +40,57 @@ const AdminHomePage: React.FC = () => {
       const response = await getGraphData();
       setGraphData(response.data);
     } catch (error) {
-      toast.error("Something went wrong")
+      toast.error("Something went wrong");
+      console.error("Graph data error:", error);
     }
   };
+
   useEffect(() => {
-    fetchDashboardDetails();
-    fetchGraphData();
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([
+          fetchDashboardDetails(),
+          fetchGraphData()
+        ]);
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
 
+  // ✅ Loading state
+  if (loading) {
+    return (
+      <div className="pl-1">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ Default data for charts when API data is null/undefined
+  const defaultRevenueData = [
+    { month: 'Jan', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
+    { month: 'Feb', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
+    { month: 'Mar', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
+  ];
+
+  const defaultTrendingData = [
+    { title: 'No Data', enrolled: 0 }
+  ];
+
+  const defaultCategoryData = [
+    { _id: '1', name: 'No Categories', courseCount: 1 }
+  ];
+
   return (
-    <div className=' pl-1'>
+    <div className='pl-1'>
       <div className='ml-3 mr-3 flex items-center justify-between'>
         <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 border shadow-sm border-gray-200 mr-4'>
           <div className='flex items-center '>
@@ -61,66 +105,80 @@ const AdminHomePage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 shadow-sm border border-gray-200 mr-4'>
-          <div className='flex items-center'>
+
+        <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 border shadow-sm border-gray-200 mr-4'>
+          <div className='flex items-center '>
             <AiOutlineBook size={26} className='text-blue-500 mr-3' />
             <div>
-              <Typography variant='h6' color='blue-gray' className='pt-2 '>
-                Courses
+              <Typography variant='h6' color='blue-gray' className='pt-2'>
+                Total courses
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberOfCourses}
+                {dashboardData?.numberOfCourses ?? 0}
               </Typography>
             </div>
           </div>
         </div>
-        <div className='bg-white flex-1 rounded-md pb-5 shadow-sm pr-5 pl-5 border border-gray-200 mr-4'>
-          <div className='flex items-center'>
-            <AiOutlineUser size={26} className='text-yellow-500 mr-3' />
+
+        <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 border shadow-sm border-gray-200 mr-4'>
+          <div className='flex items-center '>
+            <AiOutlineUser size={26} className='text-purple-500 mr-3' />
             <div>
-              <Typography variant='h6' color='blue-gray' className='pt-2 '>
-                Instructors
+              <Typography variant='h6' color='blue-gray' className='pt-2'>
+                Total instructors
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberInstructors}
+                {dashboardData?.numberInstructors ?? 0}
               </Typography>
             </div>
           </div>
         </div>
-        <div className='bg-white flex-1 rounded-md pb-5 shadow-sm pr-5 pl-5 border border-gray-200'>
-          <div className='flex items-center'>
-            <AiOutlineUsergroupAdd size={26} className='text-red-500 mr-3' />
+
+        <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 border shadow-sm border-gray-200'>
+          <div className='flex items-center '>
+            <AiOutlineUsergroupAdd size={26} className='text-orange-500 mr-3' />
             <div>
-              <Typography variant='h6' color='blue-gray' className='pt-2 '>
-                Students
+              <Typography variant='h6' color='blue-gray' className='pt-2'>
+                Total students
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberOfStudents}
+                {dashboardData?.numberOfStudents ?? 0}
               </Typography>
             </div>
           </div>
         </div>
       </div>
 
-      <div className='py-5 px-4'>
-        <Typography variant='h3' color='blue-gray' className='mb-4'>
-          Monthly Revenue Chart
-        </Typography>
-        <RevenueChart data={graphData?.revenue ?? []} />
+      <div className='ml-3 mr-3 mt-6 flex items-start justify-between'>
+        <div className='flex-1 mr-4'>
+          <Typography variant='h5' color='blue-gray' className='mb-4'>
+            Revenue Chart
+          </Typography>
+          {/* ✅ Pass safe data with fallback */}
+          <RevenueChart 
+            data={graphData?.revenue || defaultRevenueData} 
+          />
+        </div>
+
+        <div className='flex-1'>
+          <Typography variant='h5' color='blue-gray' className='mb-4'>
+            Course Categories
+          </Typography>
+          {/* ✅ Pass safe data with fallback */}
+          <CourseCategoryChart 
+            data={graphData?.courseByCategory || defaultCategoryData} 
+          />
+        </div>
       </div>
-      <div className='flex items-center '>
-        <div className='py-5 px-4 w-6/12'>
-          <Typography variant='h4' color='blue-gray' className='mb-4'>
-            Trending Courses
-          </Typography>
-          <TrendingCoursesChart data={graphData?.trendingCourses??[]} />
-        </div>
-        <div className='px-4 w-6/12'>
-          <Typography variant='h4' color='blue-gray' className='mb-4'>
-            Categories
-          </Typography>
-          <CourseCategoryChart data={graphData?.courseByCategory??[]} />
-        </div>
+
+      <div className='ml-3 mr-3 mt-6'>
+        <Typography variant='h5' color='blue-gray' className='mb-4'>
+          Trending Courses
+        </Typography>
+        {/* ✅ Pass safe data with fallback */}
+        <TrendingCoursesChart 
+          data={graphData?.trendingCourses || defaultTrendingData} 
+        />
       </div>
     </div>
   );

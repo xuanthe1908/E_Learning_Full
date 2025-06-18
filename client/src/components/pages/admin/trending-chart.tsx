@@ -11,15 +11,27 @@ interface Props {
   data: CourseData[];
 }
 
-const TrendingCoursesChart: React.FC<Props> = ({ data }) => {
-  const sortedData = data.sort((a, b) => b.enrolled - a.enrolled).slice(0, 5);
+const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
+  // ✅ Safety check and data validation
+  const safeData = Array.isArray(data) ? data : [];
+  const validData = safeData
+    .filter(course => course && typeof course === 'object')
+    .map(course => ({
+      title: course?.title || 'Unknown Course',
+      enrolled: Number(course?.enrolled) || 0,
+    }));
+
+  const sortedData = validData.sort((a, b) => b.enrolled - a.enrolled).slice(0, 5);
+
+  // ✅ Fallback if no data
+  const displayData = sortedData.length > 0 ? sortedData : [{ title: 'No courses', enrolled: 0 }];
 
   const chartOptions: Partial<ApexOptions> = {
     chart: {
       id: 'trending-courses-chart',
     },
     xaxis: {
-      categories: sortedData.map((course) => course.title),
+      categories: displayData.map((course) => course.title),
       labels: {
         show: false,
       },
@@ -32,7 +44,7 @@ const TrendingCoursesChart: React.FC<Props> = ({ data }) => {
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth:35,
+        columnWidth: 35,
       },
     },
   };
@@ -40,7 +52,7 @@ const TrendingCoursesChart: React.FC<Props> = ({ data }) => {
   const chartSeries = [
     {
       name: 'Enrollment Count',
-      data: sortedData.map((course) => course.enrolled),
+      data: displayData.map((course) => course.enrolled),
     },
   ];
 
