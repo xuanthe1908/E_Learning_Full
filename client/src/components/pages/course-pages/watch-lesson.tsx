@@ -15,6 +15,7 @@ import { selectStudentId } from "../../../redux/reducers/studentSlice";
 import { selectCourse } from "redux/reducers/courseSlice";
 import ShimmerEffectWatchLessons from "../../shimmer/watch-lessons-shimmer";
 import ShimmerVideoPlayer from "../../shimmer/shimmer-video-player";
+import AiChatWidget from "components/aiChat/AiChatWidget";
 
 const WatchLessons: React.FC = () => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
@@ -24,6 +25,7 @@ const WatchLessons: React.FC = () => {
   const [allLessons, setAllLessons] = useState<Array<ApiResponseLesson>>([]);
   const [videoKey, setVideoKey] = useState<string | null>(null);
   const { lessonId } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const location = useLocation();
   const [currentLessonId, setCurrentLessonId] = useState<string | undefined>(
     lessonId
@@ -92,6 +94,7 @@ const WatchLessons: React.FC = () => {
       // Restore the browser's scroll bar on component unmount
       document.body.style.overflow = "auto";
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let content = null;
@@ -210,6 +213,7 @@ const WatchLessons: React.FC = () => {
             </li>
           ))}
         </ul>
+        <AiChatWidget courseId={courseId} lessonId={lessonId} />
       </div>
     </div>
   );

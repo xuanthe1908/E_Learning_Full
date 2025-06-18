@@ -142,7 +142,16 @@ const END_POINTS = {
     REPORT_CONTENT: 'api/reports/content',
     REPORT_USER: 'api/reports/user',
     GET_REPORTS: 'api/reports/get',
-    RESOLVE_REPORT: 'api/reports/resolve'
+    RESOLVE_REPORT: 'api/reports/resolve',
+
+    // ========== AI CHAT ENDPOINTS ==========
+    AI_CHAT_CREATE: 'api/ai-chat/create',
+    AI_CHAT_GET_USER_CHATS: 'api/ai-chat/my-chats', 
+    AI_CHAT_GET_DETAILS: 'api/ai-chat',
+    AI_CHAT_SEND_MESSAGE: 'api/ai-chat',
+    AI_CHAT_UPDATE: 'api/ai-chat',
+    AI_CHAT_DELETE: 'api/ai-chat',
+    AI_CHAT_ANALYZE_QUERY: 'api/ai-chat/analyze-query'
 };
 
 export default END_POINTS;

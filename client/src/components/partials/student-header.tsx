@@ -13,16 +13,19 @@ const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Courses", href: "/courses", current: false },
   { name: "Tutors", href: "/tutors", current: false },
+  { name: "AI Trợ lý", href: "/ai-chat", current: false },
   { name: "Community", href: "/community", current: false },
   { name: "About", href: "/about", current: false },
   { name: "Contact", href: "/contact", current: false },
 ];
+
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
 const StudentHeader: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const location = useLocation();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const user = useSelector(selectUserType)

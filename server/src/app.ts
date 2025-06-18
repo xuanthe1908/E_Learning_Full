@@ -13,6 +13,7 @@ import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketDa
 import { Server } from 'socket.io';
 import socketConfig from './frameworks/websocket/socket';
 import { authService } from './frameworks/services/authService';
+import aiChatRouter from './frameworks/webserver/routes/aiChat';
 
 colors?.enable();
 
@@ -40,6 +41,8 @@ expressConfig(app);
 
 //* routes for each endpoint
 routes(app, redisClient);
+
+app.use('/api/ai-chat', aiChatRouter());
 
 //* handles server side errors
 app.use(errorHandlingMiddleware);
