@@ -72,10 +72,12 @@ const ListAllInstructors: React.FC<Props> = () => {
     const debouncedFilterFunc = debounce(() => {
       setIsSearchLoading(true);
       const searchResult = instructors?.filter(
-        (instructor) =>
-          instructor.firstName.toLowerCase().trim().includes(searchQuery) ||
-          instructor.lastName.toLowerCase().trim().includes(searchQuery)
-      );
+  (instructor) =>
+    (instructor.firstName?.toLowerCase().trim().includes(searchQuery.toLowerCase()) ||
+     instructor.lastName?.toLowerCase().trim().includes(searchQuery.toLowerCase()))
+);
+
+  
       setTimeout(() => {
         setFilteredInstructors(searchResult);
         setIsSearchLoading(false);
