@@ -22,6 +22,7 @@ import { selectIsLoggedIn } from "../../../redux/reducers/authSlice";
 import LoginConfirmation from "../../common/login-confirmation-modal";
 import PdfViewer from "./pdf-viewer";
 import ViewCourseShimmer from "components/shimmer/view-course-shimmer";
+import AiChatWidget from "components/aiChat/AiChatWidget";
 
 const isValidObjectId = (id: string): boolean => {
   const objectIdRegex = /^[0-9a-fA-F]{24}$/;
@@ -191,7 +192,7 @@ const ViewCourseStudent: React.FC = () => {
                 )}
               </div>
             </div>
-
+            <AiChatWidget courseId={courseId} />
             <div className='mb-8'>
               <h4 className='text-2xl font-semibold mb-2'>Syllabus</h4>
               <ul className='text-gray-700 bg-white mt-2 rounded-lg shadow-lg border-2'>

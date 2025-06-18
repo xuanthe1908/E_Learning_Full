@@ -99,6 +99,6 @@ const studentSchema = new Schema<IStudent>({
 });
 
 
-const Students = model<IStudent>('Students', studentSchema, 'students');
+const Students = model<IStudent>('students', studentSchema, 'students');
 
 export default Students;

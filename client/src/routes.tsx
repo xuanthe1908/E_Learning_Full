@@ -133,6 +133,8 @@ const LazyPayment = lazy(
   () => import("./components/pages/payment-vnpay/vnpayQRPayment")
 );
 
+const LazyAiChatPage = lazy(() => import('./components/pages/aichat/AiChatPage'));
+
 const AppRouter = createBrowserRouter([
   {
     path: "/",
@@ -208,6 +210,31 @@ const AppRouter = createBrowserRouter([
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyContactPage />
+          </Suspense>
+        ),
+      },
+      // ✅ THÊM CÁC ROUTES AI CHAT VÀO ĐÂY
+      {
+        path: "/ai-chat",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAiChatPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/ai-chat/course/:courseId",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAiChatPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/ai-chat/lesson/:courseId/:lessonId", 
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAiChatPage />
           </Suspense>
         ),
       },
@@ -440,6 +467,7 @@ const AppRouter = createBrowserRouter([
       ),
       errorElement: <ErrorElement />,
     },
+    
     ],
   },
 ]);

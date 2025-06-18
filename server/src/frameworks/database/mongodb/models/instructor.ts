@@ -108,6 +108,6 @@ const instructorSchema = new Schema({
   },
 });
 
-const Instructor = model('Instructors', instructorSchema, 'instructor');
+const Instructor = model('instructors', instructorSchema, 'instructor');
 
 export default Instructor;

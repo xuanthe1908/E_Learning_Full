@@ -1,5 +1,7 @@
 import { Request } from 'express';
 
+declare module 'express-rate-limit';
+
 declare global {
   namespace Express {
     interface Request {
@@ -14,6 +16,9 @@ declare global {
           role?: string;
         };
       };
+    }
+    interface Request {
+      user?: UserPayload;
     }
   }
 }
