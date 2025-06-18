@@ -101,55 +101,57 @@ export const useAiChat = () => {
 
   // Gửi tin nhắn
   const sendChatMessage = useCallback(async (chatId: string, data: SendMessageRequest) => {
-    if (!isLoggedIn) {
-      toast.error('Vui lòng đăng nhập để sử dụng AI Chat');
-      return;
-    }
+  if (!isLoggedIn) {
+    toast.error('Vui lòng đăng nhập để sử dụng AI Chat');
+    return;
+  }
 
-    try {
-      setSendingMessage(true);
-      const response = await sendMessage(chatId, data);
-      if (response.success) {
-        const { userMessage, assistantMessage } = response.data;
-        
-        // Cập nhật chat hiện tại
-        setCurrentChat(prev => {
-          if (!prev || prev._id !== chatId) return prev;
-          return {
-            ...prev,
-            messages: [...prev.messages, userMessage, assistantMessage],
+  try {
+    setSendingMessage(true);
+    const response = await sendMessage(chatId, data);
+    if (response.success) {
+      const { userMessage, assistantMessage, updatedTitle } = response.data;
+      
+      // Cập nhật chat hiện tại
+      setCurrentChat(prev => {
+        if (!prev || prev._id !== chatId) return prev;
+        return {
+          ...prev,
+          messages: [...prev.messages, userMessage, assistantMessage],
+          title: updatedTitle || prev.title, // ✅ Cập nhật title nếu có
+          updatedAt: new Date()
+        };
+      });
+
+      // Cập nhật danh sách chat (đưa chat lên đầu và update title)
+      setChats(prev => {
+        const updatedChats = prev.filter(chat => chat._id !== chatId);
+        const currentChatUpdated = prev.find(chat => chat._id === chatId);
+        if (currentChatUpdated) {
+          return [{
+            ...currentChatUpdated,
+            title: updatedTitle || currentChatUpdated.title, // ✅ Cập nhật title
             updatedAt: new Date()
-          };
-        });
+          }, ...updatedChats];
+        }
+        return prev;
+      });
 
-        // Cập nhật danh sách chat (đưa chat lên đầu)
-        setChats(prev => {
-          const updatedChats = prev.filter(chat => chat._id !== chatId);
-          const currentChatUpdated = prev.find(chat => chat._id === chatId);
-          if (currentChatUpdated) {
-            return [{
-              ...currentChatUpdated,
-              updatedAt: new Date()
-            }, ...updatedChats];
-          }
-          return prev;
-        });
-
-        return response.data;
-      }
-    } catch (error: any) {
-      if (error.response?.status === 401) {
-        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
-      } else if (error.response?.status === 429) {
-        toast.error('Quá nhiều tin nhắn. Vui lòng thử lại sau 1 phút');
-      } else {
-        toast.error(error.response?.data?.message || 'Lỗi khi gửi tin nhắn');
-      }
-      throw error;
-    } finally {
-      setSendingMessage(false);
+      return response.data;
     }
-  }, [isLoggedIn]);
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
+    } else if (error.response?.status === 429) {
+      toast.error('Quá nhiều tin nhắn. Vui lòng thử lại sau 1 phút');
+    } else {
+      toast.error(error.response?.data?.message || 'Lỗi khi gửi tin nhắn');
+    }
+    throw error;
+  } finally {
+    setSendingMessage(false);
+  }
+}, [isLoggedIn]);
 
   // Cập nhật chat
   const updateChatInfo = useCallback(async (chatId: string, data: { title?: string; metadata?: any }) => {

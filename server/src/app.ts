@@ -1,3 +1,4 @@
+// server/src/app.ts
 import express, { Application, NextFunction } from 'express';
 import connectToMongoDb from './frameworks/database/mongodb/connection';
 import http from 'http';
@@ -13,14 +14,12 @@ import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketDa
 import { Server } from 'socket.io';
 import socketConfig from './frameworks/websocket/socket';
 import { authService } from './frameworks/services/authService';
-import aiChatRouter from './frameworks/webserver/routes/aiChat';
 
 colors?.enable();
 
 const app: Application = express();
 const server = http.createServer(app);
 
-//* web socket connection
 const io = new Server<ClientToServerEvents,ServerToClientEvents,InterServerEvents,SocketData>(server,{
   cors:{
       origin:configKeys.ORIGIN_PORT,
@@ -30,29 +29,20 @@ const io = new Server<ClientToServerEvents,ServerToClientEvents,InterServerEvent
 
 socketConfig(io,authService())  
 
-//* connecting mongoDb 
 connectToMongoDb();
 
-//* connection to redis
 const redisClient = connection().createRedisClient();
 
-//* express config connection
 expressConfig(app);
 
-//* routes for each endpoint
-routes(app, redisClient);
+routes(app, redisClient); 
 
-app.use('/api/ai-chat', aiChatRouter());
-
-//* handles server side errors
 app.use(errorHandlingMiddleware);
 
-//* catch 404 and forward to error handler
 app.all('*', (req, res, next: NextFunction) => {
   next(new AppError('Not found', 404));
 });
 
-//* starting the server with server config
 serverConfig(server).startServer();
 
 export type RedisClient = typeof redisClient;
