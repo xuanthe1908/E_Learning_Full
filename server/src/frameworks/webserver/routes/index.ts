@@ -11,6 +11,7 @@ import refreshRouter from './refresh';
 import paymentRouter from './payment';
 import categoryRouter from './category';
 import studentRouter from './student';
+import aiChatRouter from './aiChat'; 
 
 const routes = (app: Application, redisClient: RedisClient) => {
   app.use('/api/auth', authRouter());
@@ -27,6 +28,7 @@ const routes = (app: Application, redisClient: RedisClient) => {
   app.use('/api/instructors', instructorRouter());
   app.use('/api/payments', jwtAuthMiddleware, paymentRouter());
   app.use('/api/students', studentRouter(redisClient));
+  app.use('/api/ai-chat', aiChatRouter());
 };
 
 export default routes;

@@ -16,21 +16,28 @@ interface CustomRequest extends Request {
 const aiChatController = (
   aiChatDbRepository: AiChatDbInterface,
   aiChatDbImpl: ReturnType<AiChatDbInterface>,
-  aiService: any // OpenAI service instance
+  aiService: any
 ) => {
   const dbRepository = aiChatDbRepository(aiChatDbImpl);
 
-  // Tạo phiên chat mới
+  const getChatUserId = (chat: any): string => {
+    if (!chat || !chat.userId) return '';
+    
+    if (typeof chat.userId === 'object' && chat.userId._id) {
+      return chat.userId._id.toString();
+    }
+    
+    return chat.userId.toString();
+  };
+
   const createNewChat = asyncHandler(async (req: CustomRequest, res: Response) => {
     const { title, metadata } = req.body;
     const { Id: userId, role } = req.user || {};
 
-    // ✅ Validate user info
     if (!userId || !role) {
       throw new AppError('User information not found', HttpStatusCodes.UNAUTHORIZED);
     }
 
-    // ✅ Map role to userType cho AI Chat
     const userTypeMap = {
       'student': 'students',
       'instructor': 'instructor',
@@ -95,13 +102,17 @@ const aiChatController = (
     const chat = await dbRepository.getChatById(chatId);
     console.log('DEBUG chat:', chat);
     console.log('DEBUG userId:', userId);
-    console.log('DEBUG chat.userId:', (chat as any)?.userId?.toString());
+    
     if (!chat) {
       throw new AppError('Không tìm thấy phiên chat', HttpStatusCodes.NOT_FOUND);
     }
 
-    // Kiểm tra quyền truy cập
-    if ((chat as any).userId.toString() !== userId) {
+    // ✅ Sử dụng helper function để so sánh
+    const chatUserId = getChatUserId(chat);
+    console.log('DEBUG chatUserId:', chatUserId);
+    console.log('DEBUG comparison:', chatUserId === userId);
+    
+    if (chatUserId !== userId) {
       throw new AppError('Không có quyền truy cập phiên chat này', HttpStatusCodes.FORBIDDEN);
     }
 
@@ -114,85 +125,109 @@ const aiChatController = (
 
   // Gửi tin nhắn và nhận phản hồi từ AI
   const sendMessage = asyncHandler(async (req: CustomRequest, res: Response) => {
-    const { chatId } = req.params;
-    const { message, context } = req.body;
-    const { Id: userId } = req.user || {};
+  const { chatId } = req.params;
+  const { message, context } = req.body;
+  const { Id: userId } = req.user || {};
 
-    if (!userId) {
-      throw new AppError('User information not found', HttpStatusCodes.UNAUTHORIZED);
+  if (!userId) {
+    throw new AppError('User information not found', HttpStatusCodes.UNAUTHORIZED);
+  }
+
+  if (!message || message.trim().length === 0) {
+    throw new AppError('Tin nhắn không được để trống', HttpStatusCodes.BAD_REQUEST);
+  }
+
+  if (message.length > 2000) {
+    throw new AppError('Tin nhắn quá dài (tối đa 2000 ký tự)', HttpStatusCodes.BAD_REQUEST);
+  }
+
+  // Kiểm tra chat tồn tại và quyền truy cập
+  const chat = await dbRepository.getChatById(chatId);
+  
+  if (!chat) {
+    throw new AppError('Không tìm thấy phiên chat', HttpStatusCodes.NOT_FOUND);
+  }
+
+  // ✅ Sử dụng helper function để so sánh
+  const chatUserId = getChatUserId(chat);
+  console.log('DEBUG sendMessage - chatUserId:', chatUserId);
+  console.log('DEBUG sendMessage - userId:', userId);
+  
+  if (chatUserId !== userId) {
+    throw new AppError('Không tìm thấy phiên chat hoặc không có quyền truy cập', HttpStatusCodes.FORBIDDEN);
+  }
+
+  // ✅ Kiểm tra xem đây có phải tin nhắn đầu tiên không
+  const isFirstMessage = (chat as any).messages?.length === 0;
+  const shouldUpdateTitle = isFirstMessage || (chat as any).title === 'Chat mới';
+
+  // Thêm tin nhắn của user
+  const userMessage = {
+    role: 'user' as const,
+    content: message.trim(),
+    timestamp: new Date()
+  };
+
+  await dbRepository.addMessage(chatId, userMessage);
+
+  // Chuẩn bị context cho AI
+  const messages = [
+    ...(chat as unknown as { messages: Array<{ role: string; content: string }> }).messages.slice(-10).map(msg => ({
+      role: msg.role,
+      content: msg.content
+    })),
+    {
+      role: 'user',
+      content: message.trim()
     }
+  ];
 
-    if (!message || message.trim().length === 0) {
-      throw new AppError('Tin nhắn không được để trống', HttpStatusCodes.BAD_REQUEST);
-    }
+  // Gọi AI service để tạo phản hồi
+  const aiResponse = await aiService.generateResponse(messages, context);
 
-    if (message.length > 2000) {
-      throw new AppError('Tin nhắn quá dài (tối đa 2000 ký tự)', HttpStatusCodes.BAD_REQUEST);
-    }
+  if (!aiResponse.success) {
+    throw new AppError('Lỗi khi tạo phản hồi AI: ' + aiResponse.error, HttpStatusCodes.INTERNAL_SERVER_ERROR);
+  }
 
-    // Kiểm tra chat tồn tại và quyền truy cập
-    const chat = await dbRepository.getChatById(chatId);
-    if (!chat || (chat as any).userId.toString() !== userId) {
-      throw new AppError('Không tìm thấy phiên chat hoặc không có quyền truy cập', HttpStatusCodes.FORBIDDEN);
-    }
+  // Thêm phản hồi của AI
+  const assistantMessage = {
+    role: 'assistant' as const,
+    content: aiResponse.content,
+    timestamp: new Date()
+  };
 
-    // Thêm tin nhắn của user
-    const userMessage = {
-      role: 'user' as const,
-      content: message.trim(),
-      timestamp: new Date()
-    };
+  await dbRepository.addMessage(chatId, assistantMessage);
 
-    await dbRepository.addMessage(chatId, userMessage);
-
-    // Chuẩn bị context cho AI
-    const messages = [
-      ...(chat as unknown as { messages: Array<{ role: string; content: string }> }).messages.slice(-10).map(msg => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      {
-        role: 'user',
-        content: message.trim()
-      }
-    ];
-
-    // Gọi AI service để tạo phản hồi
-    const aiResponse = await aiService.generateResponse(messages, context);
-
-    if (!aiResponse.success) {
-      throw new AppError('Lỗi khi tạo phản hồi AI: ' + aiResponse.error, HttpStatusCodes.INTERNAL_SERVER_ERROR);
-    }
-
-    // Thêm phản hồi của AI
-    const assistantMessage = {
-      role: 'assistant' as const,
-      content: aiResponse.content,
-      timestamp: new Date()
-    };
-
-    await dbRepository.addMessage(chatId, assistantMessage);
-
-    // Cập nhật tiêu đề chat nếu đây là tin nhắn đầu tiên
-    if ((chat as any).messages?.length === 0) {
-      try {
-        const generatedTitle = await aiService.generateTitle(message);
+  // ✅ Cập nhật tiêu đề chat - cải thiện logic
+  let updatedTitle = (chat as any).title;
+  if (shouldUpdateTitle) {
+    try {
+      console.log('🔄 Generating title for message:', message.substring(0, 50) + '...');
+      const generatedTitle = await aiService.generateTitle(message.trim());
+      
+      if (generatedTitle && generatedTitle !== 'Chat mới' && generatedTitle.length >= 3) {
+        updatedTitle = generatedTitle;
         await dbRepository.updateChat(chatId, { title: generatedTitle });
-      } catch (error) {
-        console.error('Error generating title:', error);
+        console.log('✅ Title updated to:', generatedTitle);
+      } else {
+        console.log('⚠️ Generated title not suitable, keeping default');
       }
+    } catch (error) {
+      console.error('❌ Error generating title:', error);
     }
+  }
 
-    res.status(HttpStatusCodes.OK).json({
-      success: true,
-      message: 'Gửi tin nhắn thành công',
-      data: {
-        userMessage,
-        assistantMessage,
-        usage: aiResponse.usage
-      }
-    });
+  res.status(HttpStatusCodes.OK).json({
+    success: true,
+    message: 'Gửi tin nhắn thành công',
+    data: {
+      userMessage,
+      assistantMessage,
+      usage: aiResponse.usage,
+      updatedTitle // ✅ Trả về title mới nếu có
+    }
   });
+});
 
   // Xóa phiên chat
   const deleteChat = asyncHandler(async (req: CustomRequest, res: Response) => {
@@ -204,7 +239,17 @@ const aiChatController = (
     }
 
     const chat = await dbRepository.getChatById(chatId);
-    if (!chat || (chat as any).userId.toString() !== userId) {
+    
+    if (!chat) {
+      throw new AppError('Không tìm thấy phiên chat', HttpStatusCodes.NOT_FOUND);
+    }
+
+    // ✅ Sử dụng helper function để so sánh
+    const chatUserId = getChatUserId(chat);
+    console.log('DEBUG deleteChat - chatUserId:', chatUserId);
+    console.log('DEBUG deleteChat - userId:', userId);
+    
+    if (chatUserId !== userId) {
       throw new AppError('Không tìm thấy phiên chat hoặc không có quyền truy cập', HttpStatusCodes.FORBIDDEN);
     }
 
@@ -227,7 +272,17 @@ const aiChatController = (
     }
 
     const chat = await dbRepository.getChatById(chatId);
-    if (!chat || (chat as any).userId.toString() !== userId) {
+    
+    if (!chat) {
+      throw new AppError('Không tìm thấy phiên chat', HttpStatusCodes.NOT_FOUND);
+    }
+
+    // ✅ Sử dụng helper function để so sánh
+    const chatUserId = getChatUserId(chat);
+    console.log('DEBUG updateChat - chatUserId:', chatUserId);
+    console.log('DEBUG updateChat - userId:', userId);
+    
+    if (chatUserId !== userId) {
       throw new AppError('Không tìm thấy phiên chat hoặc không có quyền truy cập', HttpStatusCodes.FORBIDDEN);
     }
 

@@ -35,7 +35,7 @@ export const openAiService = (config: AIServiceConfig) => {
       Nếu không chắc chắn về thông tin, hãy thừa nhận và đưa ra gợi ý tìm hiểu thêm.`;
 
       const completion = await openai.chat.completions.create({
-        model: config.model || 'gpt-3.5-turbo',
+        model: config.model || 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages
@@ -83,30 +83,107 @@ export const openAiService = (config: AIServiceConfig) => {
   };
 
   const generateTitle = async (firstMessage: string) => {
-    try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: 'Tạo tiêu đề ngắn gọn (tối đa 30 ký tự) bằng tiếng Việt cho cuộc trò chuyện dựa trên tin nhắn đầu tiên của người dùng. Tiêu đề phải súc tích và phản ánh nội dung chính.'
-          },
-          {
-            role: 'user',
-            content: firstMessage
-          }
-        ],
-        max_tokens: 50,
-        temperature: 0.5,
-      });
+  try {
+    // ✅ Cải thiện prompt để tạo title hay hơn
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `Tạo tiêu đề ngắn gọn và thu hút (15-40 ký tự) bằng tiếng Việt cho cuộc trò chuyện học tập dựa trên câu hỏi đầu tiên của học sinh.
+            Quy tắc:
+            - Tối đa 40 ký tự
+            - Sử dụng tiếng Việt tự nhiên
+            - Phản ánh chủ đề chính của câu hỏi
+            - Tránh từ chung chung như "câu hỏi về...", "hỏi về..."
+            - Ưu tiên từ khóa quan trọng
 
-      const title = completion.choices[0]?.message?.content?.trim();
-      return title || 'Chat mới';
-    } catch (error) {
-      console.error('Title generation error:', error);
-      return 'Chat mới';
+            Ví dụ:
+            - Input: "Giải thích thuật toán sắp xếp nổi bọt" → "Thuật toán sắp xếp nổi bọt"
+            - Input: "Làm thế nào để tính đạo hàm của hàm số" → "Tính đạo hàm hàm số"
+            - Input: "React hooks là gì và cách sử dụng" → "React Hooks cơ bản"
+            - Input: "Phân tích tác phẩm Số đỏ của Vũ Trọng Phụng" → "Phân tích Số đỏ"
+            - Input: "Giúp tôi làm bài tập toán lớp 12" → "Bài tập Toán 12"`
+        },
+        {
+          role: 'user',
+          content: firstMessage
+        }
+      ],
+      max_tokens: 30,
+      temperature: 0.3, // Giảm temperature để title ổn định hơn
+    });
+
+    let title = completion.choices[0]?.message?.content?.trim();
+    
+    if (!title) return 'Chat mới';
+    
+    // ✅ Làm sạch title
+    title = title.replace(/"/g, '').replace(/"/g, '').replace(/"/g, '');
+    
+    // ✅ Giới hạn độ dài
+    if (title.length > 40) {
+      title = title.substring(0, 37) + '...';
     }
+    
+    // ✅ Fallback nếu title quá ngắn hoặc không phù hợp
+    if (title.length < 3 || title.toLowerCase().includes('tiêu đề')) {
+      return generateSimpleTitle(firstMessage);
+    }
+    
+    return title;
+  } catch (error) {
+    console.error('Title generation error:', error);
+    return generateSimpleTitle(firstMessage);
+  }
+};
+
+// ✅ Hàm tạo title đơn giản khi AI lỗi
+const generateSimpleTitle = (message: string): string => {
+  const cleanMessage = message.trim().toLowerCase();
+  
+  // Tạo title dựa trên từ khóa
+  const keywords = {
+    'toán': 'Câu hỏi Toán học',
+    'math': 'Câu hỏi Toán học', 
+    'lập trình': 'Lập trình',
+    'programming': 'Lập trình',
+    'javascript': 'JavaScript',
+    'python': 'Python',
+    'react': 'React',
+    'nodejs': 'Node.js',
+    'html': 'HTML/CSS',
+    'css': 'HTML/CSS',
+    'văn học': 'Văn học',
+    'literature': 'Văn học',
+    'lịch sử': 'Lịch sử',
+    'history': 'Lịch sử',
+    'tiếng anh': 'Tiếng Anh',
+    'english': 'Tiếng Anh',
+    'physics': 'Vật lý',
+    'vật lý': 'Vật lý',
+    'chemistry': 'Hóa học',
+    'hóa học': 'Hóa học',
+    'biology': 'Sinh học',
+    'sinh học': 'Sinh học'
   };
+  
+  for (const [keyword, title] of Object.entries(keywords)) {
+    if (cleanMessage.includes(keyword)) {
+      return title;
+    }
+  }
+  
+  // Lấy 3-4 từ đầu tiên làm title
+  const words = message.trim().split(' ').slice(0, 4);
+  let simpleTitle = words.join(' ');
+  
+  if (simpleTitle.length > 30) {
+    simpleTitle = simpleTitle.substring(0, 27) + '...';
+  }
+  
+  return simpleTitle || 'Chat mới';
+};
 
   const analyzeQuery = async (query: string) => {
     try {
