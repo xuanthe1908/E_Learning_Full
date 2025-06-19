@@ -166,10 +166,6 @@ const ViewCourseStudent: React.FC = () => {
             </div>
             <div className='flex justify-between items-center mb-6'>
               <div>
-                <h4 className='text-xl font-semibold'>Instructor</h4>
-                <p className='text-gray-700'>John Doe</p>
-              </div>
-              <div>
                 <h4 className='text-xl font-semibold'>Duration</h4>
                 <p className='text-gray-700'>{course?.duration} weeks</p>
               </div>

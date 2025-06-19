@@ -263,7 +263,7 @@ const PaymentConfirmationModal: React.FC<PaymentModalProps> = ({
         </DialogHeader>
         
         <DialogBody divider>
-          {/* ✅ Debug info in development */}
+
           {process.env.NODE_ENV === 'development' && (
             <div className="bg-gray-100 p-3 mb-4 rounded text-xs">
               <strong>Debug Info:</strong><br/>

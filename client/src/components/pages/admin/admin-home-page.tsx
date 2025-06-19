@@ -3,7 +3,8 @@ import RevenueChart from "./revenue-chart";
 import TrendingCoursesChart from "./trending-chart";
 import CourseCategoryChart from "./progress-chart";
 import { Typography } from "@material-tailwind/react";
-import { FaRupeeSign } from "react-icons/fa";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FaMoneyBillWave, FaRupeeSign } from "react-icons/fa";
 import {
   AiOutlineUser,
   AiOutlineBook,
@@ -17,7 +18,7 @@ import {
   DashData,
   GraphData,
 } from "../../../api/types/apiResponses/api-response-dash";
-import { formatToINR } from "../../../utils/helpers";
+import {formatToVND } from "../../../utils/helpers";
 import { toast } from "react-toastify";
 
 const AdminHomePage: React.FC = () => {
@@ -94,13 +95,13 @@ const AdminHomePage: React.FC = () => {
       <div className='ml-3 mr-3 flex items-center justify-between'>
         <div className='bg-white flex-1 rounded-md pb-5 pr-5 pl-5 border shadow-sm border-gray-200 mr-4'>
           <div className='flex items-center '>
-            <FaRupeeSign size={26} className='text-green-500 mr-3' />
+            <FaMoneyBillWave size={26} className='text-green-500 mr-3' />
             <div>
               <Typography variant='h6' color='blue-gray' className='pt-2 '>
                 Monthly revenue
               </Typography>
               <Typography variant='body' color='gray'>
-                {formatToINR(dashboardData?.monthlyRevenue ?? 0)}
+                {formatToVND(dashboardData?.monthlyRevenue ?? 0)}
               </Typography>
             </div>
           </div>

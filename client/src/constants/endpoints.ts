@@ -44,7 +44,7 @@ const END_POINTS = {
     GET_COURSE_BY_STUDENT: 'api/courses/get-course-by-student',
     GET_RECOMMENDED_COURSES: 'api/courses/get-recommended-courses',
     GET_TRENDING_COURSES: 'api/courses/get-trending-courses',
-    SEARCH_COURSE: 'api/courses/search',
+    SEARCH_COURSE: 'api/courses/search-course',
     ENROLL_STUDENT: 'api/courses/enroll-student',
 
     // ========== LESSON ENDPOINTS ==========

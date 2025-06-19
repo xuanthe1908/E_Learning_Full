@@ -7,11 +7,11 @@ const errorHandlingMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err)
+  console.log('🔍 Error Details:', err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if (err.name === 'MongoServerError') {
+  if (err.name === 'MongoServerError' && err.keyValue) {
     const field = Object.keys(err.keyValue)[0];
     if (field === 'mobile') {
       res.status(409).json({

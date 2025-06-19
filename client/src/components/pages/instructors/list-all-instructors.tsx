@@ -91,6 +91,7 @@ const ListAllInstructors: React.FC<Props> = () => {
         clearTimeout(debouncedFilter);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, instructors]);
 
   const filteredAndSearchedInstructors = filteredInstructors?.filter(
@@ -116,7 +117,7 @@ const ListAllInstructors: React.FC<Props> = () => {
         </div>
         <div className="block text-center">
           <p className="text-customFontColorBlack md:text-xl sm:text-4xl font-semibold">
-            Meet Tutor Trek Subject Experts
+            Meet Subject Experts
           </p>
         </div>
       </div>

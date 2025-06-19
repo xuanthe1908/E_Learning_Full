@@ -7,13 +7,13 @@ The project is a comprehensive online learning platform that connects teachers a
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/abinth11/TutorTrek.git
+   https://github.com/xuanthe1908/E_Learning_Full.git
    ```
 
 2. Navigate to the project directory:
 
    ```shell
-   cd TutorTrek
+   /E_Learning_Full
    ```
 3. Navigate to client directory and server directory
 

@@ -1,4 +1,3 @@
-// server/src/app.ts
 import express, { Application, NextFunction } from 'express';
 import connectToMongoDb from './frameworks/database/mongodb/connection';
 import http from 'http';
@@ -37,11 +36,13 @@ expressConfig(app);
 
 routes(app, redisClient); 
 
-app.use(errorHandlingMiddleware);
-
+// Move the catch-all route BEFORE error handling middleware
 app.all('*', (req, res, next: NextFunction) => {
   next(new AppError('Not found', 404));
 });
+
+// Error handling middleware should be the very last
+app.use(errorHandlingMiddleware);
 
 serverConfig(server).startServer();
 

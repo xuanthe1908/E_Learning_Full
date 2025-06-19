@@ -88,8 +88,11 @@ export const searchCourseService = async (
   searchQuery: string,
   filterQuery: string
 ) => {
-  const response = await api.get(
-    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}?search=${searchQuery}&filter=${filterQuery}`
+  const encodedSearch = encodeURIComponent(searchQuery || '');
+  const encodedFilter = encodeURIComponent(filterQuery || '');
+  
+  const response = await axiosInstance.get(
+    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}?search=${encodedSearch}&filter=${encodedFilter}`
   );
   return response.data;
 };
