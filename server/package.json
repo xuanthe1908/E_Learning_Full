@@ -1,6 +1,6 @@
 {
-  "name": "abin",
-  "version": "1",
+  "name": "E-learning-Platform",
+  "version": "2.1.19",
   "description": "learning platfrom",
   "main": "y",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "tsc",
     "dev": "nodemon ./src/app.ts"
   },
-  "author": "abin t h",
+  "author": "Lanvu",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-cloudfront": "^3.363.0",

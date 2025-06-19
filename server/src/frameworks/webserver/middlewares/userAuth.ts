@@ -1,4 +1,3 @@
-// server/src/frameworks/webserver/middlewares/userAuth.ts
 import { NextFunction, Response } from 'express';
 import HttpStatusCodes from '../../../constants/HttpStatusCodes';
 import AppError from '../../../utils/appError';

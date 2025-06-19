@@ -73,7 +73,7 @@ const configKeys = {
   // AWS S3 - ✅ With fallbacks to prevent crashes
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY || '',
   AWS_SECRET_KEY: process.env.AWS_SECRET_KEY || '',
-  AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION || 'ap-southeast-1',
+  AWS_BUCKET_REGION: process.env.AWS_BUCKET_REGION || 'ap-southeast-2',
   AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || '',
   CLOUDFRONT_DISTRIBUTION_ID: process.env.CLOUDFRONT_DISTRIBUTION_ID || '',
   CLOUDFRONT_DOMAIN_NAME: process.env.CLOUDFRONT_DOMAIN_NAME || '',

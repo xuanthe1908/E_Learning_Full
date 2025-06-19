@@ -228,32 +228,96 @@ export const courseRepositoryMongodb = () => {
     return students;
   };
 
-  const searchCourse = async (
-    isFree: boolean,
-    searchQuery: string,
-    filterQuery: string
-  ) => {
-    let query = {};
-    if (searchQuery && filterQuery) {
+  // Thay thế hàm searchCourse trong file:
+// server/src/frameworks/database/mongodb/repositories/courseReposMongoDb.ts
+
+const searchCourse = async (
+  isFree: boolean,
+  searchQuery: string,
+  filterQuery: string
+) => {
+  console.log('🔍 Repository search params:', { isFree, searchQuery, filterQuery });
+  
+  let query: any = {};
+  
+  try {
+    // ✅ Build query without $text operator - using regex instead
+    if (searchQuery && searchQuery.trim() !== '' && filterQuery && filterQuery.trim() !== '') {
+      // Both search and filter provided
       query = {
         $and: [
-          { $text: { $search: searchQuery } },
-          { isFree: isFree },
-        ],
+          {
+            $or: [
+              { title: new RegExp(searchQuery, 'i') },
+              { description: new RegExp(searchQuery, 'i') },
+              { category: new RegExp(searchQuery, 'i') },
+              { tags: { $in: [new RegExp(searchQuery, 'i')] } },
+              { about: new RegExp(searchQuery, 'i') }
+            ]
+          },
+          { isFree: isFree }
+        ]
       };
+    } else if (searchQuery && searchQuery.trim() !== '') {
+      // Only search query provided
+      const searchConditions = {
+        $or: [
+          { title: new RegExp(searchQuery, 'i') },
+          { description: new RegExp(searchQuery, 'i') },
+          { category: new RegExp(searchQuery, 'i') },
+          { tags: { $in: [new RegExp(searchQuery, 'i')] } },
+          { about: new RegExp(searchQuery, 'i') }
+        ]
+      };
+
+      if (isFree) {
+        query = {
+          $and: [
+            searchConditions,
+            { isFree: true }
+          ]
+        };
+      } else {
+        query = searchConditions;
+      }
+    } else if (filterQuery && filterQuery.trim() !== '') {
+      // Only filter provided - search by category and other fields
+      query = {
+        $or: [
+          { category: new RegExp(filterQuery, 'i') },
+          { title: new RegExp(filterQuery, 'i') },
+          { description: new RegExp(filterQuery, 'i') },
+          { tags: { $in: [new RegExp(filterQuery, 'i')] } },
+          { about: new RegExp(filterQuery, 'i') }
+        ]
+      };
+      
+      // Add isFree condition if applicable
+      if (isFree) {
+        query = {
+          $and: [
+            query,
+            { isFree: true }
+          ]
+        };
+      }
+    } else {
+      // ✅ Fallback - return all courses if no valid search params
+      query = {};
     }
-    else if (searchQuery) {
-      query = { $text: { $search: searchQuery } };
-    }
-    else if (filterQuery) {
-      query = { isFree: isFree };
-    }
-    const courses = await Course.find(query, {
-      score: { $meta: "textScore" },
-    }).sort({ score: { $meta: "textScore" } });
-  
+
+    console.log('🔍 MongoDB query (using regex):', JSON.stringify(query, null, 2));
+
+    // ✅ Execute query with regular find (no text scoring needed)
+    const courses = await Course.find(query);
+
+    console.log('✅ Found courses:', courses.length);
     return courses;
-  };
+  } catch (error) {
+    console.error('❌ Repository search error:', error);
+    throw error;
+  }
+};
   
 
   return {

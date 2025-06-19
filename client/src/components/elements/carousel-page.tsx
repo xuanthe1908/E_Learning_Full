@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import { Carousel, Typography, Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 

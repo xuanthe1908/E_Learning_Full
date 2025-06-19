@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/helpers";
 import usePagination from "../../../hooks/usePagination";
 import useSearch from "../../../hooks/useSearch";
+import { searchCourseService } from "api/services/course/course-service";
+import END_POINTS from "constants/endpoints";
 
 const TABLE_HEAD = ["Name", "description", "Date added", ""];
 
@@ -44,9 +46,21 @@ const ListCategories: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
-    setSearchQuery(e.currentTarget.value);
-  };
+  const handleSearch = async (e: React.FormEvent<HTMLInputElement>) => {
+  try {
+    const searchTerm = e.currentTarget.value;
+    const results = await searchCourseService(END_POINTS.SEARCH_COURSE, searchTerm, '');
+    setSearchQuery(searchTerm);
+    console.log('Search results:', results);
+    // Handle the results
+  } catch (error) {
+    console.error('Search failed:', error);
+    toast.error("Search failed", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
+  }
+};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const displayData = searchQuery !== "" ? searchResult : currentData;
 
   return (

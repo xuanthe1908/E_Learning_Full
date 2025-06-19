@@ -22,6 +22,7 @@ const StudentHomePage: React.FC = () => {
   const [recommendedCourses, setRecommendedCourses] = useState<
     ApiResponseRecommended[] | null
   >(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showMoreTrending, setShowMoreTrending] = useState(false);
   const [showMoreRecommended, setShowMoreRecommended] = useState(false);
   const [cardsToShow, setCardsToShow] = useState(6);
@@ -65,6 +66,7 @@ const StudentHomePage: React.FC = () => {
   useEffect(() => {
     fetchTrendingCourses();
     isLoggedIn && user === "student" && fetchRecommendedCourses();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleShowMoreTrending = () => {
