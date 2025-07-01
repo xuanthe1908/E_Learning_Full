@@ -1,3 +1,62 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+
+.video-js {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Ensure video fills container */
+.video-js .vjs-tech {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+/* Fix for Video.js in flex containers */
+[data-vjs-player] {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Loading state overlay */
+.vjs-loading-spinner {
+  display: block !important;
+}
+
+/* Prevent double scrollbars */
+.video-js .vjs-control-bar {
+  z-index: 10;
+}
+
+/* Purchase overlay styling */
+.purchase-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+/* Responsive video container */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.video-container .video-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

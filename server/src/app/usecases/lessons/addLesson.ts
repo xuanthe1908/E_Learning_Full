@@ -67,7 +67,7 @@ export const addLessonsU = async (
 
   if (media) {
     lesson.media = await Promise.all(
-      media.map(async (files) => await cloudService.upload(files))
+      media.map(async (files) => await cloudService.uploadFile(files))
     );
   }
   const lessonId = await lessonDbRepository.addLesson(

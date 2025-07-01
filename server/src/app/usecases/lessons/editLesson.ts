@@ -52,11 +52,11 @@ export const editLessonsU = async (
   if (media && media.length > 0) {
     const uploadPromises = media.map(async (file) => {
       if (file.mimetype === 'application/pdf') {
-        const studyMaterial = await cloudService.upload(file);
+        const studyMaterial = await cloudService.uploadFile(file);
         lesson.media.push(studyMaterial);
         isStudyMaterialUpdated = true;
       } else {
-        const lessonVideo = await cloudService.upload(file);
+        const lessonVideo = await cloudService.uploadFile(file);
         lesson.media.push(lessonVideo);
         isLessonVideoUpdated = true;
       }

@@ -63,7 +63,7 @@ export const updateProfileU = async (
     );
   }
   if (profilePic) {
-    const response = await cloudService.upload(profilePic);
+    const response = await cloudService.uploadFile(profilePic);
     instructorInfo.profilePic = response;
   }
   await instructorDbRepository.updateProfile(id, instructorInfo);

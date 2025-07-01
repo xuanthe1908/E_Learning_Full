@@ -37,11 +37,11 @@ export const editCourseU = async (
   if (files && files.length > 0) {
     const uploadPromises = files.map(async (file) => {
       if (file.mimetype === 'application/pdf') {
-        const guidelines = await cloudService.upload(file);
+        const guidelines = await cloudService.uploadFile(file);
         courseInfo.guidelines = guidelines;
         isGuideLinesUpdated = true;
       } else {
-        const thumbnail = await cloudService.upload(file);
+        const thumbnail = await cloudService.uploadFile(file);
         courseInfo.thumbnail = thumbnail;
         isThumbnailUpdated = true;
       }

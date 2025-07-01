@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { CloudFrontClient, GetDistributionCommand } from '@aws-sdk/client-cloudfront';
 import configKeys from '../../config';
@@ -28,6 +28,7 @@ const validateAwsConfig = () => {
   console.log('   Region:', configKeys.AWS_BUCKET_REGION);
   return true;
 };
+
 const isAwsConfigured = validateAwsConfig();
 
 let s3: S3Client | null = null;
@@ -61,59 +62,64 @@ export const s3Service = () => {
 
     try {
       const key = randomImageName();
+      
+      let contentType = file.mimetype;
+      if (file.mimetype.startsWith('video/')) {
+        contentType = 'video/mp4';
+      }
+      
       const params = {
         Bucket: configKeys.AWS_BUCKET_NAME,
         Key: key,
         Body: file.buffer,
-        ContentType: file.mimetype,
+        ContentType: contentType,
+        Metadata: {
+          'original-name': file.originalname,
+          'upload-date': new Date().toISOString(),
+          'file-size': file.size.toString()
+        }
       };
+      
+      console.log(`🚀 Uploading to S3: ${file.originalname} (${file.size} bytes)`);
       const command = new PutObjectCommand(params);
       await s3.send(command);
+      
+      console.log(`✅ Successfully uploaded to S3 with key: ${key}`);
       return {
         name: file.originalname,
         key,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ S3 uploadFile error:', error);
-      throw new Error('Failed to upload file to S3');
+      throw new Error(`Failed to upload file to S3: ${error.message}`);
     }
   };
 
-  const uploadAndGetUrl = async (file: Express.Multer.File) => {
-    if (!s3) {
-      throw new Error('AWS S3 is not configured');
-    }
-
+  const checkFileExists = async (fileKey: string): Promise<boolean> => {
+    if (!s3 || !fileKey) return false;
+    
     try {
-      const key = randomImageName();
-      const params = {
+      const command = new HeadObjectCommand({
         Bucket: configKeys.AWS_BUCKET_NAME,
-        Key: key,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-        ACL: 'public-read', 
-      };
-
-      const command = new PutObjectCommand(params);
+        Key: fileKey.trim(),
+      });
       await s3.send(command);
-
-      const url = `https://${configKeys.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
-
-      return {
-        name: file.originalname,
-        key,
-        url,
-      };
-    } catch (error) {
-      console.error('❌ S3 uploadAndGetUrl error:', error);
-      throw new Error('Failed to upload file and get URL from S3');
+      console.log(`✅ File exists in S3: ${fileKey}`);
+      return true;
+    } catch (error: any) {
+      if (error.name === 'NotFound') {
+        console.warn(`⚠️ File not found in S3: ${fileKey}`);
+        return false;
+      }
+      console.error('❌ Error checking file existence:', error);
+      return false;
     }
   };
 
   const getFile = async (fileKey: string) => {
     if (!fileKey || fileKey.trim() === '') {
-      console.warn('⚠️ getFile called with empty fileKey, returning default placeholder');
-      return '/placeholder-image.png'; 
+      console.warn('⚠️ getFile called with empty fileKey');
+      return '/placeholder-image.png';
     }
 
     if (!s3) {
@@ -122,15 +128,67 @@ export const s3Service = () => {
     }
 
     try {
+      const exists = await checkFileExists(fileKey);
+      if (!exists) {
+        console.error(`❌ File does not exist in S3: ${fileKey}`);
+        return '/placeholder-image.png';
+      }
+
       const getObjectParams = {
         Bucket: configKeys.AWS_BUCKET_NAME,
-        Key: fileKey.trim(), // ✅ Trim fileKey
+        Key: fileKey.trim(),
       };
+      
       const command = new GetObjectCommand(getObjectParams);
-      return await getSignedUrl(s3, command, { expiresIn: 60000 });
-    } catch (error) {
+      const signedUrl = await getSignedUrl(s3, command, { 
+        expiresIn: 3600 // 1 hour
+      });
+      
+      console.log(`✅ Generated S3 signed URL for: ${fileKey}`);
+      return signedUrl;
+    } catch (error: any) {
       console.error('❌ S3 getFile error for key:', fileKey, error.message);
-      return '/placeholder-image.png'; // ✅ Trả về placeholder thay vì throw
+      return '/placeholder-image.png';
+    }
+  };
+
+  // 🔧 FIXED: Use S3 direct URL instead of broken CloudFront
+  const getCloudFrontUrl = async (fileKey: string) => {
+    if (!fileKey || fileKey.trim() === '') {
+      console.warn('⚠️ getCloudFrontUrl called with empty fileKey');
+      return '/placeholder-image.png';
+    }
+
+    try {
+      // First check if file exists in S3
+      const exists = await checkFileExists(fileKey);
+      if (!exists) {
+        console.error(`❌ File does not exist for streaming: ${fileKey}`);
+        return '/placeholder-image.png';
+      }
+
+      // 🔧 Use S3 signed URL instead of CloudFront
+      console.log('🔄 CloudFront domain not working, using S3 signed URL...');
+      const signedUrl = await getFile(fileKey);
+      
+      if (signedUrl && signedUrl !== '/placeholder-image.png') {
+        console.log(`✅ Generated S3 signed URL for streaming: ${fileKey}`);
+        return signedUrl;
+      }
+
+      // 🔧 Alternative: Try S3 direct public URL (if bucket is public)
+      const directUrl = `https://${configKeys.AWS_BUCKET_NAME}.s3.${configKeys.AWS_BUCKET_REGION}.amazonaws.com/${fileKey}`;
+      console.log(`🔄 Trying S3 direct URL: ${directUrl}`);
+      
+      return directUrl;
+
+    } catch (error: any) {
+      console.error('❌ Error generating video URL:', error);
+      
+      // Emergency fallback to S3 direct URL
+      const fallbackUrl = `https://${configKeys.AWS_BUCKET_NAME}.s3.${configKeys.AWS_BUCKET_REGION}.amazonaws.com/${fileKey}`;
+      console.log(`🆘 Using fallback S3 URL: ${fallbackUrl}`);
+      return fallbackUrl;
     }
   };
 
@@ -144,48 +202,28 @@ export const s3Service = () => {
     }
 
     try {
+      const exists = await checkFileExists(key);
+      if (!exists) {
+        throw new Error(`Video file not found in S3: ${key}`);
+      }
+
       const s3Params = {
         Bucket: configKeys.AWS_BUCKET_NAME,
         Key: key.trim(),
       };
 
+      console.log(`🎥 Streaming video from S3: ${key}`);
       const command = new GetObjectCommand(s3Params);
       const { Body } = await s3.send(command);
 
+      if (!Body) {
+        throw new Error('No video data received from S3');
+      }
+
       return Body as NodeJS.ReadableStream;
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ S3 getVideoStream error:', error);
-      throw new Error('Failed to get video stream from S3');
-    }
-  };
-
-  const getCloudFrontUrl = async (fileKey: string) => {
-    if (!fileKey || fileKey.trim() === '') {
-      return '/placeholder-image.png';
-    }
-
-    try {
-      if (!configKeys.CLOUDFRONT_DISTRIBUTION_ID || !cloudFront) {
-        console.warn('⚠️ CloudFront not configured, using S3 direct URL');
-        return `https://${configKeys.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileKey}`;
-      }
-
-      const getDistributionParams = {
-        Id: configKeys.CLOUDFRONT_DISTRIBUTION_ID,
-      };
-      const command = new GetDistributionCommand(getDistributionParams);
-      const { Distribution } = await cloudFront.send(command);
-      const cloudFrontDomain = Distribution?.DomainName;
-      const cloudFrontUrl = `https://${cloudFrontDomain}/${fileKey}`;
-
-      return cloudFrontUrl;
-    } catch (error) {
-      console.error('❌ CloudFront getUrl error:', error);
-      // Fallback to S3 direct URL
-      if (isAwsConfigured) {
-        return `https://${configKeys.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileKey}`;
-      }
-      return '/placeholder-image.png';
+      throw new Error(`Failed to get video stream from S3: ${error.message}`);
     }
   };
 
@@ -206,19 +244,20 @@ export const s3Service = () => {
       };
       const command = new DeleteObjectCommand(params);
       await s3.send(command);
-    } catch (error) {
+      console.log(`✅ Successfully deleted from S3: ${fileKey}`);
+    } catch (error: any) {
       console.error('❌ S3 removeFile error:', error);
-      throw new Error('Failed to remove file from S3');
+      throw new Error(`Failed to remove file from S3: ${error.message}`);
     }
   };
 
   return {
     uploadFile,
-    uploadAndGetUrl,
     getFile,
     getVideoStream,
-    getCloudFrontUrl,
+    getCloudFrontUrl, // Now returns S3 signed URL
     removeFile,
+    checkFileExists,
   };
 };
 

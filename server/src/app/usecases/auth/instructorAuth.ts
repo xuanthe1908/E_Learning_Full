@@ -40,10 +40,10 @@ export const instructorRegister = async (
     let uploadedFile;
 
     if (file.originalname === 'profilePic') {
-      uploadedFile = await cloudService.upload(file);
+      uploadedFile = await cloudService.uploadFile(file);
       instructor.profilePic = uploadedFile;
     } else {
-      uploadedFile = await cloudService.upload(file);
+      uploadedFile = await cloudService.uploadFile(file);
       instructor.certificates.push(uploadedFile);
     }
   }

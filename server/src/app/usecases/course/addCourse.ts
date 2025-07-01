@@ -20,17 +20,17 @@ export const addCourses = async (
     let uploadedFile;
 
     if (file.mimetype === 'application/pdf') {
-      uploadedFile = await cloudService.upload(file);
+      uploadedFile = await cloudService.uploadFile(file);
       courseInfo.guidelines = uploadedFile;
     }
 
     if (file.mimetype === 'video/mp4') {
-      uploadedFile = await cloudService.upload(file);
+      uploadedFile = await cloudService.uploadFile(file);
       courseInfo.introduction = uploadedFile;
     }
 
     if (file.mimetype.includes('image')) {
-      uploadedFile = await cloudService.upload(file);
+      uploadedFile = await cloudService.uploadFile(file);
       courseInfo.thumbnail = uploadedFile;
     }
   });
