@@ -104,7 +104,7 @@ const StudentHomePage: React.FC = () => {
                 variant='h1'
                 className='text-2xl  p-2 ml-2 lg:text-4xl font-semibold'
               >
-                Recommended Courses
+                Sản phẩm đề xuất
               </Typography>
             </div>
             <div className='flex items-center justify-between pt-2 px-10 flex-wrap'>
@@ -119,79 +119,71 @@ const StudentHomePage: React.FC = () => {
   }
 
   return (
-    <div>
-      <div>
-        <Carousel />
-      </div>
-      <div className='lg:p-10 md:p-7 pt-7 sm:p-8 w-full'>
-        <div className='ml-10  flex items-center justify-start w-9/12'>
-          <Typography
-            variant='h1'
-            className='text-2xl  p-2 ml-2 lg:text-4xl font-semibold'
-          >
-            Trending Courses
-          </Typography>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20">
+      <Carousel />
+      
+      {/* Trending Products Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="mb-10 text-center">
+          <div className="inline-block mb-4">
+            <span className="text-5xl">🔥</span>
+          </div>
+          <h2 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+            Sản phẩm nổi bật
+          </h2>
+          <p className="text-gray-600 text-lg">Những sản phẩm được yêu thích nhất hiện nay</p>
+          <div className="mt-4 w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto rounded-full"></div>
         </div>
-
-        <div className='flex items-center justify-between px-10 flex-wrap'>
-          {trendingCourses?.slice(0, cardsToShow).map((course) => {
-            return (
-              <div className='grid  md:m-5 my-6  justify-center overflow-hidden text-center  bg-red-200 rounded-lg'>
-                <Link key={course._id} to={`/courses/${course._id}`}>
-                  <TrendingCard courseInfo={course} />
-                </Link>
-              </div>
-            );
-          })}
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+          {trendingCourses?.slice(0, cardsToShow).map((course) => (
+            <TrendingCard key={course._id} courseInfo={course} />
+          ))}
         </div>
+        
         {trendingCourses && trendingCourses.length > cardsToShow && (
-          <div className='md:flex-shrink-0 mt-3 ml-6'>
-            <div className='flex-shrink-0'>
-              <button
-                className='text-customFontColorBlack ml-3 hover:text-blue-gray-600 font-bold px-6 rounded'
-                onClick={handleShowMoreTrending}
-              >
-                View More
-              </button>
-            </div>
+          <div className="text-center mt-12">
+            <button
+              className="inline-flex items-center px-8 py-4 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              onClick={handleShowMoreTrending}
+            >
+              Xem thêm sản phẩm →
+            </button>
           </div>
         )}
-      </div>
+      </section>
 
-      {recommendedCourses && (
-        <div className='lg:p-10 md:p-7 pt-5 sm:p-8 w-full'>
-          <div className='ml-10 flex items-center justify-start w-9/12'>
-            <Typography
-              variant='h1'
-              className='text-2xl  p-2 ml-2 lg:text-4xl font-semibold'
-            >
-              Recommended Courses
-            </Typography>
+      {/* Recommended Products Section */}
+      {recommendedCourses && recommendedCourses.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white/60 backdrop-blur-sm rounded-3xl mx-4 mb-8 shadow-xl">
+          <div className="mb-10 text-center">
+            <div className="inline-block mb-4">
+              <span className="text-5xl">⭐</span>
+            </div>
+            <h2 className="text-4xl font-extrabold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent mb-3">
+              Sản phẩm đề xuất cho bạn
+            </h2>
+            <p className="text-gray-600 text-lg">Dựa trên sở thích và lịch sử mua hàng của bạn</p>
+            <div className="mt-4 w-24 h-1 bg-gradient-to-r from-pink-600 to-blue-600 mx-auto rounded-full"></div>
           </div>
-          <div className='flex items-center justify-between pt-2 px-10 flex-wrap'>
-            {recommendedCourses?.slice(0, cardsToShow).map((course, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <Link to={`/courses/${course._id}`} className=''>
-                    <RecommendedCard courseInfo={course} />
-                  </Link>
-                  {!showMoreRecommended &&
-                    index === cardsToShow - 1 &&
-                    recommendedCourses.length > cardsToShow && (
-                      <div className='flex justify-end w-full'>
-                        <button
-                          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-                          onClick={handleShowMoreRecommended}
-                        >
-                          View More
-                        </button>
-                      </div>
-                    )}
-                </React.Fragment>
-              );
-            })}
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+            {recommendedCourses?.slice(0, cardsToShow).map((course, index) => (
+              <RecommendedCard key={index} courseInfo={course} />
+            ))}
           </div>
-        </div>
+          
+          {recommendedCourses.length > cardsToShow && (
+            <div className="text-center mt-12">
+              <button
+                className="inline-flex items-center px-8 py-4 border border-transparent text-base font-semibold rounded-xl text-white bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 hover:from-pink-700 hover:via-purple-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                onClick={handleShowMoreRecommended}
+              >
+                Xem thêm sản phẩm →
+              </button>
+            </div>
+          )}
+        </section>
       )}
     </div>
   );

@@ -13,7 +13,7 @@ import VNPayQRPayment from "./components/pages/payment-vnpay/vnpayQRPayment";
 import VNPayReturnHandler from "components/pages/payment-vnpay/vnpay-return-handler";
 
 const LazyListCourse = lazy(
-  () => import("./components/pages/course-pages/list-course")
+  () => import("./components/pages/course-pages/product-list")
 );
 
 const LazyInstructorsListing = lazy(
@@ -38,7 +38,7 @@ const LazyCategories = lazy(
 );
 
 const LazyViewCourse = lazy(
-  () => import("./components/pages/course-pages/view-course")
+  () => import("./components/pages/course-pages/product-detail")
 );
 
 const LazyWatchLesson = lazy(
@@ -134,6 +134,12 @@ const LazyPayment = lazy(
 );
 
 const LazyAiChatPage = lazy(() => import('./components/pages/aichat/AiChatPage'));
+
+const LazyCartPage = lazy(() => import('./components/pages/cart/cart-page'));
+
+const LazyCheckoutPage = lazy(() => import('./components/pages/checkout/checkout-page'));
+
+const LazyOrderConfirmation = lazy(() => import('./components/pages/checkout/order-confirmation'));
 
 const AppRouter = createBrowserRouter([
   {
@@ -235,6 +241,30 @@ const AppRouter = createBrowserRouter([
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyAiChatPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyCartPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/checkout",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyCheckoutPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/order-confirmation",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyOrderConfirmation />
           </Suspense>
         ),
       },

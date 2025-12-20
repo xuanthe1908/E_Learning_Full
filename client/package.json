@@ -91,8 +91,9 @@
     "@types/yup": "^0.32.0",
     "serve": "^14.2.0"
   },
-  "description": "online learning platfrom",
+  "description": "e-commerce platform",
   "main": "index.js",
   "author": "abin t h",
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@4.9.3+sha512.8295ee814f6b253e16f516416481b481a215ed03ef1ae38524d108084872560a9ed75aeb23b91ab64222062ac4149a594150ae538c2a9536fdbcefd4e49b11cc"
 }

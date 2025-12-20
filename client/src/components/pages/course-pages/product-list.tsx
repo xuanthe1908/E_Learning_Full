@@ -13,9 +13,7 @@ import FilterCoursesSelectBox from "./filter-course-selectbox";
 import { debounce } from "lodash";
 import { MdSentimentDissatisfied } from "react-icons/md";
 
-// This file is kept for backward compatibility  
-// Please use product-list.tsx instead
-const ListCourse: React.FC = () => {
+const ProductListPage: React.FC = () => {
   const [courses, setCourses] = useState<CourseInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -181,6 +179,4 @@ const ListCourse: React.FC = () => {
   );
 };
 
-export default ListCourse;
-// Export with new name for shop compatibility
-export { ListCourse as ProductListPage };
+export default ProductListPage;

@@ -56,6 +56,7 @@ const Discussion: React.FC<{ lessonId: string }> = ({ lessonId }) => {
     if(lessonId){
       fetchDiscussions(lessonId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updated]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

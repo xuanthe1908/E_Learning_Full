@@ -4,13 +4,14 @@ import { courseReducer } from "./reducers/courseSlice";
 import { studentReducer } from "./reducers/studentSlice";
 import { helperReducer } from "./reducers/helperSlice";
 import { instructorReducer } from "./reducers/instructorSlice";
+import { cartReducer } from "./reducers/cartSlice";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 const persistConfig = {
   key: 'root', // Key to use for storing data in storage
   storage,     // Storage mechanism (local storage or session storage)
-  whitelist: ['course', 'student', 'instructor'], // Reducers to persist
+  whitelist: ['course', 'student', 'instructor', 'cart'], // Reducers to persist
 };
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
@@ -19,6 +20,7 @@ const persistedReducer = persistReducer(persistConfig, combineReducers({
   student: studentReducer,
   instructor: instructorReducer,
   helper: helperReducer,
+  cart: cartReducer,
 }));
 
 const store = configureStore({

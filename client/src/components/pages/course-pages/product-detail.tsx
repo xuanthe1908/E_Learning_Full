@@ -28,14 +28,10 @@ const isValidObjectId = (id: string): boolean => {
   return objectIdRegex.test(id);
 };
 
-const ViewCourseStudentComponent: React.FC = () => {
+const ProductDetailPage: React.FC = () => {
   const params = useParams<{ courseId: string }>();
   const [expandedIndex, setExpandedIndex] = useState(null);
   const courseId = params.courseId;
-
-  console.log('🔍 ViewCourse - Raw params:', params);
-  console.log('🔍 ViewCourse - Extracted courseId:', courseId);
-  console.log('🔍 ViewCourse - CourseId type:', typeof courseId);
   const [openPaymentConfirmation, setOpenPaymentConfirmation] =
     useState<boolean>(false);
   const dispatch = useDispatch();
@@ -409,6 +405,4 @@ const ViewCourseStudentComponent: React.FC = () => {
     </div>
   );
 };
-export default ViewCourseStudentComponent;
-// Export with new name for shop compatibility
-export { ViewCourseStudentComponent as ProductDetailPage };
+export default ProductDetailPage;

@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Typography,
-  Avatar,
-} from "@material-tailwind/react";
 import { ApiResponseRecommended } from "../../../api/types/apiResponses/api-response-home-page-listing";
+import { Link } from "react-router-dom";
 
 interface Props {
   courseInfo: ApiResponseRecommended;
@@ -14,41 +8,27 @@ interface Props {
 const RecommendedCard: React.FC<Props> = ({ courseInfo }) => {
   const { course, instructor, media } = courseInfo;
   const imageUrl = media.thumbnailUrl;
-  const profileUrl = media.profileUrl;
   return (
-    <Card
-      shadow={false}
-      className='relative m-5 grid h-[30rem] sm:h-[28rem] sm:w-[22rem] w-[24rem] items-end justify-center overflow-hidden text-center'
-    >
-      <CardHeader
-        floated={false}
-        shadow={false}
-        color='transparent'
-        style={{ backgroundImage: `url(${imageUrl})` }}
-        className={`absolute inset-0 m-0 h-full w-full rounded-none bg-cover bg-center`}
-      >
-        <div className='to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-t from-black/80 via-black/50' />
-      </CardHeader>
-      <CardBody className='relative py-14 px-6 md:px-12'>
-        <Typography
-          variant='h3'
-          color='white'
-          className='mb-6 line-clamp-2 font-medium leading-[1.5]'
-        >
-          {course?.name}
-        </Typography>
-        <Typography variant='h5' className='mb-4 text-gray-400'>
-          {instructor?.firstName + " " + instructor?.lastName}
-        </Typography>
-        <Avatar
-          size='xl'
-          variant='circular'
-          alt='tania andrew'
-          className='border-2 border-white'
-          src={profileUrl}
-        />
-      </CardBody>
-    </Card>
+    <Link to={`/courses/${course?._id}`}>
+      <div className="w-[280px] bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div className="relative aspect-video w-full bg-gray-100">
+          <img 
+            src={imageUrl} 
+            className="h-full w-full object-cover" 
+            alt={course?.name} 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        </div>
+        <div className="p-4">
+          <h5 className="text-gray-900 text-base font-semibold line-clamp-2 mb-2 hover:text-blue-600 transition-colors min-h-[3rem]">
+            {course?.name}
+          </h5>
+          <p className="text-sm text-gray-500">
+            Người bán: {instructor?.firstName} {instructor?.lastName}
+          </p>
+        </div>
+      </div>
+    </Link>
   );
 };
 export default RecommendedCard;

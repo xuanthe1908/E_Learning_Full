@@ -23,20 +23,19 @@ export default function CarouselComponent() {
               color='white'
               className='mb-4 text-3xl md:text-4xl lg:text-5xl'
             >
-              Welcome to TutorTrek
+              Chào mừng đến Shop
             </Typography>
             <Typography
               variant='lead'
               color='white'
               className='mb-12 opacity-80'
             >
-              Enhance your knowledge and skills with our comprehensive courses
-              taught by expert instructors.
+              Khám phá bộ sưu tập sản phẩm đa dạng và chất lượng với giá cả hợp lý.
             </Typography>
             <div className='flex gap-2'>
               <Link to='/courses'>
                 <Button size='lg' color='white'>
-                  Explore Courses
+                  Xem sản phẩm
                 </Button>
               </Link>
               <Link to='/about'>
@@ -61,20 +60,19 @@ export default function CarouselComponent() {
               color='white'
               className='mb-4 text-3xl md:text-4xl lg:text-5xl'
             >
-              Learn Anytime, Anywhere
+              Mua sắm mọi lúc, mọi nơi
             </Typography>
             <Typography
               variant='lead'
               color='white'
               className='mb-12 opacity-80'
             >
-              Access our courses from the comfort of your own home and learn at
-              your own pace. No restrictions or time limits.
+              Mua sắm từ sự thoải mái của chính ngôi nhà của bạn. Giao hàng nhanh chóng và dịch vụ khách hàng tận tâm.
             </Typography>
             <div className='flex justify-center gap-2'>
               <Link to='/courses'>
                 <Button size='lg' color='white'>
-                  Browse Courses
+                  Duyệt sản phẩm
                 </Button>
               </Link>
               <Link to='#'>
@@ -99,21 +97,20 @@ export default function CarouselComponent() {
               color='white'
               className='mb-4 text-3xl md:text-4xl lg:text-5xl'
             >
-              Expand Your Knowledge
+              Khám phá sản phẩm mới
             </Typography>
             <Typography
               variant='lead'
               color='white'
               className='mb-12 opacity-80'
             >
-              Discover new subjects and gain expertise in your area of interest.
-              Our platform offers a wide range of courses to cater to your
-              learning goals.
+              Khám phá các sản phẩm mới và tìm thấy những món đồ hoàn hảo cho bạn.
+              Nền tảng của chúng tôi cung cấp nhiều loại sản phẩm đa dạng.
             </Typography>
             <div className='flex gap-2'>
               <Link to='/courses'>
                 <Button size='lg' color='white'>
-                  Start Learning
+                  Bắt đầu mua sắm
                 </Button>
               </Link>
               <Link to='#'>

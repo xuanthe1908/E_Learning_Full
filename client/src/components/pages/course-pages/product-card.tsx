@@ -6,9 +6,7 @@ import { toast } from "react-toastify";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
-// This file is kept for backward compatibility
-// Please use product-card.tsx instead  
-const CourseCard: React.FC<CourseInterface> = ({
+const ProductCard: React.FC<CourseInterface> = ({
   rating,
   price,
   isPaid,
@@ -116,6 +114,4 @@ const CourseCard: React.FC<CourseInterface> = ({
   );
 };
 
-export default CourseCard;
-// Export with new name for shop compatibility
-export { CourseCard as ProductCard };
+export default ProductCard;
