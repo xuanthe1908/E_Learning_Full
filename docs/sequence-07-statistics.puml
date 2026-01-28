@@ -1,0 +1,45 @@
+@startuml Sequence_Statistics
+
+actor User
+participant "Client" as Client
+participant "Analytics API" as API
+participant "Database" as DB
+participant "Redis Cache" as Cache
+
+== Admin View Statistics ==
+User -> Client: Access admin dashboard
+Client -> API: GET /api/admin/statistics
+API -> Cache: Check cache
+
+alt Data in cache
+    Cache --> API: Cached statistics
+    API --> Client: Return cached data
+else Data not in cache
+    Cache --> API: Cache miss
+    API -> DB: Query user statistics
+    DB --> API: User stats
+    API -> DB: Query product statistics
+    DB --> API: Product stats
+    API -> DB: Query revenue data
+    DB --> API: Revenue stats
+    API -> API: Aggregate statistics
+    API -> Cache: Store in cache
+    API --> Client: Return statistics
+end
+
+Client --> User: Display charts and stats
+
+== Seller View Statistics ==
+User -> Client: Access seller dashboard
+Client -> API: GET /api/sellers/statistics
+API -> DB: Get seller products stats
+DB --> API: Product statistics
+API -> DB: Get seller customers
+DB --> API: Customer data
+API -> DB: Get seller revenue
+DB --> API: Revenue data
+API --> Client: Return statistics
+Client --> User: Display seller stats
+
+@enduml
+

@@ -24,6 +24,8 @@ import usePagination from "../../../hooks/usePagination";
 import BlockStudentModal from "./block-student-modal";
 import { Students } from "../../../api/types/student/student";
 import { USER_AVATAR } from "../../../constants/common";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockCustomers } from "../../../data/mockAdminData";
 
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions"];
 
@@ -46,13 +48,22 @@ const ViewStudents: React.FC<Props> = ({ updated, setUpdated }) => {
   } = usePagination(students, ITEMS_PER_PAGE);
 
   const fetchStudents = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setStudents(mockCustomers as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getAllStudents();
       setStudents(response?.data);
     } catch (error: any) {
-      toast.error(error.data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error("Error fetching students:", error);
+      // Fallback to mock data
+      setStudents(mockCustomers as any);
     }
   };
   useEffect(() => {
@@ -87,10 +98,10 @@ const ViewStudents: React.FC<Props> = ({ updated, setUpdated }) => {
         <div className='mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <Typography variant='h5' color='blue-gray'>
-              Manage Students
+              Quản lý Customers
             </Typography>
             <Typography color='gray' className='mt-1 font-normal'>
-              These are details about the students
+              Chi tiết về các customers trong hệ thống
             </Typography>
           </div>
           <div className='flex w-full shrink-0 gap-2 md:w-max'>

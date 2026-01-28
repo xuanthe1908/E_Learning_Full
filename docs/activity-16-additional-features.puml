@@ -1,0 +1,37 @@
+@startuml Activity_Additional_Features
+
+start
+
+if (Feature?) then (Wishlist)
+  :User views product;
+  :Click add to wishlist;
+  :Save to wishlist;
+  :View wishlist;
+  :Remove from wishlist;
+  
+elseif (Reports)
+  :User reports content/user;
+  :Fill report form;
+  :Submit report;
+  :Admin reviews report;
+  :Admin takes action;
+  
+elseif (About Us)
+  :User views about page;
+  :View company information;
+  
+elseif (Community Page)
+  :User accesses community;
+  :View discussions;
+  :View seller channels;
+  
+else (Contact)
+  :User views contact page;
+  :Fill contact form;
+  :Submit message;
+endif
+
+stop
+
+@enduml
+

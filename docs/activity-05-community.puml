@@ -1,0 +1,36 @@
+@startuml Activity_Community
+
+start
+
+:User accesses product page;
+
+if (User action?) then (Create Discussion)
+  :Click create discussion;
+  :Enter discussion title;
+  :Enter discussion content;
+  :Submit discussion;
+  :Discussion created;
+  
+elseif (Reply Discussion) then
+  :Select discussion;
+  :Enter reply content;
+  :Submit reply;
+  :Reply added;
+  
+elseif (Review Product) then
+  :Click review product;
+  :Enter review text;
+  :Select rating;
+  :Submit review;
+  :Review posted;
+  
+else (View Community)
+  :View discussions list;
+  :View replies;
+  :View product reviews;
+endif
+
+stop
+
+@enduml
+

@@ -39,7 +39,7 @@ const RevenueChart: React.FC<Props> = ({ data = [] }) => {
     },
     yaxis: {
       title: {
-        text: 'Amount',
+        text: 'Số tiền (VND)',
       },
     },
     stroke: {
@@ -49,15 +49,15 @@ const RevenueChart: React.FC<Props> = ({ data = [] }) => {
 
   const chartSeries = [
     {
-      name: 'Monthly Revenue',
+      name: 'Doanh thu tháng',
       data: validData.map((d) => d.revenue),
     },
     {
-      name: 'Courses Added',
+      name: 'Sản phẩm thêm mới',
       data: validData.map((d) => d.coursesAdded),
     },
     {
-      name: 'Courses Enrolled',
+      name: 'Sản phẩm đã bán',
       data: validData.map((d) => d.coursesEnrolled),
     },
   ];

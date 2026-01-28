@@ -23,6 +23,8 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/helpers";
 import usePagination from "../../../hooks/usePagination";
 import { getBlockedInstructors } from "../../../api/endpoints/instructor-management";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockSellers } from "../../../data/mockAdminData";
 
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions", ""];
 
@@ -39,13 +41,24 @@ const ViewBlockedInstructors: React.FC = () => {
     goToNextPage,
   } = usePagination(instructors, ITEMS_PER_PAGE);
   const fetchBlockedInstructors = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        const blocked = mockSellers.filter(s => s.isBlocked);
+        setInstructors(blocked as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getBlockedInstructors();
       setInstructors(response?.data?.data);
     } catch (error: any) {
-      toast.error(error.data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error("Error fetching blocked instructors:", error);
+      // Fallback to mock data
+      const blocked = mockSellers.filter(s => s.isBlocked);
+      setInstructors(blocked as any);
     }
   };
   useEffect(() => {

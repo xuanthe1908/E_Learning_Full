@@ -2,17 +2,46 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import decodeJwtToken from "../../utils/decode";
 
-const accessToken = localStorage.getItem("accessToken")
-const refreshToken = localStorage.getItem('refreshToken')
-const decodedToken = decodeJwtToken(accessToken??"");
+// Helper function to get token from localStorage
+const getAccessToken = (): string => {
+  try {
+    const tokenString = localStorage.getItem("accessToken");
+    if (!tokenString) return "";
+    
+    // Check if it's a JSON string
+    const parsed = JSON.parse(tokenString);
+    return parsed?.accessToken || tokenString;
+  } catch {
+    // If not JSON, return as is
+    return localStorage.getItem("accessToken") || "";
+  }
+};
+
+const getRefreshToken = (): string => {
+  try {
+    const tokenString = localStorage.getItem("refreshToken");
+    if (!tokenString) return "";
+    
+    // Check if it's a JSON string
+    const parsed = JSON.parse(tokenString);
+    return parsed?.refreshToken || tokenString;
+  } catch {
+    // If not JSON, return as is
+    return localStorage.getItem("refreshToken") || "";
+  }
+};
+
+const accessToken = getAccessToken();
+const refreshToken = getRefreshToken();
+const decodedToken = decodeJwtToken(accessToken);
 
 const initialState = {
   data: {
-    accessToken:accessToken,
-    refreshToken,
+    accessToken: accessToken,
+    refreshToken: refreshToken,
   },
   isLoggedIn: accessToken ? true : false,
-  userType:decodedToken?.payload?.role
+  userType: decodedToken?.payload?.role || ""
 };
 
 const authSlice = createSlice({
@@ -23,24 +52,16 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{ accessToken: string; refreshToken: string ,userType:string}>
     ) {
-      localStorage.setItem(
-        "accessToken",
-        JSON.stringify({
-          accessToken: action.payload.accessToken,
-        })
-      );
-      localStorage.setItem(
-        "refreshToken",
-        JSON.stringify({
-          refreshToken: action.payload.refreshToken,
-        })
-      );
+      // Store tokens directly as strings (not JSON)
+      localStorage.setItem("accessToken", action.payload.accessToken);
+      localStorage.setItem("refreshToken", action.payload.refreshToken);
+      
       state.data = {
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
       };
       state.isLoggedIn = true;
-      state.userType=action.payload.userType
+      state.userType = action.payload.userType;
     },
     clearToken(state) {
       state.data = {
@@ -60,8 +81,7 @@ export const { setToken, clearToken } = authSlice.actions;
 export const selectAuth = (state: RootState) => state.auth.data;
 
 export const selectAccessToken = (state:RootState)=> {
-  const accessTokenString: string | null = state.auth.data.accessToken;
-  const accessToken = JSON.parse(accessTokenString ?? "")?.accessToken || "";
+  const accessToken: string = state.auth.data.accessToken || "";
   return accessToken;
 }
 export const selectIsLoggedIn = () => {

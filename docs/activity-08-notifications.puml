@@ -1,0 +1,29 @@
+@startuml Activity_Notifications
+
+start
+
+:System generates notification;
+:Save notification to database;
+:Send real-time notification;
+
+:User receives notification;
+:User views notification list;
+
+if (User action?) then (Mark as read)
+  :Mark notification as read;
+  :Update notification status;
+  
+elseif (Delete)
+  :Delete notification;
+  :Remove from database;
+  
+else (View details)
+  :Click notification;
+  :Navigate to related page;
+  :Mark as read;
+endif
+
+stop
+
+@enduml
+

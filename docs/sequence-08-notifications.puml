@@ -1,0 +1,42 @@
+@startuml Sequence_Notifications
+
+actor User
+participant "Client" as Client
+participant "Notification API" as API
+participant "Database" as DB
+participant "WebSocket" as WS
+
+== Generate Notification ==
+System -> API: Event occurs
+API -> DB: Create notification
+DB --> API: Notification created
+API -> WS: Send real-time notification
+WS --> Client: Push notification
+Client --> User: Show notification badge
+
+== View Notifications ==
+User -> Client: Click notifications
+Client -> API: GET /api/notifications
+API -> DB: Get user notifications
+DB --> API: Notifications list
+API --> Client: Return notifications
+Client --> User: Display notifications
+
+== Mark as Read ==
+User -> Client: Click notification
+Client -> API: PUT /api/notifications/:id/read
+API -> DB: Update notification status
+DB --> API: Notification updated
+API --> Client: Success response
+Client --> User: Update UI
+
+== Delete Notification ==
+User -> Client: Delete notification
+Client -> API: DELETE /api/notifications/:id
+API -> DB: Delete notification
+DB --> API: Notification deleted
+API --> Client: Success response
+Client --> User: Remove from list
+
+@enduml
+

@@ -38,6 +38,27 @@ export const aiChatRateLimit = rateLimit({
   }
 });
 
+// Rate limiting cho Shop - 20 tin nhắn mỗi phút
+export const shopRateLimit = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 20, // tối đa 20 requests
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: getUserIdFromRequest,
+  message: {
+    success: false,
+    message: 'Quá nhiều tin nhắn. Vui lòng thử lại sau 1 phút.',
+    error: 'RATE_LIMIT_EXCEEDED'
+  },
+  handler: (req: Request, res: Response) => {
+    res.status(HttpStatusCodes.TOO_MANY_REQUESTS).json({
+      success: false,
+      message: 'Quá nhiều tin nhắn. Vui lòng thử lại sau 1 phút.',
+      error: 'RATE_LIMIT_EXCEEDED'
+    });
+  }
+});
+
 // Rate limiting cho tạo chat mới - 10 lần mỗi phút
 export const createChatRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 phút

@@ -1,0 +1,51 @@
+@startuml Activity_AI_Chat
+
+start
+
+:User opens chat widget;
+
+if (New chat?) then (yes)
+  :Click new chat;
+  :Enter first message;
+  :Send message;
+  :Check rate limit;
+  
+  if (Rate limit exceeded?) then (yes)
+    :Show rate limit error;
+    stop
+  endif
+  
+  :Send to AI service;
+  :AI processes message;
+  :Generate response;
+  :Auto-generate chat title;
+  :Display response;
+  :Save chat history;
+  
+else (no - existing chat)
+  :Select existing chat;
+  :View chat history;
+  :Enter new message;
+  :Send message;
+  :Check rate limit;
+  
+  if (Rate limit exceeded?) then (yes)
+    :Show rate limit error;
+    stop
+  endif
+  
+  :Send to AI service;
+  :AI generates response;
+  :Display response;
+  :Update chat history;
+endif
+
+if (Manage chat?) then (yes)
+  :Edit chat title;
+  :Delete chat;
+endif
+
+stop
+
+@enduml
+

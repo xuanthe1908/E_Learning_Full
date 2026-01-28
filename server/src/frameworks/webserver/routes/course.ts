@@ -39,9 +39,9 @@ const courseRouter = (redisClient: RedisClient) => {
     redisCacheRepository,
     redisClient
   );
-  //* Add course
+  //* Add product (Seller)
   router.post(
-    '/instructors/add-course',
+    '/sellers/add-product',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
     upload.array('files'),
@@ -49,7 +49,7 @@ const courseRouter = (redisClient: RedisClient) => {
   );
 
   router.put(
-    '/instructors/edit-course/:courseId',
+    '/sellers/edit-product/:courseId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
     upload.array('files'),
@@ -57,22 +57,22 @@ const courseRouter = (redisClient: RedisClient) => {
   );
 
   router.get(
-    '/get-all-courses',
-    cachingMiddleware(redisClient, 'all-courses'), 
+    '/list',
+    cachingMiddleware(redisClient, 'all-products'), 
     controller.getAllCourses
   );
 
-  router.get('/get-course/:courseId', controller.getIndividualCourse);
+  router.get('/:productId', controller.getIndividualCourse);
 
   router.get(
-    '/get-course-by-instructor',
+    '/sellers/my-products',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
     controller.getCoursesByInstructor
   );
 
   router.post(
-    '/instructors/add-lesson/:courseId',
+    '/sellers/add-item/:courseId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
     upload.array('media'),
@@ -80,7 +80,7 @@ const courseRouter = (redisClient: RedisClient) => {
   );
 
   router.put(
-    '/instructors/edit-lesson/:lessonId',
+    '/sellers/edit-item/:lessonId',
     jwtAuthMiddleware,
     roleCheckMiddleware('instructor'),
     upload.array('media'),
@@ -88,71 +88,71 @@ const courseRouter = (redisClient: RedisClient) => {
   );
 
   router.get(
-    '/instructors/get-lessons-by-course/:courseId',
+    '/sellers/get-items-by-product/:courseId',
     controller.getLessonsByCourse
   );
 
-  router.get('/get-lessons-by-id/:lessonId', controller.getLessonById);
+  router.get('/items/:lessonId', controller.getLessonById);
 
-  router.get('/get-quizzes-by-lesson/:lessonId', controller.getQuizzesByLesson);
+  router.get('/items/:lessonId/quizzes', controller.getQuizzesByLesson);
 
   router.post(
-    '/lessons/add-discussion/:lessonId',
+    '/items/add-discussion/:lessonId',
     jwtAuthMiddleware,
     controller.addDiscussion
   );
 
   router.get(
-    '/lessons/get-discussions-by-lesson/:lessonId',
+    '/items/get-discussions-by-item/:lessonId',
     controller.getDiscussionsByLesson
   );
 
   router.patch(
-    '/lessons/edit-discussion/:discussionId',
+    '/items/edit-discussion/:discussionId',
     jwtAuthMiddleware,
     controller.editDiscussions
   );
 
   router.delete(
-    '/lessons/delete-discussion/:discussionId',
+    '/items/delete-discussion/:discussionId',
     jwtAuthMiddleware,
     controller.deleteDiscussion
   );
 
   router.put(
-    '/lessons/reply-discussion/:discussionId',
+    '/items/reply-discussion/:discussionId',
     jwtAuthMiddleware,
     controller.replyDiscussion
   );
 
   router.get(
-    '/lesson/replies-based-on-discussion/:discussionId',
+    '/items/replies-based-on-discussion/:discussionId',
     controller.getRepliesByDiscussion
   );
 
   router.post(
-    '/enroll-student/:courseId',
+    '/purchase/:courseId',
     jwtAuthMiddleware,
     controller.enrollStudent
   );
 
   router.get(
-    '/get-recommended-courses',
+    '/recommended',
     jwtAuthMiddleware,
     roleCheckMiddleware('student'),
     controller.getRecommendedCourseByStudentInterest
   );
 
-  router.get('/get-trending-courses', controller.getTrendingCourses);
+  router.get('/trending', controller.getTrendingCourses);
 
   router.get(
-    '/get-course-by-student',
+    '/customers/my-products',
     jwtAuthMiddleware,
     controller.getCourseByStudent
   );
 
   router.get(
-    '/search-course',
+    '/search',
     cachingMiddleware(redisClient),
     controller.searchCourse
   );

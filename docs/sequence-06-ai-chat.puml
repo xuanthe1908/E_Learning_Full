@@ -1,0 +1,55 @@
+@startuml Sequence_AI_Chat
+
+actor User
+participant "Client" as Client
+participant "Chat API" as API
+participant "Database" as DB
+participant "AI Service" as AI
+participant "Rate Limiter" as RateLimit
+
+== Create New Chat ==
+User -> Client: Open chat widget
+User -> Client: Enter message
+Client -> API: POST /api/shop/chat
+API -> RateLimit: Check rate limit
+RateLimit --> API: Rate limit OK
+API -> DB: Create chat session
+DB --> API: Chat created
+API -> AI: Send message
+AI -> AI: Process message
+AI --> API: AI response
+API -> DB: Save message and response
+DB --> API: Messages saved
+API -> DB: Auto-generate title
+DB --> API: Title generated
+API --> Client: Return chat data
+Client --> User: Display response
+
+== Continue Chat ==
+User -> Client: Select existing chat
+Client -> API: GET /api/shop/chat/:id
+API -> DB: Get chat history
+DB --> API: Chat messages
+API --> Client: Return messages
+Client --> User: Display chat history
+
+User -> Client: Enter new message
+Client -> API: POST /api/shop/chat/:id/message
+API -> RateLimit: Check rate limit
+
+alt Rate limit exceeded
+    RateLimit --> API: Rate limit exceeded
+    API --> Client: 429 Error
+    Client --> User: Show rate limit message
+else Rate limit OK
+    RateLimit --> API: Rate limit OK
+    API -> AI: Send message
+    AI --> API: AI response
+    API -> DB: Save messages
+    DB --> API: Messages saved
+    API --> Client: Return response
+    Client --> User: Display response
+end
+
+@enduml
+

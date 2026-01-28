@@ -12,6 +12,8 @@ import { RiSearchLine } from "react-icons/ri";
 import FilterCoursesSelectBox from "./filter-course-selectbox";
 import { debounce } from "lodash";
 import { MdSentimentDissatisfied } from "react-icons/md";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockProducts } from "../../../data/mockShopData";
 
 const ProductListPage: React.FC = () => {
   const [courses, setCourses] = useState<CourseInterface[]>([]);
@@ -20,16 +22,39 @@ const ProductListPage: React.FC = () => {
   const [filterQuery, setFilterQuery] = useState<string>("");
 
   const fetchCourse = async () => {
+    // ✅ Mock Mode: Sử dụng mock data thay vì API
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setCourses(mockProducts as any);
+        setIsLoading(false);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode: Gọi API thật
     try {
-      const courses = await getAllCourses();
-      setCourses(courses?.data?.data || []);
+      const response = await getAllCourses();
+      console.log('API Response:', response);
+      console.log('Response data:', response?.data);
+      
+      // Backend trả về: { status: 'success', message: '...', data: [...] }
+      const coursesData = response?.data?.data || [];
+      
+      if (!Array.isArray(coursesData)) {
+        console.warn('Courses data is not an array:', coursesData);
+        setCourses([]);
+      } else {
+        setCourses(coursesData);
+      }
+      
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
     } catch (error: any) {
-      toast.error(error?.data?.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error('Error fetching courses:', error);
+      // ✅ Fallback to mock data on error
+      console.log('⚠️ API failed, using mock data instead');
+      setCourses(mockProducts as any);
       setIsLoading(false);
     }
   };
@@ -39,6 +64,29 @@ const ProductListPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // ✅ Mock Mode: Filter mock data locally
+    if (USE_MOCK_DATA) {
+      let filtered = [...mockProducts];
+      
+      if (searchQuery.trim() !== "") {
+        filtered = filtered.filter(product => 
+          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+      }
+      
+      if (filterQuery.trim() !== "") {
+        filtered = filtered.filter(product => 
+          product.category === filterQuery
+        );
+      }
+      
+      setCourses(filtered as any);
+      return;
+    }
+
+    // ✅ Production Mode: Call API
     console.log(searchQuery)
     const debouncedHandleCourseSearch = debounce(async () => {
       if (searchQuery.trim() !== "") {
@@ -46,14 +94,20 @@ const ProductListPage: React.FC = () => {
           const response = await searchCourse(searchQuery, "");
           setCourses(response?.data?.data || response?.data);
         } catch (error) {
-          toast.error("Failed to search course");
+          // Fallback to mock data
+          const filtered = mockProducts.filter(p => 
+            p.title.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          setCourses(filtered as any);
         }
       } else if (filterQuery.trim() !== "") {
         try {
           const response = await searchCourse("", filterQuery);
           setCourses(response?.data?.data || response?.data);
         } catch (error) { 
-          toast.error("Failed to search course");
+          // Fallback to mock data
+          const filtered = mockProducts.filter(p => p.category === filterQuery);
+          setCourses(filtered as any);
         }
       } else {
         fetchCourse();

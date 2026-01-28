@@ -1,0 +1,56 @@
+@startuml UseCase_Overview_Shop_Platform
+
+left to right direction
+
+actor "Customer\n\nRole: End users who browse\nand purchase products" as Customer
+actor "Seller\n\nRole: Product creators\nand sellers" as Seller
+actor "Admin\n\nRole: System administrators\nwho manage the platform" as Admin
+
+package "Authentication" {
+    usecase "Login" as UC_Auth
+    usecase "Register" as UC_Register
+}
+
+package "Shop" {
+    usecase "Browse Products" as UC_Shop
+    usecase "Manage Products" as UC_ManageShop
+}
+
+package "Shopping" {
+    usecase "Purchase Products" as UC_Purchase
+}
+
+package "Product Viewing" {
+    usecase "View Product Details" as UC_View
+}
+
+package "Community" {
+    usecase "Interact" as UC_Community
+}
+
+package "AI Chat" {
+    usecase "Chat with AI" as UC_Chat
+}
+
+package "Administration" {
+    usecase "Manage System" as UC_Admin
+}
+
+Customer --> UC_Auth
+Customer --> UC_Register
+Customer --> UC_Shop
+Customer --> UC_Purchase
+Customer --> UC_View
+Customer --> UC_Community
+Customer --> UC_Chat
+
+Seller --> UC_Auth
+Seller --> UC_Register
+Seller --> UC_ManageShop
+Seller --> UC_Community
+Seller --> UC_Chat
+
+Admin --> UC_Auth
+Admin --> UC_Admin
+
+@enduml

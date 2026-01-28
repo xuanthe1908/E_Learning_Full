@@ -12,11 +12,17 @@ interface DecodedToken extends JwtPayload {
 }
 
 const decodeJwtToken = (jwtToken: string): DecodedToken | null => {
+  // Return null if token is empty or invalid
+  if (!jwtToken || jwtToken.trim() === "" || jwtToken === "null" || jwtToken === "undefined") {
+    return null;
+  }
+
   try {
     const decodedToken = jwtDecode<DecodedToken>(jwtToken);
     return decodedToken;
   } catch (error) {
-    console.error("Error decoding JWT token:", error);
+    // Silently fail - don't log errors for invalid/empty tokens
+    // This is expected when user is not logged in
     return null;
   }
 };

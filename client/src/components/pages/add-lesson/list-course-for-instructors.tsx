@@ -32,6 +32,8 @@ import { Link } from "react-router-dom";
 import usePagination from "../../../hooks/usePagination";
 import useSearch from "../../../hooks/useSearch";
 import { GetCourseByInstructorInterface } from "api/types/apiResponses/api-response-instructors";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockSellerProducts } from "../../../data/mockSellerData";
 
 const TABS = [
   {
@@ -48,7 +50,7 @@ const TABS = [
   },
 ];
 
-const TABLE_HEAD = ["Course", "Category", "Status", "Added", ""];
+const TABLE_HEAD = ["Sản phẩm", "Danh mục", "Trạng thái", "Ngày thêm", ""];
 
 const ListCourseForInstructors: React.FC = () => {
   // const [courses, setCourses] = useState<
@@ -66,8 +68,23 @@ const ListCourseForInstructors: React.FC = () => {
   } = usePagination(courses, 4);
   const searchResult = useSearch(courses, searchQuery);
   const fetData = async () => {
-    const response = await getCourseByInstructor();
-    setCourses(response.data);
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setCourses(mockSellerProducts);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
+    try {
+      const response = await getCourseByInstructor();
+      setCourses(response.data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      // Fallback to mock data
+      setCourses(mockSellerProducts);
+    }
   };
 
   const handleSearch = (e: React.FormEvent<HTMLInputElement>) => {
@@ -84,10 +101,10 @@ const ListCourseForInstructors: React.FC = () => {
         <div className='mb-8 flex items-center justify-between gap-8'>
           <div>
             <Typography variant='h5' color='blue-gray'>
-              Course list
+              Danh sách sản phẩm
             </Typography>
             <Typography color='gray' className='mt-1 font-normal'>
-              See information about all courses
+              Xem thông tin về tất cả sản phẩm của bạn
             </Typography>
           </div>
           <div className='flex shrink-0 flex-col gap-2 sm:flex-row'>
@@ -96,7 +113,7 @@ const ListCourseForInstructors: React.FC = () => {
             </Button>
             <Link to="/instructors/add-course">
             <Button className='flex items-center gap-3' color='blue' size='sm'>
-              <UserPlusIcon strokeWidth={2} className='h-4 w-4' /> Add course
+              <UserPlusIcon strokeWidth={2} className='h-4 w-4' /> Thêm sản phẩm
             </Button>
             </Link>
           </div>

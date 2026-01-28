@@ -17,14 +17,14 @@ const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
   const validData = safeData
     .filter(course => course && typeof course === 'object')
     .map(course => ({
-      title: course?.title || 'Unknown Course',
+      title: course?.title || 'Sản phẩm không xác định',
       enrolled: Number(course?.enrolled) || 0,
     }));
 
   const sortedData = validData.sort((a, b) => b.enrolled - a.enrolled).slice(0, 5);
 
   // ✅ Fallback if no data
-  const displayData = sortedData.length > 0 ? sortedData : [{ title: 'No courses', enrolled: 0 }];
+  const displayData = sortedData.length > 0 ? sortedData : [{ title: 'Không có sản phẩm', enrolled: 0 }];
 
   const chartOptions: Partial<ApexOptions> = {
     chart: {
@@ -38,7 +38,7 @@ const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
     },
     yaxis: {
       title: {
-        text: 'Enrollment Count',
+        text: 'Số lượng bán',
       },
     },
     plotOptions: {
@@ -51,7 +51,7 @@ const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
 
   const chartSeries = [
     {
-      name: 'Enrollment Count',
+      name: 'Số lượng bán',
       data: displayData.map((course) => course.enrolled),
     },
   ];

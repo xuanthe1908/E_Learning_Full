@@ -1,0 +1,47 @@
+@startuml Sequence_Search_Filter
+
+actor User
+participant "Client" as Client
+participant "Product API" as API
+participant "Database" as DB
+participant "Redis Cache" as Cache
+
+== Search Products ==
+User -> Client: Enter search query
+Client -> API: GET /api/shop/products?search=query
+API -> Cache: Check cache
+
+alt Cached results
+    Cache --> API: Cached results
+    API --> Client: Return cached data
+else Not cached
+    Cache --> API: Cache miss
+    API -> DB: Search products
+    DB --> API: Search results
+    API -> Cache: Store in cache
+    API --> Client: Return results
+end
+
+Client --> User: Display search results
+
+== Filter Products ==
+User -> Client: Apply filters
+Client -> Client: Build filter params
+Client -> API: GET /api/shop/products?category=X&price=Y&rating=Z
+API -> DB: Query with filters
+DB --> API: Filtered results
+API -> DB: Sort results
+DB --> API: Sorted results
+API --> Client: Return filtered products
+Client --> User: Display filtered list
+
+== Pagination ==
+User -> Client: Click next page
+Client -> API: GET /api/shop/products?page=2
+API -> DB: Get page 2
+DB --> API: Page 2 results
+API --> Client: Return paginated results
+Client --> User: Display page 2
+
+@enduml
+

@@ -1,0 +1,43 @@
+@startuml Activity_Payment
+
+start
+
+:Customer views cart;
+:Select products to purchase;
+:Click checkout;
+
+:Review order details;
+:Enter shipping info;
+:Calculate total amount;
+
+:Click pay with VNPay;
+
+:Create payment request;
+:Generate payment URL/QR;
+
+if (Payment method?) then (QR Code)
+  :Display QR code;
+  :Customer scans QR;
+else (Payment URL)
+  :Redirect to VNPay;
+  :Customer completes payment;
+endif
+
+:VNPay processes payment;
+:VNPay sends callback;
+
+if (Payment successful?) then (yes)
+  :Update order status;
+  :Update product access;
+  :Send confirmation email;
+  :Show success message;
+  :Redirect to order confirmation;
+else (no)
+  :Show error message;
+  :Return to cart;
+endif
+
+stop
+
+@enduml
+

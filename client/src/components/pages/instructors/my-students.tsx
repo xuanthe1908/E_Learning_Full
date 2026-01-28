@@ -20,7 +20,9 @@ import usePagination from "../../../hooks/usePagination";
 import { formatDate } from "../../../utils/helpers";
 import { toast } from "react-toastify";
 import { Students } from "../../../api/types/student/student";
-const TABLE_HEAD = ["Student", "Course", "Status", "Joined"];
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockSellerStudents } from "../../../data/mockSellerData";
+const TABLE_HEAD = ["Customer", "Sản phẩm", "Trạng thái", "Ngày tham gia"];
 
 const MyStudents: React.FC = () => {
   const [students, setStudents] = useState<Students[]>([]);
@@ -34,11 +36,22 @@ const MyStudents: React.FC = () => {
     goToPreviousPage,
   } = usePagination(students, ITEMS_PER_PAGE);
   const fetchStudents = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setStudents(mockSellerStudents as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getMyStudents();
       setStudents(response.data);
     } catch (error) {
-      toast.error("Something went wrong")
+      console.error("Error fetching students:", error);
+      // Fallback to mock data
+      setStudents(mockSellerStudents as any);
     }
   };
 
@@ -52,10 +65,10 @@ const MyStudents: React.FC = () => {
           <div className=' flex items-center justify-between gap-8'>
             <div>
               <Typography variant='h5' color='blue-gray'>
-                Students list
+                Danh sách khách hàng
               </Typography>
               <Typography color='gray' className='mt-1 font-normal'>
-                See information about all students
+                Xem thông tin về tất cả khách hàng của bạn
               </Typography>
             </div>
             <div className='flex shrink-0 flex-col gap-2 sm:flex-row'>
@@ -149,7 +162,7 @@ const MyStudents: React.FC = () => {
                             color='blue-gray'
                             className='font-normal'
                           >
-                            {course}
+                            {course || 'N/A'}
                           </Typography>
                         </div>
                       </td>

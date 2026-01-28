@@ -133,8 +133,6 @@ const LazyPayment = lazy(
   () => import("./components/pages/payment-vnpay/vnpayQRPayment")
 );
 
-const LazyAiChatPage = lazy(() => import('./components/pages/aichat/AiChatPage'));
-
 const LazyCartPage = lazy(() => import('./components/pages/cart/cart-page'));
 
 const LazyCheckoutPage = lazy(() => import('./components/pages/checkout/checkout-page'));
@@ -156,7 +154,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/courses",
+        path: "/shop",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyListCourse />
@@ -164,7 +162,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/courses/:courseId",
+        path: "/shop/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyViewCourse />
@@ -172,7 +170,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "/courses/:courseId/watch-lessons/:lessonId",
+        path: "/shop/:productId/view/:itemId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyWatchLesson />
@@ -219,31 +217,6 @@ const AppRouter = createBrowserRouter([
           </Suspense>
         ),
       },
-      // ✅ THÊM CÁC ROUTES AI CHAT VÀO ĐÂY
-      {
-        path: "/ai-chat",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <LazyAiChatPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/ai-chat/course/:courseId",
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <LazyAiChatPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: "/ai-chat/lesson/:courseId/:lessonId", 
-        element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <LazyAiChatPage />
-          </Suspense>
-        ),
-      },
       {
         path: "/cart",
         element: (
@@ -279,11 +252,11 @@ const AppRouter = createBrowserRouter([
     ),
     children: [
       {
-        path: "",
+        index: true,
         element: <DashHome />,
       },
       {
-        path: "my-courses",
+        path: "my-products",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyStudentCourses />
@@ -301,7 +274,7 @@ const AppRouter = createBrowserRouter([
     ],
   },
   {
-  path: "/course/:courseId/payment",
+  path: "/shop/:productId/payment",
   element: <VNPayQRPayment />, 
   },
   {
@@ -341,12 +314,12 @@ const AppRouter = createBrowserRouter([
     ),
   },
   {
-    path: "admin",
+    path: "/admin",
     element: <Admin />,
     errorElement: <ErrorElement />,
     children: [
       {
-        path: "",
+        index: true,
         element: (
           <Suspense fallback={<div>loading...</div>}>
             <LazyAdminHome />
@@ -404,7 +377,7 @@ const AppRouter = createBrowserRouter([
         ),
         children: [
           {
-            path: "",
+            index: true,
             element: <ListCategories />,
           },
           {
@@ -417,19 +390,31 @@ const AppRouter = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "courses",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyListCourse />
+          </Suspense>
+        ),
+      },
+      {
+        path: "settings",
+        element: <div className="p-4">Settings (placeholder)</div>,
+      },
     ],
   },
   {
-    path: "instructors",
+    path: "/instructors",
     element: <Instructor />,
     errorElement: <ErrorElement />,
     children: [
       {
-        path: "/instructors",
+        index: true,
         element: <InstructorDashboard />,
       },
       {
-        path: "add-course",
+        path: "add-product",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyAddCourse />
@@ -437,7 +422,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "view-course",
+        path: "view-products",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyListCourseInstructors />
@@ -445,7 +430,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "edit-course/:courseId",
+        path: "edit-product/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyEditCourse />
@@ -453,7 +438,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "view-lessons/:courseId",
+        path: "view-items/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyViewLesson />
@@ -461,7 +446,7 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "view-lessons/:courseId/edit-lesson/:lessonId",
+        path: "view-items/:productId/edit-item/:itemId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyEditLesson />
@@ -489,15 +474,13 @@ const AppRouter = createBrowserRouter([
         element: <InstructorChannels />,
       },
       {
-      path: "courses/:courseId/payment",
-      element: (
-        <Suspense fallback={<div>Loading...</div>}>
-          <LazyPayment />
-        </Suspense>
-      ),
-      errorElement: <ErrorElement />,
-    },
-    
+        path: "shop/:productId/payment",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyPayment />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);

@@ -1,0 +1,51 @@
+@startuml Activity_Authentication
+
+start
+
+:User accesses login/register page;
+
+if (User wants to register?) then (yes)
+  :Fill registration form;
+  :Validate form data;
+  
+  if (Validation successful?) then (no)
+    :Show validation errors;
+    stop
+  endif
+  
+  :Submit registration;
+  :Create user account;
+  :Send email verification;
+  :Show success message;
+  :Redirect to login;
+  
+else (no - login)
+  :Fill login form;
+  :Validate credentials;
+  
+  if (Valid credentials?) then (no)
+    :Show error message;
+    stop
+  endif
+  
+  :Generate JWT token;
+  :Generate refresh token;
+  :Store tokens;
+  :Set user session;
+  :Redirect to dashboard;
+endif
+
+if (User wants OAuth login?) then (yes)
+  :Redirect to Google OAuth;
+  :Handle OAuth callback;
+  :Create/Update user account;
+  :Generate tokens;
+  :Redirect to dashboard;
+endif
+
+:User authenticated;
+
+stop
+
+@enduml
+

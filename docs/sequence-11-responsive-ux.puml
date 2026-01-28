@@ -1,0 +1,41 @@
+@startuml Sequence_Responsive_UX
+
+actor User
+participant "Client" as Client
+participant "Device Detection" as Device
+
+== Page Load ==
+User -> Client: Access application
+Client -> Device: Detect device type
+Device --> Client: Device info
+Client -> Client: Load responsive layout
+Client -> Client: Load mobile/tablet/desktop CSS
+Client -> Client: Initialize components
+Client --> User: Render responsive UI
+
+== User Interaction ==
+User -> Client: Interact with UI
+Client -> Client: Show loading state
+Client -> Client: Process action
+Client -> Client: Update UI state
+Client -> Client: Show feedback
+Client --> User: Display updated UI
+
+== Error Handling ==
+User -> Client: Trigger action
+Client -> Client: Action fails
+Client -> Client: Show error message
+Client -> Client: Handle gracefully
+Client --> User: Display error state
+
+== Offline Detection ==
+Client -> Client: Check network status
+alt Online
+    Client -> Client: Enable features
+else Offline
+    Client -> Client: Show offline message
+    Client -> Client: Disable online features
+end
+
+@enduml
+

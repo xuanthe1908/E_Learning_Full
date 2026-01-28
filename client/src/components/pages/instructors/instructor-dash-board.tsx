@@ -23,6 +23,8 @@ import { getLessonsByCourse } from '../../../api/endpoints/course/lesson';
 
 // Types
 import { GetCourseByInstructorInterface, InstructorApiResponse } from '../../../api/types/apiResponses/api-response-instructors';
+import { USE_MOCK_DATA, MOCK_DELAY } from '../../../config/mockConfig';
+import { mockSellerProducts, mockSellerStats, mockSellerInfo, mockSellerStudents } from '../../../data/mockSellerData';
 
 interface DashboardStats {
   totalCourses: number;
@@ -52,6 +54,31 @@ const InstructorDashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      // ✅ Mock Mode
+      if (USE_MOCK_DATA) {
+        setIsLoading(true);
+        setTimeout(() => {
+          setInstructorInfo(mockSellerInfo as any);
+          setRecentCourses(mockSellerProducts.slice(0, 5));
+          setStats(mockSellerStats);
+          
+          // Generate activities from mock data
+          const activities: RecentActivity[] = mockSellerProducts
+            .filter(course => course.enrollmentCount > 0)
+            .map((course, index) => ({
+              id: `activity-${index}`,
+              type: 'enrollment' as const,
+              message: `${course.enrollmentCount} customers đã mua ${course.title}`,
+              timestamp: new Date(course.createdAt).toLocaleDateString('vi-VN')
+            }));
+          setRecentActivities(activities.slice(0, 5));
+          
+          setIsLoading(false);
+        }, MOCK_DELAY);
+        return;
+      }
+
+      // ✅ Production Mode
       try {
         setIsLoading(true);
         
@@ -110,6 +137,10 @@ const InstructorDashboard: React.FC = () => {
 
       } catch (error: any) {
         console.error('Error fetching dashboard data:', error);
+        // Fallback to mock data
+        setInstructorInfo(mockSellerInfo as any);
+        setRecentCourses(mockSellerProducts.slice(0, 5));
+        setStats(mockSellerStats);
         toast.error('Failed to load dashboard data');
       } finally {
         setIsLoading(false);
@@ -170,9 +201,9 @@ const InstructorDashboard: React.FC = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Instructor Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
             <p className="text-gray-600 mt-1">
-              Welcome back{instructorInfo ? `, ${instructorInfo.firstName} ${instructorInfo.lastName}` : ''}! Here's your teaching overview.
+              Chào mừng trở lại{instructorInfo ? `, ${instructorInfo.firstName} ${instructorInfo.lastName}` : ''}! Tổng quan bán hàng của bạn.
             </p>
           </div>
           <Link
@@ -180,7 +211,7 @@ const InstructorDashboard: React.FC = () => {
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
           >
             <PlusIcon className="h-5 w-5" />
-            Create New Course
+            Thêm sản phẩm mới
           </Link>
         </div>
 
@@ -188,30 +219,30 @@ const InstructorDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             icon={<BookOpenIcon className="h-6 w-6 text-blue-600" />}
-            title="Total Courses"
+            title="Tổng sản phẩm"
             value={stats.totalCourses}
-            change="+2 this month"
+            change="+2 tháng này"
             color="text-blue-600"
           />
           <StatCard
             icon={<UserGroupIcon className="h-6 w-6 text-green-600" />}
-            title="Total Students"
+            title="Tổng customers"
             value={stats.totalStudents}
-            change="+12% this month"
+            change="+12% tháng này"
             color="text-green-600"
           />
           <StatCard
             icon={<CurrencyDollarIcon className="h-6 w-6 text-yellow-600" />}
-            title="Total Revenue"
-            value={`$${stats.totalRevenue.toLocaleString()}`}
-            change="+8% this month"
+            title="Tổng doanh thu"
+            value={`${(stats.totalRevenue / 1000000).toFixed(1)}M VND`}
+            change="+8% tháng này"
             color="text-yellow-600"
           />
           <StatCard
             icon={<PlayIcon className="h-6 w-6 text-purple-600" />}
-            title="Total Lessons"
+            title="Tổng items"
             value={stats.totalLessons}
-            change="+5 this week"
+            change="+5 tuần này"
             color="text-purple-600"
           />
         </div>
@@ -221,7 +252,7 @@ const InstructorDashboard: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Recent Courses</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Sản phẩm gần đây</h2>
                 <Link
                   to="/instructor/courses"
                   className="text-blue-600 hover:text-blue-800 text-sm font-medium"
@@ -290,7 +321,7 @@ const InstructorDashboard: React.FC = () => {
           {/* Recent Activity */}
           <div>
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Hoạt động gần đây</h2>
               <div className="space-y-4">
                 {recentActivities.length > 0 ? (
                   recentActivities.map((activity) => (
@@ -331,35 +362,35 @@ const InstructorDashboard: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Thao tác nhanh</h2>
               <div className="space-y-3">
                 <Link
                   to="/instructor/add-course"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <PlusIcon className="h-5 w-5 text-blue-600" />
-                  <span className="text-sm font-medium text-gray-900">Create New Course</span>
+                  <span className="text-sm font-medium text-gray-900">Thêm sản phẩm mới</span>
                 </Link>
                 <Link
-                  to="/instructor/courses"
+                  to="/instructors/view-products"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <BookOpenIcon className="h-5 w-5 text-green-600" />
-                  <span className="text-sm font-medium text-gray-900">Manage Courses</span>
+                  <span className="text-sm font-medium text-gray-900">Quản lý sản phẩm</span>
                 </Link>
                 <Link
-                  to="/instructor/analytics"
+                  to="/instructors"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <ChartBarIcon className="h-5 w-5 text-purple-600" />
-                  <span className="text-sm font-medium text-gray-900">View Analytics</span>
+                  <span className="text-sm font-medium text-gray-900">Xem thống kê</span>
                 </Link>
                 <Link
-                  to="/instructor/students"
+                  to="/instructors/view-students"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <UserGroupIcon className="h-5 w-5 text-yellow-600" />
-                  <span className="text-sm font-medium text-gray-900">Manage Students</span>
+                  <span className="text-sm font-medium text-gray-900">Quản lý customers</span>
                 </Link>
               </div>
             </div>

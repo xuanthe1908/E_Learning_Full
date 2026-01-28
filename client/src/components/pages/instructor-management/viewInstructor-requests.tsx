@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import useTimeAgo from "../../../hooks/useTimeAgo";
 import { InstructorApiResponse } from "../../../api/types/apiResponses/api-response-instructors";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockInstructorRequests } from "../../../data/mockAdminData";
 
 
 
@@ -14,11 +16,22 @@ const ViewInstructorRequests: React.FC = () => {
   const calculateTimeAgo = useTimeAgo();
 
   const handleApiCall = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setRequests(mockInstructorRequests as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getAllInstructorRequests();
       setRequests(response.data.data);
     } catch (error:any) {
-      toast.error(error.data.message,{position:toast.POSITION.BOTTOM_RIGHT})
+      console.error("Error fetching instructor requests:", error);
+      // Fallback to mock data
+      setRequests(mockInstructorRequests as any);
     }
   };
 

@@ -15,7 +15,7 @@ import { selectStudentId } from "../../../redux/reducers/studentSlice";
 import { selectCourse } from "redux/reducers/courseSlice";
 import ShimmerEffectWatchLessons from "../../shimmer/watch-lessons-shimmer";
 import ShimmerVideoPlayer from "../../shimmer/shimmer-video-player";
-import AiChatWidget from "components/aiChat/AiChatWidget";
+import ShopWidget from "components/shop/ShopWidget";
 
 const WatchLessons: React.FC = () => {
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
@@ -213,7 +213,7 @@ const WatchLessons: React.FC = () => {
             </li>
           ))}
         </ul>
-        <AiChatWidget courseId={courseId} lessonId={lessonId} />
+        <ShopWidget courseId={courseId} lessonId={lessonId} />
       </div>
     </div>
   );

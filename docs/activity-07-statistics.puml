@@ -1,0 +1,30 @@
+@startuml Activity_Statistics
+
+start
+
+if (User role?) then (Admin)
+  :Access admin dashboard;
+  :View system statistics;
+  :View user statistics;
+  :View product statistics;
+  :View revenue charts;
+  :View reports;
+  :Export reports;
+  
+elseif (Seller) then
+  :Access seller dashboard;
+  :View product statistics;
+  :View customer statistics;
+  :View revenue data;
+  :View sales charts;
+  
+else (Customer)
+  :Access customer dashboard;
+  :View purchase history;
+  :View spending statistics;
+endif
+
+stop
+
+@enduml
+

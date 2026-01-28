@@ -1,0 +1,46 @@
+@startuml Sequence_Contact_Support
+
+actor User
+participant "Client" as Client
+participant "Contact API" as API
+participant "Database" as DB
+participant "Email Service" as Email
+
+== Submit Contact Form ==
+User -> Client: Fill contact form
+Client -> Client: Validate form
+Client -> API: POST /api/contact
+API -> API: Validate data
+API -> DB: Save contact message
+DB --> API: Message saved
+API -> Email: Send confirmation email
+Email --> User: Confirmation email
+API --> Client: Success response
+Client --> User: Show success message
+
+== Admin View Messages ==
+User -> Client: Access admin panel
+Client -> API: GET /api/admin/contact
+API -> DB: Get contact messages
+DB --> API: Messages list
+API --> Client: Return messages
+Client --> User: Display messages
+
+== Admin Reply ==
+User -> Client: Select message
+Client -> API: GET /api/admin/contact/:id
+API -> DB: Get message details
+DB --> API: Message data
+API --> Client: Return message
+Client -> Client: Enter reply
+Client -> API: POST /api/admin/contact/:id/reply
+API -> DB: Save reply
+DB --> API: Reply saved
+API -> Email: Send reply email
+Email --> User: Reply email
+API -> DB: Mark as replied
+DB --> API: Status updated
+API --> Client: Success response
+
+@enduml
+

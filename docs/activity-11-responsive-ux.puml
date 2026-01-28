@@ -1,0 +1,33 @@
+@startuml Activity_Responsive_UX
+
+start
+
+:User accesses application;
+:Detect device type;
+:Detect screen size;
+
+if (Device type?) then (Mobile)
+  :Load mobile layout;
+  :Show mobile navigation;
+  :Optimize images;
+  
+elseif (Tablet) then
+  :Load tablet layout;
+  :Show tablet navigation;
+  
+else (Desktop)
+  :Load desktop layout;
+  :Show full navigation;
+endif
+
+:User interacts with UI;
+:Show loading states;
+:Handle user actions;
+:Display feedback;
+:Handle errors gracefully;
+:Show offline detection if needed;
+
+stop
+
+@enduml
+

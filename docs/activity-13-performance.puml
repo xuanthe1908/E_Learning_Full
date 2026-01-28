@@ -1,0 +1,28 @@
+@startuml Activity_Performance
+
+start
+
+:User makes request;
+:Check Redis cache;
+
+if (Data in cache?) then (yes)
+  :Return cached data;
+  stop
+endif
+
+:Query database;
+:Process data;
+:Store in Redis cache;
+:Return response;
+
+:Load page components;
+:Apply lazy loading;
+:Optimize images;
+:Stream videos;
+:Apply pagination;
+:Code splitting;
+
+stop
+
+@enduml
+

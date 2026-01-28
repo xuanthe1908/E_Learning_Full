@@ -1,0 +1,29 @@
+@startuml Activity_Search_Filter
+
+start
+
+:User accesses shop page;
+:Enter search query;
+
+if (Apply filters?) then (yes)
+  :Select category filter;
+  :Select price range;
+  :Select rating filter;
+  :Select sort option;
+endif
+
+:Submit search/filter;
+:Query database;
+:Apply filters;
+:Sort results;
+:Return filtered results;
+:Display product list;
+:Show pagination;
+
+:User selects product;
+:View product details;
+
+stop
+
+@enduml
+

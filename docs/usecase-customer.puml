@@ -1,0 +1,81 @@
+@startuml UseCase_Customer_Shop_Platform
+
+left to right direction
+
+actor "Customer\n\nRole: End users who browse\nand purchase products" as Customer
+
+package "Authentication" {
+    usecase "Register Account" as UC_Reg
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Change Password" as UC_ChangePass
+}
+
+package "Product Browsing" {
+    usecase "Browse Products" as UC_Browse
+    usecase "Search Products" as UC_Search
+    usecase "View Product Details" as UC_ViewDetail
+    usecase "Filter Products" as UC_Filter
+}
+
+package "Shopping" {
+    usecase "Add to Cart" as UC_AddCart
+    usecase "View Cart" as UC_ViewCart
+    usecase "Checkout" as UC_Checkout
+    usecase "Pay with VNPay" as UC_Pay
+    usecase "View Purchase History" as UC_History
+}
+
+package "Product Viewing" {
+    usecase "View Product Items" as UC_ViewItems
+    usecase "View Product Media" as UC_ViewMedia
+}
+
+package "Community" {
+    usecase "Create Discussion" as UC_Discuss
+    usecase "Reply Discussion" as UC_Reply
+    usecase "Review Product" as UC_Review
+}
+
+package "AI Chat" {
+    usecase "Create Chat" as UC_CreateChat
+    usecase "Send Message" as UC_SendMsg
+    usecase "View Chat History" as UC_ChatHistory
+}
+
+package "Profile" {
+    usecase "View Profile" as UC_Profile
+    usecase "Update Profile" as UC_UpdateProfile
+    usecase "View Dashboard" as UC_Dashboard
+}
+
+Customer --> UC_Reg
+Customer --> UC_Login
+Customer --> UC_Logout
+Customer --> UC_ChangePass
+Customer --> UC_Browse
+Customer --> UC_Search
+Customer --> UC_ViewDetail
+Customer --> UC_Filter
+Customer --> UC_AddCart
+Customer --> UC_ViewCart
+Customer --> UC_Checkout
+Customer --> UC_Pay
+Customer --> UC_History
+Customer --> UC_ViewItems
+Customer --> UC_ViewMedia
+Customer --> UC_Discuss
+Customer --> UC_Reply
+Customer --> UC_Review
+Customer --> UC_CreateChat
+Customer --> UC_SendMsg
+Customer --> UC_ChatHistory
+Customer --> UC_Profile
+Customer --> UC_UpdateProfile
+Customer --> UC_Dashboard
+
+UC_Checkout ..> UC_AddCart : <<extend>>
+UC_Pay ..> UC_Checkout : <<extend>>
+UC_ViewItems ..> UC_ViewDetail : <<extend>>
+
+@enduml

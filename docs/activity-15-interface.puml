@@ -1,0 +1,28 @@
+@startuml Activity_Interface
+
+start
+
+:User accesses application;
+:Load UI components;
+:Apply Tailwind CSS styles;
+:Load icons (Lucide React);
+:Initialize animations;
+:Check dark mode preference;
+
+if (Dark mode enabled?) then (yes)
+  :Apply dark theme;
+else (no)
+  :Apply light theme;
+endif
+
+:User interacts with components;
+:Show hover effects;
+:Show transitions;
+:Display icons;
+:Handle responsive breakpoints;
+:Update UI state;
+
+stop
+
+@enduml
+

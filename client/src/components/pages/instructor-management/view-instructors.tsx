@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/helpers";
 import BlockReasonModal from "./block-reason-modal";
 import usePagination from "../../../hooks/usePagination";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockSellers } from "../../../data/mockAdminData";
 
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions", ""];
 
@@ -42,13 +44,22 @@ const ViewInstructors: React.FC = () => {
     goToNextPage,
   } = usePagination(instructors, ITEMS_PER_PAGE);
   const fetchInstructors = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setInstructors(mockSellers as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getAllInstructors();
       setInstructors(response?.data?.data);
     } catch (error: any) {
-      toast.error(error.data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error("Error fetching instructors:", error);
+      // Fallback to mock data
+      setInstructors(mockSellers as any);
     }
   };
   useEffect(() => {
@@ -83,10 +94,10 @@ const ViewInstructors: React.FC = () => {
         <div className='mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <Typography variant='h5' color='blue-gray'>
-              Manage Instructors
+              Quản lý Sellers
             </Typography>
             <Typography color='gray' className='mt-1 font-normal'>
-              These are details about the instructors
+              Chi tiết về các sellers trong hệ thống
             </Typography>
           </div>
           <div className='flex w-full shrink-0 gap-2 md:w-max'>

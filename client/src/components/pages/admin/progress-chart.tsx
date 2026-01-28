@@ -18,13 +18,13 @@ const CourseCategoryChart: React.FC<Props> = ({ data = [] }) => {
     .filter(category => category && typeof category === 'object')
     .map(category => ({
       _id: category?._id || 'unknown',
-      name: category?.name || 'Unknown Category',
+      name: category?.name || 'Danh mục không xác định',
       courseCount: Number(category?.courseCount) || 0,
     }));
 
   // ✅ Fallback if no data
   const displayData = validData.length > 0 ? validData : [
-    { _id: 'no-data', name: 'No Categories', courseCount: 1 }
+    { _id: 'no-data', name: 'Không có danh mục', courseCount: 1 }
   ];
 
   const categoryNames = displayData.map((category) => category.name);

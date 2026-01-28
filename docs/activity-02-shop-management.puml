@@ -1,0 +1,54 @@
+@startuml Activity_Shop_Management
+
+start
+
+if (User role?) then (Customer)
+  :Browse products page;
+  :Apply filters/search;
+  :View product list;
+  :Select product;
+  :View product details;
+  :View items list;
+  :Add to cart;
+  
+elseif (Seller) then
+  :Access seller dashboard;
+  
+  if (Action?) then (Create Product)
+    :Fill product form;
+    :Upload thumbnail;
+    :Upload video;
+    :Upload PDF;
+    :Set product info;
+    :Select category;
+    :Submit product;
+    :Product created;
+    
+  elseif (Edit Product) then
+    :Select product;
+    :Edit product info;
+    :Update media files;
+    :Save changes;
+    
+  elseif (Manage Items) then
+    :Select product;
+    :Add/Edit/Delete items;
+    :Upload item media;
+    :Set item order;
+    :Save changes;
+    
+  else (View Products)
+    :View my products list;
+    :View product statistics;
+  endif
+  
+else (Admin)
+  :View all products;
+  :Manage product categories;
+  :Approve/Reject products;
+endif
+
+stop
+
+@enduml
+

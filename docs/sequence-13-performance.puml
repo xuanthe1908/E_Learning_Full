@@ -1,0 +1,43 @@
+@startuml Sequence_Performance
+
+actor User
+participant "Client" as Client
+participant "API" as API
+participant "Redis Cache" as Cache
+participant "Database" as DB
+
+== Cached Request ==
+User -> Client: Request data
+Client -> API: GET /api/data
+API -> Cache: Check cache
+
+alt Data in cache
+    Cache --> API: Cached data
+    API --> Client: Return cached data
+    Client --> User: Display (fast)
+else Data not in cache
+    Cache --> API: Cache miss
+    API -> DB: Query database
+    DB --> API: Data
+    API -> Cache: Store in cache
+    API --> Client: Return data
+    Client --> User: Display
+end
+
+== Lazy Loading ==
+User -> Client: Scroll page
+Client -> Client: Detect viewport
+Client -> Client: Load visible components
+Client -> Client: Lazy load images
+Client -> Client: Load on demand
+Client --> User: Progressive rendering
+
+== Code Splitting ==
+Client -> Client: Load route
+Client -> Client: Split bundle
+Client -> Client: Load route chunk
+Client -> Client: Initialize route
+Client --> User: Render route
+
+@enduml
+

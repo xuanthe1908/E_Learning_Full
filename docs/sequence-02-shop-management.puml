@@ -1,0 +1,52 @@
+@startuml Sequence_Shop_Management
+
+actor User
+participant "Client" as Client
+participant "Product API" as API
+participant "Database" as DB
+participant "Cloudinary" as Cloud
+
+== Browse Products ==
+User -> Client: View shop page
+Client -> API: GET /api/shop/products
+API -> DB: Query products
+DB --> API: Product list
+API --> Client: Return products
+Client --> User: Display products
+
+== Create Product (Seller) ==
+User -> Client: Click create product
+Client -> Client: Fill product form
+User -> Client: Upload files
+Client -> Cloud: Upload thumbnail
+Cloud --> Client: Thumbnail URL
+Client -> Cloud: Upload video
+Cloud --> Client: Video URL
+Client -> API: POST /api/shop/products
+API -> DB: Save product
+DB --> API: Product created
+API --> Client: Success response
+Client --> User: Show success
+
+== Edit Product ==
+User -> Client: Select product to edit
+Client -> API: GET /api/shop/products/:id
+API -> DB: Get product
+DB --> API: Product data
+API --> Client: Return product
+Client -> Client: Edit product info
+Client -> API: PUT /api/shop/products/:id
+API -> DB: Update product
+DB --> API: Product updated
+API --> Client: Success response
+
+== View Product Details ==
+User -> Client: Click product
+Client -> API: GET /api/shop/products/:id
+API -> DB: Get product details
+DB --> API: Product + items
+API --> Client: Return product data
+Client --> User: Display product details
+
+@enduml
+

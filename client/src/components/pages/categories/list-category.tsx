@@ -18,6 +18,8 @@ import usePagination from "../../../hooks/usePagination";
 import useSearch from "../../../hooks/useSearch";
 import { searchCourseService } from "api/services/course/course-service";
 import END_POINTS from "constants/endpoints";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockCategories } from "../../../data/mockAdminData";
 
 const TABLE_HEAD = ["Name", "description", "Date added", ""];
 
@@ -33,13 +35,22 @@ const ListCategories: React.FC = () => {
   } = usePagination(categories, 7);
   const searchResult = useSearch(categories,searchQuery)
   const fetchCategories = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setCategories(mockCategories as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getAllCategories();
       setCategories(response.data); 
-    } catch (error) {  
-      toast.error("Something went wrong", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      // Fallback to mock data
+      setCategories(mockCategories as any);
     }
   };
   useEffect(() => {

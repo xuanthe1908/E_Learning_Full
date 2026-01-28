@@ -1,0 +1,35 @@
+@startuml Activity_File_Management
+
+start
+
+:User selects file to upload;
+:Validate file type;
+:Validate file size;
+
+if (File valid?) then (no)
+  :Show validation error;
+  stop
+endif
+
+:Upload file to Cloudinary;
+:Cloudinary processes file;
+:Generate file URL;
+:Save file URL to database;
+:Return file URL;
+:Display uploaded file;
+
+if (File type?) then (Image)
+  :Optimize image;
+  :Generate thumbnails;
+elseif (Video) then
+  :Process video;
+  :Generate streaming URL;
+else (PDF)
+  :Store PDF;
+  :Generate preview;
+endif
+
+stop
+
+@enduml
+

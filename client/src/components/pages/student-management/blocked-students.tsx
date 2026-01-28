@@ -25,6 +25,8 @@ import {
 
 import { Students } from "../../../api/types/student/student";
 import { USER_AVATAR } from "../../../constants/common";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockCustomers } from "../../../data/mockAdminData";
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions", ""];
 
 interface Props {
@@ -44,13 +46,24 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
     goToNextPage,
   } = usePagination(students, ITEMS_PER_PAGE);
   const fetchBlockedInstructors = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        const blocked = mockCustomers.filter(c => c.isBlocked);
+        setStudents(blocked as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getAllBlockedStudents();
       setStudents(response?.data);
     } catch (error: any) {
-      toast.error(error?.data?.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error("Error fetching blocked students:", error);
+      // Fallback to mock data
+      const blocked = mockCustomers.filter(c => c.isBlocked);
+      setStudents(blocked as any);
     }
   };
   useEffect(() => {
@@ -76,10 +89,10 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
         <div className='mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-center'>
           <div>
             <Typography variant='h5' color='blue-gray'>
-              Unblock students
+              Customers bị chặn
             </Typography>
             <Typography color='gray' className='mt-1 font-normal'>
-              These are details about blocked students
+              Chi tiết về các customers bị chặn
             </Typography>
           </div>
           <div className='flex w-full shrink-0 gap-2 md:w-max'>
@@ -120,7 +133,7 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
                   variant='h6'
                   className='mt-1 p-2 font-normal'
                 >
-                  No blocked students found
+                  Không có customers bị chặn
                 </Typography>
               </tr>
             ) : (

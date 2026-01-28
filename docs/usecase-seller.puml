@@ -1,0 +1,82 @@
+@startuml UseCase_Seller_Shop_Platform
+
+left to right direction
+
+actor "Seller\n\nRole: Product creators\nand sellers" as Seller
+
+package "Authentication" {
+    usecase "Register" as UC_Reg
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Change Password" as UC_ChangePass
+    usecase "Request Approval" as UC_Request
+}
+
+package "Product Management" {
+    usecase "Create Product" as UC_Create
+    usecase "Edit Product" as UC_Edit
+    usecase "Delete Product" as UC_Delete
+    usecase "View My Products" as UC_ViewProducts
+}
+
+package "Item Management" {
+    usecase "Add Item" as UC_AddItem
+    usecase "Edit Item" as UC_EditItem
+    usecase "Delete Item" as UC_DeleteItem
+    usecase "View Items List" as UC_ViewItems
+}
+
+package "Analytics" {
+    usecase "View My Customers" as UC_Customers
+    usecase "View Product Statistics" as UC_Stats
+    usecase "View Revenue" as UC_Revenue
+}
+
+package "Community" {
+    usecase "Reply to Discussion" as UC_Reply
+    usecase "Manage Channels" as UC_Channels
+}
+
+package "AI Chat" {
+    usecase "Create Chat" as UC_CreateChat
+    usecase "Send Message" as UC_SendMsg
+    usecase "View Chat History" as UC_ChatHistory
+}
+
+package "Profile" {
+    usecase "View Profile" as UC_Profile
+    usecase "Update Profile" as UC_UpdateProfile
+    usecase "View Dashboard" as UC_Dashboard
+}
+
+Seller --> UC_Reg
+Seller --> UC_Login
+Seller --> UC_Logout
+Seller --> UC_ChangePass
+Seller --> UC_Request
+Seller --> UC_Create
+Seller --> UC_Edit
+Seller --> UC_Delete
+Seller --> UC_ViewProducts
+Seller --> UC_AddItem
+Seller --> UC_EditItem
+Seller --> UC_DeleteItem
+Seller --> UC_ViewItems
+Seller --> UC_Customers
+Seller --> UC_Stats
+Seller --> UC_Revenue
+Seller --> UC_Reply
+Seller --> UC_Channels
+Seller --> UC_CreateChat
+Seller --> UC_SendMsg
+Seller --> UC_ChatHistory
+Seller --> UC_Profile
+Seller --> UC_UpdateProfile
+Seller --> UC_Dashboard
+
+UC_Edit ..> UC_Create : <<extend>>
+UC_Delete ..> UC_Create : <<extend>>
+UC_EditItem ..> UC_AddItem : <<extend>>
+UC_DeleteItem ..> UC_AddItem : <<extend>>
+
+@enduml

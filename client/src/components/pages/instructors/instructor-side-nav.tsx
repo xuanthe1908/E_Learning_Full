@@ -18,31 +18,31 @@ const icon = {
 };
 const routes = [
   {
-    title: "Home",
+    title: "Dashboard",
     icon: <HomeIcon {...icon} />,
     value: "home",
-    path:'/instructors/'
+    path:'/instructors'
   },
   {
-    title: "View courses",
+    title: "Sản phẩm của tôi",
     icon: <Square3Stack3DIcon {...icon} />,
     value: "view-course",
-    path:'/instructors/view-course'
+    path:'/instructors/view-products'
   },
   {
-    title: "Add courses",
+    title: "Thêm sản phẩm",
     icon: <MdLibraryAdd {...icon} />,
     value: "add-course",
-    path:'/instructors/add-course'
+    path:'/instructors/add-product'
   },
   {
-    title:"My students",
+    title:"Khách hàng của tôi",
     icon:<FaUserGraduate {...icon}/>,
     value:"view-students",
     path:"/instructors/view-students"
   },
   {
-    title:"My Profile",
+    title:"Hồ sơ của tôi",
     icon:<UserCircleIcon {...icon}/>,
     value:"view-profile",
     path:"/instructors/view-profile"

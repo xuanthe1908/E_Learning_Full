@@ -1,0 +1,42 @@
+@startuml Sequence_Additional_Features
+
+actor User
+participant "Client" as Client
+participant "Feature API" as API
+participant "Database" as DB
+
+== Wishlist ==
+User -> Client: View product
+User -> Client: Click add to wishlist
+Client -> API: POST /api/wishlist
+API -> DB: Add to wishlist
+DB --> API: Item added
+API --> Client: Success response
+Client --> User: Show added message
+
+User -> Client: View wishlist
+Client -> API: GET /api/wishlist
+API -> DB: Get wishlist items
+DB --> API: Wishlist data
+API --> Client: Return wishlist
+Client --> User: Display wishlist
+
+== Report Content ==
+User -> Client: Click report
+Client -> Client: Fill report form
+Client -> API: POST /api/reports
+API -> DB: Save report
+DB --> API: Report saved
+API --> Client: Success response
+Client --> User: Show confirmation
+
+== View About/Community/Contact ==
+User -> Client: Navigate to page
+Client -> API: GET /api/pages/:pageType
+API -> DB: Get page content
+DB --> API: Page data
+API --> Client: Return content
+Client --> User: Display page
+
+@enduml
+

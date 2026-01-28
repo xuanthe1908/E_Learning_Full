@@ -1,0 +1,214 @@
+// Database Entity-Relationship Diagram for Shop Platform
+// Generated for dbdiagram.io
+// https://dbdiagram.io
+
+// ==========================================
+// CUSTOMER (Khách hàng)
+// ==========================================
+Table customers {
+  _id ObjectId [pk]
+  firstName string
+  lastName string
+  email string [unique, not null]
+  profilePic json
+  mobile string
+  password string
+  interests string[]
+  coursesEnrolled ObjectId[]
+  dateJoined datetime [default: `now()`]
+  isGoogleUser boolean [default: false]
+  isBlocked boolean [default: false]
+  blockedReason string
+}
+
+// ==========================================
+// SELLER (Người bán)
+// ==========================================
+Table sellers {
+  _id ObjectId [pk]
+  firstName string [not null]
+  lastName string [not null]
+  email string [unique, not null]
+  profilePic json [not null]
+  certificates json[]
+  mobile string [unique, not null]
+  qualification string [not null]
+  subjects string[] [not null]
+  experience string [not null]
+  skills string [not null]
+  about string [not null]
+  password string [not null]
+  isVerified boolean [default: false]
+  coursesCreated ObjectId[]
+  rejected boolean [default: false]
+  rejectedReason string
+  isBlocked boolean [default: false]
+  blockedReason string
+  dateJoined datetime [default: `now()`]
+  profileUrl string
+}
+
+// ==========================================
+// ADMIN (Quản trị viên)
+// ==========================================
+Table admins {
+  _id ObjectId [pk]
+  email string [unique, not null]
+  password string [not null]
+}
+
+// ==========================================
+// PRODUCT (Sản phẩm)
+// ==========================================
+Table products {
+  _id ObjectId [pk]
+  instructorId ObjectId [ref: > sellers._id, not null]
+  title string [not null]
+  duration number [not null]
+  category string [not null]
+  level string [not null]
+  tags string[] [not null]
+  price number
+  isPaid boolean [not null]
+  about string [not null]
+  description string [not null]
+  syllabus string[] [not null]
+  requirements string[]
+  thumbnail json [not null]
+  thumbnailUrl string
+  guidelines json [not null]
+  guidelinesUrl string
+  introduction json [not null]
+  coursesEnrolled ObjectId[]
+  rating number [default: 0]
+  isVerified boolean [default: false]
+  createdAt datetime [default: `now()`]
+  completionStatus number [default: 0]
+}
+
+// ==========================================
+// ITEM (Item của sản phẩm)
+// ==========================================
+Table items {
+  _id ObjectId [pk]
+  courseId ObjectId [ref: > products._id, not null]
+  instructorId ObjectId [ref: > sellers._id, not null]
+  title string [not null]
+  description string [not null]
+  contents string[] [not null]
+  duration number [not null]
+  about string [not null]
+  media json[]
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+// ==========================================
+// CATEGORY (Danh mục)
+// ==========================================
+Table categories {
+  _id ObjectId [pk]
+  name string [unique, not null]
+  description string [not null]
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+// ==========================================
+// PAYMENT (Thanh toán)
+// ==========================================
+Table payments {
+  _id ObjectId [pk]
+  orderId string [unique, not null]
+  paymentId string
+  courseId ObjectId [ref: > products._id, not null]
+  studentId ObjectId [ref: > customers._id]
+  amount number [not null]
+  currency string [default: 'VND']
+  paymentMethod string [not null]
+  status string [default: 'pending'] // pending, completed, failed, expired, cancelled
+  transactionId string
+  responseCode string
+  payDate string
+  expiresAt datetime
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+// ==========================================
+// AI CHAT (Chat AI)
+// ==========================================
+Table ai_chats {
+  _id ObjectId [pk]
+  userId ObjectId [not null] // Can reference customers or sellers
+  userType string [not null] // 'students' or 'instructor'
+  title string [not null, default: 'Chat mới']
+  messages json[] [not null]
+  isActive boolean [default: true]
+  metadata json
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+// ==========================================
+// DISCUSSION (Thảo luận)
+// ==========================================
+Table discussions {
+  _id ObjectId [pk]
+  studentId ObjectId [ref: > customers._id, not null]
+  lessonId ObjectId [ref: > items._id, not null]
+  message string [not null]
+  replies json[]
+  createdAt datetime [default: `now()`]
+  updatedAt datetime [default: `now()`]
+}
+
+// ==========================================
+// QUIZ (Câu hỏi)
+// ==========================================
+Table quizzes {
+  _id ObjectId [pk]
+  courseId ObjectId [ref: > products._id, not null]
+  lessonId ObjectId [ref: > items._id, not null]
+  questions json[] [not null]
+  createdAt datetime [default: `now()`]
+}
+
+// ==========================================
+// CONTACT (Liên hệ)
+// ==========================================
+Table contacts {
+  _id ObjectId [pk]
+  name string [not null]
+  email string [not null]
+  message string [not null]
+  createdAt datetime [default: `now()`]
+}
+
+// ==========================================
+// REFRESH TOKEN (Token làm mới)
+// ==========================================
+Table refresh_tokens {
+  _id ObjectId [pk]
+  userId ObjectId [not null] // Can reference customers, sellers, or admins
+  userType string [not null] // 'students', 'instructor', or 'admin'
+  token string [not null]
+  expiresAt datetime [not null]
+  createdAt datetime [default: `now()`]
+}
+
+// ==========================================
+// RELATIONSHIPS NOTES
+// ==========================================
+// 1. Seller creates many Products (1:N)
+// 2. Product contains many Items (1:N)
+// 3. Product belongs to Category (N:1) - via category field
+// 4. Customer purchases many Products (N:M) - via coursesEnrolled array
+// 5. Customer makes many Payments (1:N)
+// 6. Payment is for one Product (N:1)
+// 7. Customer has many AI Chats (1:N)
+// 8. Seller has many AI Chats (1:N)
+// 9. Item has many Discussions (1:N)
+// 10. Customer creates many Discussions (1:N)
+// 11. Item has many Quizzes (1:N)
+

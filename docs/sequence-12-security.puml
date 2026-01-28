@@ -1,0 +1,53 @@
+@startuml Sequence_Security
+
+actor User
+participant "Client" as Client
+participant "API Gateway" as Gateway
+participant "Auth Middleware" as Auth
+participant "Rate Limiter" as RateLimit
+participant "Validator" as Validator
+participant "API" as API
+participant "Database" as DB
+
+== Request Processing ==
+User -> Client: Make request
+Client -> Gateway: HTTP Request
+Gateway -> Auth: Verify JWT token
+
+alt Token invalid
+    Auth -> Auth: Check refresh token
+    alt Refresh token valid
+        Auth -> Auth: Generate new access token
+        Auth --> Gateway: New token
+    else Refresh token invalid
+        Auth --> Gateway: 401 Unauthorized
+        Gateway --> Client: Redirect to login
+    end
+else Token valid
+    Auth --> Gateway: Token verified
+end
+
+Gateway -> RateLimit: Check rate limit
+
+alt Rate limit exceeded
+    RateLimit --> Gateway: 429 Too Many Requests
+    Gateway --> Client: Rate limit error
+else Rate limit OK
+    RateLimit --> Gateway: Rate limit OK
+    Gateway -> Validator: Validate input
+    Validator -> Validator: Sanitize data
+    Validator -> Validator: Check SQL injection
+    Validator -> Validator: Check XSS
+    Validator --> Gateway: Validation passed
+    Gateway -> API: Process request
+    API -> DB: Query database
+    DB --> API: Data
+    API --> Gateway: Response
+    Gateway -> Gateway: Apply CORS
+    Gateway -> Gateway: Apply security headers
+    Gateway --> Client: Secure response
+    Client --> User: Display result
+end
+
+@enduml
+

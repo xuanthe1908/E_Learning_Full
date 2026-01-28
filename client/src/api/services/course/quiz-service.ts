@@ -10,7 +10,7 @@ export const getCloudFrontVideoUrlService = async (endpoint:string,key:string)=>
   
   export const getQuizzesByLessonService = async(endpoint:string,lessonId:string)=>{
     const response = await api.get(
-      `${CONFIG_KEYS.API_BASE_URL}/${endpoint}/${lessonId}`
+      `${CONFIG_KEYS.API_BASE_URL}/${endpoint}/${lessonId}/quizzes`
     );
     return response.data;
   }

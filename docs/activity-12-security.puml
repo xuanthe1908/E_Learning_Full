@@ -1,0 +1,41 @@
+@startuml Activity_Security
+
+start
+
+:User makes request;
+:Check authentication token;
+
+if (Token valid?) then (no)
+  :Check refresh token;
+  
+  if (Refresh token valid?) then (no)
+    :Return 401 Unauthorized;
+    :Redirect to login;
+    stop
+  else (yes)
+    :Generate new access token;
+    :Return new token;
+  endif
+endif
+
+:Validate user permissions;
+:Check rate limits;
+
+if (Rate limit exceeded?) then (yes)
+  :Return 429 Too Many Requests;
+  stop
+endif
+
+:Sanitize input data;
+:Validate input;
+:Check for SQL injection;
+:Check for XSS;
+:Apply CORS policy;
+:Apply security headers;
+:Process request;
+:Return response;
+
+stop
+
+@enduml
+

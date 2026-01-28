@@ -1,0 +1,50 @@
+@startuml Activity_User_Management
+
+start
+
+if (User role?) then (Customer)
+  :Access customer dashboard;
+  :View profile;
+  :Update profile info;
+  :Change password;
+  :Upload avatar;
+  :View purchase history;
+  
+elseif (Seller) then
+  :Access seller dashboard;
+  :View profile;
+  :Update seller info;
+  :View my customers;
+  :View product statistics;
+  :View revenue;
+  
+else (Admin)
+  :Access admin dashboard;
+  
+  if (Action?) then (Manage Sellers)
+    :View sellers list;
+    :Review seller requests;
+    if (Approve?) then (yes)
+      :Approve seller;
+      :Send notification;
+    else (no)
+      :Reject seller;
+      :Send notification;
+    endif
+    :Block/Unblock seller;
+    
+  elseif (Manage Customers) then
+    :View customers list;
+    :Block/Unblock customer;
+    :View customer details;
+    
+  else (Manage Profile)
+    :Update admin profile;
+    :Change password;
+  endif
+endif
+
+stop
+
+@enduml
+

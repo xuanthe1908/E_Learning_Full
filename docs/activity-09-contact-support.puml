@@ -1,0 +1,25 @@
+@startuml Activity_Contact_Support
+
+start
+
+:User accesses contact page;
+:Fill contact form;
+:Enter name, email, subject;
+:Enter message;
+:Submit contact form;
+
+:Save message to database;
+:Send confirmation email;
+:Show success message;
+
+:Admin views contact messages;
+:Admin selects message;
+:Admin reads message;
+:Admin replies to message;
+:Send reply email to user;
+:Mark message as replied;
+
+stop
+
+@enduml
+

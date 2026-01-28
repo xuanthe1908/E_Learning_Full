@@ -30,12 +30,12 @@ export default function StudentsTab() {
 
   const data: TabData[] = [
     {
-      label: "All students",
+      label: "Tất cả customers",
       value: "all",
       icon: Square3Stack3DIcon,
     },
     {
-      label: "Blocked",
+      label: "Bị chặn",
       value: "blocked",
       icon: UserCircleIcon,
     },

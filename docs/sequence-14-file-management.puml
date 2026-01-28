@@ -1,0 +1,53 @@
+@startuml Sequence_File_Management
+
+actor User
+participant "Client" as Client
+participant "File API" as API
+participant "Validator" as Validator
+participant "Cloudinary" as Cloud
+participant "Database" as DB
+
+== Upload File ==
+User -> Client: Select file
+Client -> Client: Read file
+Client -> Validator: Validate file type
+Validator --> Client: Type valid
+Client -> Validator: Validate file size
+Validator --> Client: Size valid
+Client -> API: POST /api/files/upload
+API -> Validator: Validate file
+Validator --> API: File valid
+API -> Cloud: Upload file
+Cloud -> Cloud: Process file
+Cloud --> API: File URL
+API -> DB: Save file metadata
+DB --> API: File saved
+API --> Client: Return file URL
+Client --> User: Display uploaded file
+
+== Image Optimization ==
+User -> Client: Upload image
+Client -> API: POST /api/files/upload-image
+API -> Cloud: Upload image
+Cloud -> Cloud: Optimize image
+Cloud -> Cloud: Generate thumbnails
+Cloud --> API: Image URLs
+API -> DB: Save image data
+DB --> API: Image saved
+API --> Client: Return URLs
+Client --> User: Display optimized image
+
+== Video Processing ==
+User -> Client: Upload video
+Client -> API: POST /api/files/upload-video
+API -> Cloud: Upload video
+Cloud -> Cloud: Process video
+Cloud -> Cloud: Generate streaming URL
+Cloud --> API: Video URLs
+API -> DB: Save video data
+DB --> API: Video saved
+API --> Client: Return URLs
+Client --> User: Display video player
+
+@enduml
+

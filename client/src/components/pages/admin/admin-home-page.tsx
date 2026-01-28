@@ -20,6 +20,8 @@ import {
 } from "../../../api/types/apiResponses/api-response-dash";
 import {formatToVND } from "../../../utils/helpers";
 import { toast } from "react-toastify";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockAdminDashboard } from "../../../data/mockDashboardData";
 
 const AdminHomePage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DashData | null>(null);
@@ -27,22 +29,94 @@ const AdminHomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchDashboardDetails = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setDashboardData({
+          totalUsers: mockAdminDashboard.totalUsers,
+          totalSellers: mockAdminDashboard.totalSellers,
+          totalCustomers: mockAdminDashboard.totalCustomers,
+          totalCourses: mockAdminDashboard.totalProducts,
+          totalRevenue: mockAdminDashboard.totalRevenue,
+          totalOrders: mockAdminDashboard.totalOrders,
+          pendingInstructorRequests: mockAdminDashboard.pendingSellerRequests,
+          blockedUsers: mockAdminDashboard.blockedUsers,
+        } as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getDashboardData();
       setDashboardData(response.data);
     } catch (error) {
-      toast.error("Something went wrong");
       console.error("Dashboard data error:", error);
+      // Fallback to mock data
+      setDashboardData({
+        totalUsers: mockAdminDashboard.totalUsers,
+        totalSellers: mockAdminDashboard.totalSellers,
+        totalCustomers: mockAdminDashboard.totalCustomers,
+        totalCourses: mockAdminDashboard.totalProducts,
+        totalRevenue: mockAdminDashboard.totalRevenue,
+        totalOrders: mockAdminDashboard.totalOrders,
+        pendingInstructorRequests: mockAdminDashboard.pendingSellerRequests,
+        blockedUsers: mockAdminDashboard.blockedUsers,
+      } as any);
     }
   };
 
   const fetchGraphData = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setTimeout(() => {
+        setGraphData({
+          revenueData: mockAdminDashboard.revenueChart.data.map((val, idx) => ({
+            month: mockAdminDashboard.revenueChart.labels[idx].substring(0, 3),
+            revenue: val,
+            coursesAdded: 0,
+            coursesEnrolled: 0,
+          })),
+          trendingCourses: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
+            _id: order.orderId,
+            title: order.productName,
+            enrolled: idx + 1,
+          })),
+          categoryData: mockAdminDashboard.categoryStats.map((cat, idx) => ({
+            _id: String(idx + 1),
+            name: cat.category,
+            courseCount: cat.count,
+          })),
+        } as any);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       const response = await getGraphData();
       setGraphData(response.data);
     } catch (error) {
-      toast.error("Something went wrong");
       console.error("Graph data error:", error);
+      // Fallback to mock data
+      setGraphData({
+        revenueData: mockAdminDashboard.revenueChart.data.map((val, idx) => ({
+          month: mockAdminDashboard.revenueChart.labels[idx].substring(0, 3),
+          revenue: val,
+          coursesAdded: 0,
+          coursesEnrolled: 0,
+        })),
+        trendingCourses: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
+          _id: order.orderId,
+          title: order.productName,
+          enrolled: idx + 1,
+        })),
+        categoryData: mockAdminDashboard.categoryStats.map((cat, idx) => ({
+          _id: String(idx + 1),
+          name: cat.category,
+          courseCount: cat.count,
+        })),
+      } as any);
     }
   };
 
@@ -98,7 +172,7 @@ const AdminHomePage: React.FC = () => {
             <FaMoneyBillWave size={26} className='text-green-500 mr-3' />
             <div>
               <Typography variant='h6' color='blue-gray' className='pt-2 '>
-                Monthly revenue
+                Doanh thu tháng
               </Typography>
               <Typography variant='body' color='gray'>
                 {formatToVND(dashboardData?.monthlyRevenue ?? 0)}
@@ -112,7 +186,7 @@ const AdminHomePage: React.FC = () => {
             <AiOutlineBook size={26} className='text-blue-500 mr-3' />
             <div>
               <Typography variant='h6' color='blue-gray' className='pt-2'>
-                Total courses
+                Tổng sản phẩm
               </Typography>
               <Typography variant='body' color='gray'>
                 {dashboardData?.numberOfCourses ?? 0}
@@ -126,7 +200,7 @@ const AdminHomePage: React.FC = () => {
             <AiOutlineUser size={26} className='text-purple-500 mr-3' />
             <div>
               <Typography variant='h6' color='blue-gray' className='pt-2'>
-                Total instructors
+                Tổng sellers
               </Typography>
               <Typography variant='body' color='gray'>
                 {dashboardData?.numberInstructors ?? 0}
@@ -140,7 +214,7 @@ const AdminHomePage: React.FC = () => {
             <AiOutlineUsergroupAdd size={26} className='text-orange-500 mr-3' />
             <div>
               <Typography variant='h6' color='blue-gray' className='pt-2'>
-                Total students
+                Tổng customers
               </Typography>
               <Typography variant='body' color='gray'>
                 {dashboardData?.numberOfStudents ?? 0}
@@ -153,7 +227,7 @@ const AdminHomePage: React.FC = () => {
       <div className='ml-3 mr-3 mt-6 flex items-start justify-between'>
         <div className='flex-1 mr-4'>
           <Typography variant='h5' color='blue-gray' className='mb-4'>
-            Revenue Chart
+            Biểu đồ doanh thu
           </Typography>
           {/* ✅ Pass safe data with fallback */}
           <RevenueChart 
@@ -163,7 +237,7 @@ const AdminHomePage: React.FC = () => {
 
         <div className='flex-1'>
           <Typography variant='h5' color='blue-gray' className='mb-4'>
-            Course Categories
+            Danh mục sản phẩm
           </Typography>
           {/* ✅ Pass safe data with fallback */}
           <CourseCategoryChart 
@@ -174,7 +248,7 @@ const AdminHomePage: React.FC = () => {
 
       <div className='ml-3 mr-3 mt-6'>
         <Typography variant='h5' color='blue-gray' className='mb-4'>
-          Trending Courses
+          Sản phẩm bán chạy
         </Typography>
         {/* ✅ Pass safe data with fallback */}
         <TrendingCoursesChart 

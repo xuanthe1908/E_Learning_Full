@@ -1,0 +1,48 @@
+@startuml Sequence_Authentication
+
+actor User
+participant "Client" as Client
+participant "Auth API" as API
+participant "Database" as DB
+participant "Email Service" as Email
+
+== Registration ==
+User -> Client: Fill registration form
+Client -> Client: Validate form
+Client -> API: POST /api/auth/register
+API -> API: Validate data
+API -> DB: Check if user exists
+DB --> API: User not found
+API -> DB: Create user account
+DB --> API: User created
+API -> Email: Send verification email
+Email --> User: Verification email
+API --> Client: Success response
+Client --> User: Show success message
+
+== Login ==
+User -> Client: Fill login form
+Client -> API: POST /api/auth/login
+API -> DB: Verify credentials
+DB --> API: User credentials
+API -> API: Generate JWT token
+API -> API: Generate refresh token
+API --> Client: Return tokens
+Client -> Client: Store tokens
+Client --> User: Redirect to dashboard
+
+== OAuth Login ==
+User -> Client: Click Google login
+Client -> Client: Redirect to Google OAuth
+Google --> Client: OAuth callback
+Client -> API: POST /api/auth/oauth
+API -> Google: Verify token
+Google --> API: User info
+API -> DB: Create/Update user
+DB --> API: User data
+API -> API: Generate tokens
+API --> Client: Return tokens
+Client --> User: Redirect to dashboard
+
+@enduml
+

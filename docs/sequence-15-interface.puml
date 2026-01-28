@@ -1,0 +1,43 @@
+@startuml Sequence_Interface
+
+actor User
+participant "Client" as Client
+participant "Theme Manager" as Theme
+participant "Component Library" as Components
+
+== Page Load ==
+User -> Client: Access application
+Client -> Client: Load Tailwind CSS
+Client -> Components: Load UI components
+Components --> Client: Components ready
+Client -> Theme: Check theme preference
+Theme --> Client: Theme mode
+Client -> Client: Apply theme styles
+Client -> Client: Load icons (Lucide)
+Client -> Client: Initialize animations
+Client --> User: Render UI
+
+== Theme Toggle ==
+User -> Client: Toggle dark mode
+Client -> Theme: Update theme preference
+Theme -> Theme: Save preference
+Theme -> Client: Apply new theme
+Client -> Client: Update CSS variables
+Client --> User: Display new theme
+
+== Component Interaction ==
+User -> Client: Interact with component
+Client -> Components: Handle interaction
+Components -> Components: Update state
+Components -> Components: Apply animations
+Components --> Client: Updated component
+Client --> User: Show feedback
+
+== Responsive Update ==
+Client -> Client: Detect screen resize
+Client -> Client: Update breakpoint
+Client -> Client: Adjust layout
+Client --> User: Responsive layout
+
+@enduml
+

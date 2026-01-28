@@ -1,0 +1,49 @@
+@startuml Sequence_User_Management
+
+actor User
+participant "Client" as Client
+participant "User API" as API
+participant "Database" as DB
+
+== View Profile ==
+User -> Client: Access profile page
+Client -> API: GET /api/users/profile
+API -> API: Verify token
+API -> DB: Get user data
+DB --> API: User profile
+API --> Client: Return profile
+Client --> User: Display profile
+
+== Update Profile ==
+User -> Client: Edit profile info
+Client -> API: PUT /api/users/profile
+API -> API: Validate data
+API -> DB: Update user
+DB --> API: User updated
+API --> Client: Success response
+Client --> User: Show success
+
+== Admin Manage Sellers ==
+User -> Client: View sellers list
+Client -> API: GET /api/admin/sellers
+API -> DB: Get sellers list
+DB --> API: Sellers data
+API --> Client: Return sellers
+Client --> User: Display sellers
+
+User -> Client: Approve seller
+Client -> API: POST /api/admin/sellers/:id/approve
+API -> DB: Update seller status
+DB --> API: Seller approved
+API --> Client: Success response
+
+== Admin Manage Customers ==
+User -> Client: View customers list
+Client -> API: GET /api/admin/customers
+API -> DB: Get customers
+DB --> API: Customers data
+API --> Client: Return customers
+Client --> User: Display customers
+
+@enduml
+

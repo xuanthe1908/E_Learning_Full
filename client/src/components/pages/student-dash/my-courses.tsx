@@ -5,12 +5,25 @@ import { toast } from "react-toastify";
 import { CourseInterface } from "../../../types/course";
 import { Link } from "react-router-dom";
 import ProfileCardShimmer from "../../shimmer/profile-card-shimmer";
+import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
+import { mockCustomerProducts } from "../../../data/mockCustomerData";
 type Props = {};
 
 const MyCourses: React.FC = (props: Props) => {
   const [courses, setCourse] = useState<CourseInterface[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const fetchCourses = async () => {
+    // ✅ Mock Mode
+    if (USE_MOCK_DATA) {
+      setLoading(true);
+      setTimeout(() => {
+        setCourse(mockCustomerProducts);
+        setLoading(false);
+      }, MOCK_DELAY);
+      return;
+    }
+
+    // ✅ Production Mode
     try {
       setLoading(true);
       const response = await getCourseByStudent();
@@ -20,9 +33,9 @@ const MyCourses: React.FC = (props: Props) => {
       }, 1000);
     } catch (error: any) {
       setLoading(false);
-      toast.success(error?.data?.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      console.error("Error fetching courses:", error);
+      // Fallback to mock data
+      setCourse(mockCustomerProducts);
     }
   };
   useEffect(() => {
@@ -35,12 +48,12 @@ const MyCourses: React.FC = (props: Props) => {
         <div>
           <div className='pt-5 pb-2 w-full'>
             <h2 className='text-3xl font-semibold text-customFontColorBlack'>
-              Watch Courses
+              Sản phẩm của tôi
             </h2>
           </div>
           <div className='mb-2 pt-3'>
             <h5 className='text-customFontColorBlack font-semibold'>
-              MY COURSES
+              SẢN PHẨM ĐÃ MUA
             </h5>
           </div>
         </div>

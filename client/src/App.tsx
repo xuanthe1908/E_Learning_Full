@@ -19,7 +19,9 @@ import InstructorLoginPage from "./components/pages/instructors/instructor-login
 import { getInstructorDetails } from "./api/endpoints/instructor";
 import { setDetails } from "./redux/reducers/instructorSlice";
 import { AdminSideNav } from "./components/pages/admin/admin-side-nav";
-import { toast } from "react-toastify";   
+import { toast } from "react-toastify";
+import { USE_MOCK_DATA } from "./config/mockConfig";
+import { setupMockCustomerAuth, setupMockSellerAuth } from "./utils/mockAuth";   
 
 export const Student: React.FC = () => {
   const isOnline = useIsOnline();
@@ -30,6 +32,21 @@ export const Student: React.FC = () => {
   const footerVisible = useSelector(selectIsFooterVisible);
   // usePreventBackButton(isLoggedIn);
   const [showSessionExpired, setShowSessionExpired] = useState(false);
+
+  // ✅ Mock Mode: Setup mock customer auth and bypass login check
+  React.useEffect(() => {
+    if (USE_MOCK_DATA) {
+      setupMockCustomerAuth();
+      // Set a mock token to bypass auth check
+      if (!localStorage.getItem('accessToken')) {
+        localStorage.setItem('accessToken', 'mock.customer.token');
+      }
+    }
+  }, []);
+  
+  // ✅ Mock Mode: Override isLoggedIn check
+  const mockIsLoggedIn = USE_MOCK_DATA ? true : isLoggedIn;
+  const mockUser = USE_MOCK_DATA ? 'student' : user;
 
   const handleCloseSessionExpired = () => {
     setShowSessionExpired(false);
@@ -56,10 +73,13 @@ export const Student: React.FC = () => {
   }`;
 
   useEffect(() => {
-    if (isLoggedIn && user === "student") {
-      dispatch(fetchStudentData());
+    if ((USE_MOCK_DATA || isLoggedIn) && (mockUser === "student" || USE_MOCK_DATA)) {
+      // In mock mode, skip API call
+      if (!USE_MOCK_DATA) {
+        dispatch(fetchStudentData());
+      }
     }
-  }, [dispatch, isLoggedIn, user]);
+  }, [dispatch, isLoggedIn, user, mockUser]);
 
   return (
     <>
@@ -89,13 +109,34 @@ export const Instructor: React.FC = () => {
   const user = useSelector(selectUserType);
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch();
+  
+  // ✅ Mock Mode: Setup mock seller auth and bypass login check
+  React.useEffect(() => {
+    if (USE_MOCK_DATA) {
+      setupMockSellerAuth();
+      // Set a mock token to bypass auth check
+      if (!localStorage.getItem('accessToken')) {
+        localStorage.setItem('accessToken', 'mock.instructor.token');
+      }
+    }
+  }, []);
+  
+  // ✅ Mock Mode: Override isLoggedIn check
+  const mockIsLoggedIn = USE_MOCK_DATA ? true : isLoggedIn;
+  const mockUser = USE_MOCK_DATA ? 'instructor' : user;
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchInstructor = async () => {
+    // ✅ Mock Mode: Skip API call
+    if (USE_MOCK_DATA) {
+      return;
+    }
+
     try {
       const response = await getInstructorDetails();
       dispatch(setDetails({details:response.data}))
     } catch (error) {
-      toast.error("Something went wrong")
+      console.error("Error fetching instructor:", error);
     }
   };
 
@@ -106,7 +147,7 @@ export const Instructor: React.FC = () => {
   return (
     <>
       {isOnline ? (
-        isLoggedIn && user === "instructor" ? (
+        (mockIsLoggedIn && mockUser === "instructor") ? (
           <>
             <div className='fixed inset-x-0 top-0 flex flex-col font-sans'>
               <InstructorHeader />

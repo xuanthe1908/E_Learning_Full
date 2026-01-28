@@ -1,0 +1,69 @@
+@startuml UseCase_Admin_Shop_Platform
+
+left to right direction
+
+actor "Admin\n\nRole: System administrators\nwho manage the platform" as Admin
+
+package "Authentication" {
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+    usecase "Change Password" as UC_ChangePass
+}
+
+package "User Management" {
+    usecase "Manage Sellers" as UC_ManageSellers
+    usecase "Approve Seller" as UC_Approve
+    usecase "Reject Seller" as UC_Reject
+    usecase "Block/Unblock Seller" as UC_BlockSeller
+    usecase "Manage Customers" as UC_ManageCustomers
+    usecase "Block/Unblock Customer" as UC_BlockCustomer
+}
+
+package "Category Management" {
+    usecase "Add Category" as UC_AddCategory
+    usecase "Edit Category" as UC_EditCategory
+    usecase "Delete Category" as UC_DeleteCategory
+    usecase "View Categories" as UC_ViewCategories
+}
+
+package "Payment Management" {
+    usecase "View Payments" as UC_ViewPayments
+    usecase "Process Refund" as UC_Refund
+}
+
+package "Analytics" {
+    usecase "View System Statistics" as UC_Stats
+    usecase "View Reports" as UC_Reports
+    usecase "View Dashboard" as UC_Dashboard
+}
+
+package "Support" {
+    usecase "View Contact Messages" as UC_ViewMessages
+    usecase "Reply Contact Message" as UC_ReplyMessage
+}
+
+Admin --> UC_Login
+Admin --> UC_Logout
+Admin --> UC_ChangePass
+Admin --> UC_ManageSellers
+Admin --> UC_Approve
+Admin --> UC_Reject
+Admin --> UC_BlockSeller
+Admin --> UC_ManageCustomers
+Admin --> UC_BlockCustomer
+Admin --> UC_AddCategory
+Admin --> UC_EditCategory
+Admin --> UC_DeleteCategory
+Admin --> UC_ViewCategories
+Admin --> UC_ViewPayments
+Admin --> UC_Refund
+Admin --> UC_Stats
+Admin --> UC_Reports
+Admin --> UC_Dashboard
+Admin --> UC_ViewMessages
+Admin --> UC_ReplyMessage
+
+UC_EditCategory ..> UC_AddCategory : <<extend>>
+UC_DeleteCategory ..> UC_AddCategory : <<extend>>
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml Sequence_Community
+
+actor User
+participant "Client" as Client
+participant "Community API" as API
+participant "Database" as DB
+
+== Create Discussion ==
+User -> Client: Click create discussion
+Client -> Client: Fill discussion form
+Client -> API: POST /api/community/discussions
+API -> API: Validate data
+API -> DB: Create discussion
+DB --> API: Discussion created
+API --> Client: Success response
+Client --> User: Show discussion
+
+== Reply to Discussion ==
+User -> Client: View discussion
+User -> Client: Enter reply
+Client -> API: POST /api/community/discussions/:id/replies
+API -> DB: Create reply
+DB --> API: Reply created
+API --> Client: Return reply
+Client --> User: Display reply
+
+== Review Product ==
+User -> Client: Click review product
+Client -> Client: Fill review form
+Client -> API: POST /api/products/:id/reviews
+API -> DB: Create review
+DB --> API: Review created
+API -> DB: Update product rating
+DB --> API: Rating updated
+API --> Client: Success response
+Client --> User: Show review
+
+== View Discussions ==
+User -> Client: View product page
+Client -> API: GET /api/community/discussions?productId=:id
+API -> DB: Get discussions
+DB --> API: Discussions list
+API --> Client: Return discussions
+Client --> User: Display discussions
+
+@enduml
+

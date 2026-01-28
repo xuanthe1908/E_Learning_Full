@@ -1,0 +1,46 @@
+@startuml Sequence_Payment
+
+actor Customer
+participant "Client" as Client
+participant "Payment API" as API
+participant "Database" as DB
+participant "VNPay" as VNPay
+
+== Checkout ==
+Customer -> Client: View cart
+Customer -> Client: Click checkout
+Client -> API: POST /api/payments/create
+API -> DB: Get cart items
+DB --> API: Cart data
+API -> API: Calculate total
+API -> DB: Create order
+DB --> API: Order created
+API -> VNPay: Create payment request
+VNPay --> API: Payment URL/QR
+API --> Client: Return payment info
+Client --> Customer: Display payment URL/QR
+
+== Payment Processing ==
+Customer -> VNPay: Complete payment
+VNPay -> VNPay: Process payment
+VNPay -> API: Payment callback (webhook)
+API -> API: Verify payment
+API -> DB: Update order status
+DB --> API: Order updated
+API -> DB: Grant product access
+DB --> API: Access granted
+API -> Customer: Send confirmation email
+VNPay --> Customer: Payment success page
+
+== Payment Verification ==
+Customer -> Client: Return from VNPay
+Client -> API: GET /api/payments/verify
+API -> VNPay: Verify payment status
+VNPay --> API: Payment status
+API -> DB: Update order if needed
+DB --> API: Order status
+API --> Client: Payment result
+Client --> Customer: Show confirmation
+
+@enduml
+

@@ -18,10 +18,10 @@ export function AdminSideNav() {
   const [selected, setSelected] = useState("Dashboard"); // Set the default selected item here
   const navItems = [
     { icon: PresentationChartBarIcon, label: "Dashboard", path: "" },
-    { icon: AcademicCapIcon, label: "Instructors", path: "instructors" },
-    { icon: UserGroupIcon, label: "Students", path: "students" },
+    { icon: AcademicCapIcon, label: "Sellers", path: "instructors" },
+    { icon: UserGroupIcon, label: "Customers", path: "students" },
     { icon: BookOpenIcon, label: "Categories", path: "categories" },
-    { icon: Square3Stack3DIcon, label: "Courses", path: "courses" },
+    { icon: Square3Stack3DIcon, label: "Products", path: "courses" },
     { icon: Cog6ToothIcon, label: "Settings", path: "settings" },
     { icon: PowerIcon, label: "Log Out", path: "" },
   ];
