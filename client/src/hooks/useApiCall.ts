@@ -50,3 +50,25 @@ const useApiData = <T>(apiCall: (...args: any[]) => Promise<T>, ...args: any[]):
 };
 
 export default useApiData;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

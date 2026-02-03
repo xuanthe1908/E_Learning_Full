@@ -188,7 +188,7 @@ const CheckoutPage: React.FC = () => {
               Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán
             </p>
             <Link
-              to="/courses"
+              to="/shop"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-md transition-colors"
             >
               Tiếp tục mua sắm
@@ -455,4 +455,31 @@ const CheckoutPage: React.FC = () => {
 };
 
 export default CheckoutPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -1,14 +1,14 @@
 import api from "../../middlewares/protected-interceptor"; 
 
-export const createVNPayQRPaymentService = (endpoint: string, courseId: string) => {
+export const createVNPayQRPaymentService = (endpoint: string, productId: string) => {
   return api.post(endpoint, {
-    courseId
+    productId
   });
 };
 
-export const createVNPayPaymentUrlService = (endpoint: string, courseId: string) => {
+export const createVNPayPaymentUrlService = (endpoint: string, productId: string) => {
   return api.post(endpoint, {
-    courseId
+    productId
   });
 };
 

@@ -13,7 +13,7 @@ export interface ShopMetadata {
 export interface ShopEntity {
   id?: string;
   userId: string;
-  userType: 'students' | 'instructor';
+  userType: 'customers' | 'sellers' | 'students' | 'instructor'; // Support both old and new
   title: string;
   messages: MessageEntity[];
   isActive: boolean;
@@ -24,13 +24,23 @@ export interface ShopEntity {
 
 export const createShop = (
   userId: string,
-  userType: 'students' | 'instructor',
+  userType: 'customers' | 'sellers' | 'students' | 'instructor',
   title: string = 'Chat mới',
   metadata?: ShopMetadata
 ): ShopEntity => {
+  // Map old userType to new names for backward compatibility
+  const userTypeMap: { [key: string]: 'customers' | 'sellers' } = {
+    'students': 'customers',
+    'instructor': 'sellers',
+    'customers': 'customers',
+    'sellers': 'sellers'
+  };
+  
+  const mappedUserType = userTypeMap[userType] || userType as 'customers' | 'sellers';
+  
   return {
     userId,
-    userType,
+    userType: mappedUserType,
     title,
     messages: [],
     isActive: true,

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { GetCourseByInstructorInterface } from "../api/types/apiResponses/api-response-instructors";
+import { GetProductBySellerInterface } from "../api/types/apiResponses/api-response-sellers";
 import { debounce} from "lodash";
 
 const useSearch = (
-    data: GetCourseByInstructorInterface[],
+    data: GetProductBySellerInterface[],
     query: string
-  ): GetCourseByInstructorInterface[] => {
-    const [searchResults, setSearchResults] = useState<GetCourseByInstructorInterface[]>([]);
+  ): GetProductBySellerInterface[] => {
+    const [searchResults, setSearchResults] = useState<GetProductBySellerInterface[]>([]);
   
     useEffect(() => {
       const delay = 300; // Debounce delay in milliseconds
@@ -34,3 +34,24 @@ const useSearch = (
   };
   export default useSearch
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -65,13 +65,29 @@ export const openAiService = (config: AIServiceConfig) => {
       console.error('OpenAI Service Error:', error);
       
       let errorMessage = 'Xin lỗi, tôi đang gặp sự cố kỹ thuật. Vui lòng thử lại sau.';
+      let shouldReturnFallback = false;
       
-      if (error.status === 429) {
-        errorMessage = 'Hệ thống đang quá tải. Vui lòng thử lại sau vài phút.';
-      } else if (error.status === 401) {
+      // Handle specific error types
+      if (error.status === 429 || error.code === 'insufficient_quota' || error.code === 'rate_limit_exceeded') {
+        errorMessage = 'Xin lỗi, dịch vụ AI hiện đang quá tải hoặc đã hết quota. Vui lòng thử lại sau vài phút hoặc liên hệ quản trị viên để được hỗ trợ.';
+        shouldReturnFallback = true;
+      } else if (error.status === 401 || error.code === 'invalid_api_key') {
         errorMessage = 'Lỗi xác thực API. Vui lòng liên hệ quản trị viên.';
       } else if (error.status === 400) {
         errorMessage = 'Yêu cầu không hợp lệ. Vui lòng thử lại với câu hỏi khác.';
+      } else if (error.message?.includes('quota')) {
+        errorMessage = 'Dịch vụ AI đã hết quota. Vui lòng liên hệ quản trị viên để được hỗ trợ.';
+        shouldReturnFallback = true;
+      }
+
+      // Return fallback response if quota exceeded
+      if (shouldReturnFallback) {
+        return {
+          success: true, // Return success with fallback message
+          content: errorMessage + '\n\n💡 Bạn có thể thử:\n- Đặt câu hỏi cụ thể hơn\n- Chia nhỏ câu hỏi thành nhiều phần\n- Thử lại sau vài phút',
+          error: error.message,
+          isFallback: true
+        };
       }
 
       return {

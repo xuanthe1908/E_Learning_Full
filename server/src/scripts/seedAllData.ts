@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import Course from '../frameworks/database/mongodb/models/course';
+import Product from '../frameworks/database/mongodb/models/product';
 import Category from '../frameworks/database/mongodb/models/category';
-import Instructor from '../frameworks/database/mongodb/models/instructor';
-import Students from '../frameworks/database/mongodb/models/student';
+import Seller from '../frameworks/database/mongodb/models/seller';
+import Customers from '../frameworks/database/mongodb/models/customer';
 import Payment from '../frameworks/database/mongodb/models/payment';
 import Admin from '../frameworks/database/mongodb/models/admin';
 import { mockProductsData } from '../data/mockProducts';
@@ -21,14 +21,20 @@ dotenv.config();
  */
 async function seedAllData() {
   try {
-    // Kết nối database
-    const mongoUri = process.env.DATABASE;
+    // Kết nối database - dùng đúng cấu hình như connection chính
+    const mongoUri = process.env.DB_CLUSTER_URL || process.env.DATABASE;
+    const dbName = process.env.DB_NAME || 'TutorTrek';
+    
     if (!mongoUri) {
-      throw new Error('DATABASE environment variable is not set');
+      throw new Error('DATABASE hoặc DB_CLUSTER_URL environment variable is not set');
     }
 
-    await mongoose.connect(mongoUri);
-    console.log('✅ Đã kết nối database thành công\n');
+    await mongoose.connect(mongoUri, {
+      dbName: dbName
+    });
+    console.log(`✅ Đã kết nối database thành công`);
+    console.log(`   Database: ${dbName}`);
+    console.log(`   Connection: ${mongoUri.replace(/\/\/.*@/, '//***@')}\n`);
 
     const deleteOld = process.argv.includes('--delete-old');
     
@@ -52,7 +58,7 @@ async function seedAllData() {
     // 2. SEED SELLERS
     // ==========================================
     if (deleteOld) {
-      await Instructor.deleteMany({});
+      await Seller.deleteMany({});
       console.log('🗑️ Đã xóa sellers cũ');
     }
 
@@ -67,7 +73,7 @@ async function seedAllData() {
       })
     );
 
-    const insertedSellers = await Instructor.insertMany(sellersWithHashedPasswords);
+    const insertedSellers = await Seller.insertMany(sellersWithHashedPasswords);
     console.log(`✅ Đã thêm ${insertedSellers.length} sellers`);
     console.log('👨‍💼 Danh sách sellers:');
     insertedSellers.forEach((seller, index) => {
@@ -79,7 +85,7 @@ async function seedAllData() {
     // 3. SEED CUSTOMERS
     // ==========================================
     if (deleteOld) {
-      await Students.deleteMany({});
+      await Customers.deleteMany({});
       console.log('🗑️ Đã xóa customers cũ');
     }
 
@@ -94,7 +100,7 @@ async function seedAllData() {
       })
     );
 
-    const insertedCustomers = await Students.insertMany(customersWithHashedPasswords);
+    const insertedCustomers = await Customers.insertMany(customersWithHashedPasswords);
     console.log(`✅ Đã thêm ${insertedCustomers.length} customers`);
     console.log('👤 Danh sách customers:');
     insertedCustomers.forEach((customer, index) => {
@@ -106,7 +112,7 @@ async function seedAllData() {
     // 4. SEED PRODUCTS
     // ==========================================
     if (deleteOld) {
-      await Course.deleteMany({});
+      await Product.deleteMany({});
       console.log('🗑️ Đã xóa products cũ');
     }
 
@@ -130,8 +136,7 @@ async function seedAllData() {
       
       return {
         ...product,
-        instructorId: sellerIds[sellerIndex],
-        coursesEnrolled: [],
+        sellerId: sellerIds[sellerIndex], // ✅ Đổi từ instructorId sang sellerId
         introduction,
         guidelines,
         guidelinesUrl,
@@ -139,12 +144,12 @@ async function seedAllData() {
       };
     });
 
-    const insertedProducts = await Course.insertMany(productsToInsert);
+    const insertedProducts = await Product.insertMany(productsToInsert);
     console.log(`✅ Đã thêm ${insertedProducts.length} sản phẩm`);
     console.log('📦 Danh sách sản phẩm:');
     insertedProducts.forEach((product, index) => {
-      const seller = insertedSellers.find(s => s._id.equals(product.instructorId));
-      console.log(`   ${index + 1}. ${product.title} - ${product.price.toLocaleString('vi-VN')} VND (Seller: ${seller?.firstName} ${seller?.lastName})`);
+      const seller = insertedSellers.find(s => s._id.equals(product.sellerId));
+      console.log(`   ${index + 1}. ${product.title} - ${product.price?.toLocaleString('vi-VN') || 0} VND (Seller: ${seller?.firstName} ${seller?.lastName})`);
     });
     console.log('');
 
@@ -164,9 +169,9 @@ async function seedAllData() {
       
       samplePayments.push({
         orderId: `ORDER-${Date.now()}-${i}`,
-        courseId: product._id.toString(),
-        studentId: customer._id.toString(),
-        amount: product.price,
+        productId: product._id.toString(), // ✅ Đổi từ courseId sang productId
+        customerId: customer._id.toString(), // ✅ Đổi từ studentId sang customerId
+        amount: product.price || 0,
         currency: 'VND',
         paymentMethod: 'VNPay',
         status: i % 2 === 0 ? 'completed' : 'pending',
@@ -180,41 +185,22 @@ async function seedAllData() {
     console.log('');
 
     // ==========================================
-    // 6. UPDATE SELLERS WITH PRODUCTS
-    // ==========================================
-    for (const seller of insertedSellers) {
-      const sellerProducts = insertedProducts.filter(p => p.instructorId.equals(seller._id));
-      await Instructor.updateOne(
-        { _id: seller._id },
-        { $set: { coursesCreated: sellerProducts.map(p => p._id) } }
-      );
-    }
-    console.log('✅ Đã cập nhật coursesCreated cho sellers');
-    console.log('');
-
-    // ==========================================
-    // 7. UPDATE CUSTOMERS WITH ENROLLED PRODUCTS
+    // 6. UPDATE CUSTOMERS WITH PURCHASED PRODUCTS
     // ==========================================
     for (let i = 0; i < insertedCustomers.length; i++) {
       const customer = insertedCustomers[i];
       // Mỗi customer mua 1-2 sản phẩm
-      const enrolledProducts = insertedProducts.slice(i, i + 2).map(p => p._id);
+      const purchasedProducts = insertedProducts.slice(i, i + 2).map(p => p._id);
       
-      // Update customer
-      await Students.updateOne(
-        { _id: customer._id },
-        { $set: { coursesEnrolled: enrolledProducts } }
-      );
-
-      // Update products với enrolled customers
-      for (const productId of enrolledProducts) {
-        await Course.updateOne(
+      // Update products với purchased customers (productsPurchased field)
+      for (const productId of purchasedProducts) {
+        await Product.updateOne(
           { _id: productId },
-          { $addToSet: { coursesEnrolled: customer._id } }
+          { $addToSet: { productsPurchased: customer._id } }
         );
       }
     }
-    console.log('✅ Đã cập nhật coursesEnrolled cho customers và products');
+    console.log('✅ Đã cập nhật productsPurchased cho products');
     console.log('');
 
     // ==========================================

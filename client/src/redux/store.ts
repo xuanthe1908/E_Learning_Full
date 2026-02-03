@@ -1,9 +1,9 @@
 import { configureStore,combineReducers } from "@reduxjs/toolkit";
 import { authReducer } from "./reducers/authSlice";
-import { courseReducer } from "./reducers/courseSlice";
-import { studentReducer } from "./reducers/studentSlice";
+import { productReducer } from "./reducers/productSlice";
+import { customerReducer } from "./reducers/customerSlice";
 import { helperReducer } from "./reducers/helperSlice";
-import { instructorReducer } from "./reducers/instructorSlice";
+import { sellerReducer } from "./reducers/sellerSlice";
 import { cartReducer } from "./reducers/cartSlice";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -11,14 +11,14 @@ import storage from 'redux-persist/lib/storage';
 const persistConfig = {
   key: 'root', // Key to use for storing data in storage
   storage,     // Storage mechanism (local storage or session storage)
-  whitelist: ['course', 'student', 'instructor', 'cart'], // Reducers to persist
+  whitelist: ['product', 'customer', 'seller', 'cart'], // Reducers to persist
 };
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
   auth: authReducer,
-  course: courseReducer,
-  student: studentReducer,
-  instructor: instructorReducer,
+  product: productReducer,
+  customer: customerReducer,
+  seller: sellerReducer,
   helper: helperReducer,
   cart: cartReducer,
 }));
@@ -42,3 +42,25 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export {store,persistor}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

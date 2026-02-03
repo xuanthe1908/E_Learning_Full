@@ -2,12 +2,12 @@ import { AdminRepositoryMongoDb } from '../../frameworks/database/mongodb/reposi
 import { AdminDbInterface } from '../../app/repositories/adminDbRepository';
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import { CourseDbRepositoryInterface } from '../../app/repositories/courseDbRepository';
-import { CourseRepositoryMongoDbInterface } from '../../frameworks/database/mongodb/repositories/courseReposMongoDb';
-import { InstructorDbInterface } from '../../app/repositories/instructorDbRepository';
-import { InstructorRepositoryMongoDb } from '../../frameworks/database/mongodb/repositories/instructorRepoMongoDb';
-import { StudentsDbInterface } from '../../app/repositories/studentDbRepository';
-import { StudentRepositoryMongoDB } from '../../frameworks/database/mongodb/repositories/studentsRepoMongoDb';
+import { ProductDbRepositoryInterface } from '../../app/repositories/productDbRepository';
+import { ProductRepositoryMongoDbInterface } from '../../frameworks/database/mongodb/repositories/productReposMongoDb';
+import { SellerDbInterface } from '../../app/repositories/sellerDbRepository';
+import { SellerRepositoryMongoDb } from '../../frameworks/database/mongodb/repositories/sellerRepoMongoDb';
+import { CustomersDbInterface } from '../../app/repositories/customerDbRepository';
+import { CustomerRepositoryMongoDB } from '../../frameworks/database/mongodb/repositories/customersRepoMongoDb';
 import {
   getDashBoardDetailsU,
   getGraphDetailsU
@@ -20,32 +20,32 @@ import { CategoryRepoMongodbInterface } from '../../frameworks/database/mongodb/
 const adminController = (
   adminDbRepository: AdminDbInterface,
   adminDbRepositoryImpl: AdminRepositoryMongoDb,
-  courseDbRepository: CourseDbRepositoryInterface,
-  courseDbRepositoryImpl: CourseRepositoryMongoDbInterface,
-  instructorDbRepository: InstructorDbInterface,
-  instructorDbRepositoryImpl: InstructorRepositoryMongoDb,
-  studentDbRepository: StudentsDbInterface,
-  studentDbRepositoryImpl: StudentRepositoryMongoDB,
+  productDbRepository: ProductDbRepositoryInterface,
+  productDbRepositoryImpl: ProductRepositoryMongoDbInterface,
+  sellerDbRepository: SellerDbInterface,
+  sellerDbRepositoryImpl: SellerRepositoryMongoDb,
+  customerDbRepository: CustomersDbInterface,
+  customerDbRepositoryImpl: CustomerRepositoryMongoDB,
   paymentDbRepository: PaymentInterface,
   paymentDbRepositoryImpl: PaymentImplInterface,
   categoryDbRepository: CategoryDbInterface,
   categoryDbRepositoryImpl: CategoryRepoMongodbInterface
 ) => {
   const dbRepositoryAdmin = adminDbRepository(adminDbRepositoryImpl());
-  const dbRepositoryCourse = courseDbRepository(courseDbRepositoryImpl());
-  const dbRepositoryInstructor = instructorDbRepository(
-    instructorDbRepositoryImpl()
+  const dbRepositoryProduct = productDbRepository(productDbRepositoryImpl());
+  const dbRepositorySeller = sellerDbRepository(
+    sellerDbRepositoryImpl()
   );
-  const dbRepositoryStudent = studentDbRepository(studentDbRepositoryImpl());
+  const dbRepositoryCustomer = customerDbRepository(customerDbRepositoryImpl());
   const dbRepositoryPayment = paymentDbRepository(paymentDbRepositoryImpl());
   const dbRepositoryCategory = categoryDbRepository(categoryDbRepositoryImpl());
 
   const getDashBoardDetails = asyncHandler(
     async (req: Request, res: Response) => {
       const response = await getDashBoardDetailsU(
-        dbRepositoryCourse,
-        dbRepositoryInstructor,
-        dbRepositoryStudent,
+        dbRepositoryProduct,
+        dbRepositorySeller,
+        dbRepositoryCustomer,
         dbRepositoryPayment
       );
 
@@ -59,7 +59,7 @@ const adminController = (
 
   const getGraphDetails = asyncHandler(async (req: Request, res: Response) => {
     const response = await getGraphDetailsU(
-      dbRepositoryCourse,
+      dbRepositoryProduct,
       dbRepositoryCategory,
       dbRepositoryPayment
     );

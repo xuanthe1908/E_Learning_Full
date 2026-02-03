@@ -45,3 +45,26 @@ export const analyzeQuery = (query: string) => {
   return analyzeQueryService(query);
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,8 +5,8 @@ import { ApexOptions } from 'apexcharts';
 interface DataPoint {
   month: string;
   revenue: number;
-  coursesAdded: number;
-  coursesEnrolled: number;
+  productsAdded: number;
+  productsEnrolled: number;
 }
 
 interface Props {
@@ -21,8 +21,8 @@ const RevenueChart: React.FC<Props> = ({ data = [] }) => {
   const validData = safeData.map(d => ({
     month: d?.month || 'Unknown',
     revenue: Number(d?.revenue) || 0,
-    coursesAdded: Number(d?.coursesAdded) || 0,
-    coursesEnrolled: Number(d?.coursesEnrolled) || 0,
+    productsAdded: Number(d?.productsAdded) || 0,
+    productsEnrolled: Number(d?.productsEnrolled) || 0,
   }));
 
   const chartOptions: Partial<ApexOptions> = {
@@ -54,11 +54,11 @@ const RevenueChart: React.FC<Props> = ({ data = [] }) => {
     },
     {
       name: 'Sản phẩm thêm mới',
-      data: validData.map((d) => d.coursesAdded),
+      data: validData.map((d) => d.productsAdded),
     },
     {
       name: 'Sản phẩm đã bán',
-      data: validData.map((d) => d.coursesEnrolled),
+      data: validData.map((d) => d.productsEnrolled),
     },
   ];
 
@@ -75,3 +75,29 @@ const RevenueChart: React.FC<Props> = ({ data = [] }) => {
 };
 
 export default RevenueChart;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

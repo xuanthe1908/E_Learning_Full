@@ -37,7 +37,7 @@ const SearchBar: React.FC = () => {
     onChange={handleInputChange}
     onFocus={handleInputFocus}
     onBlur={handleInputBlur}
-    placeholder="Search courses..."
+    placeholder="Search products..."
     className="pl-10 pr-4 py-2 w-64 rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500"
   />
   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -64,3 +64,30 @@ const SearchBar: React.FC = () => {
 };
 
 export default SearchBar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

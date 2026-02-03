@@ -19,10 +19,37 @@ export const shopRepositoryMongodb = (): ReturnType<ShopDbInterface> => {
   };
 
   const getChatById = async (chatId: string) => {
-    return await AiChat.findById(chatId)
-      .populate('userId', 'firstName lastName email')
-      .populate('metadata.courseId', 'title')
-      .populate('metadata.lessonId', 'title');
+    const chat = await AiChat.findById(chatId);
+    if (!chat) return null;
+    
+    // Populate userId based on userType
+    // Map old userType values to new model names
+    const userTypeMap: { [key: string]: string } = {
+      'students': 'customers',
+      'instructor': 'sellers',
+      'customers': 'customers',
+      'sellers': 'sellers'
+    };
+    
+    const modelName = userTypeMap[chat.userType] || chat.userType;
+    
+    try {
+      // Populate userId with correct model name
+      const populatedChat = await AiChat.findById(chatId)
+        .populate({
+          path: 'userId',
+          model: modelName,
+          select: 'firstName lastName email'
+        })
+        .populate('metadata.courseId', 'title')
+        .populate('metadata.lessonId', 'title');
+      
+      return populatedChat;
+    } catch (error) {
+      console.error('Error populating chat:', error);
+      // Return chat without population if model not found
+      return chat;
+    }
   };
 
   const updateChat = async (chatId: string, updateData: any) => {

@@ -1,8 +1,8 @@
 import { Application } from 'express';
 import authRouter from './auth';
 import adminRouter from './admin';
-import courseRouter from './course';
-import instructorRouter from './instructor';
+import productRouter from './product';
+import sellerRouter from './seller';
 import { RedisClient } from '../../../app';
 import jwtAuthMiddleware from '../middlewares/userAuth';
 import roleCheckMiddleware from '../middlewares/roleCheckMiddleware';
@@ -10,7 +10,7 @@ import videoStreamRouter from './videoStream';
 import refreshRouter from './refresh';
 import paymentRouter from './payment';
 import categoryRouter from './category';
-import studentRouter from './student';
+import customerRouter from './customer';
 import shopRouter from './shop'; 
 
 const routes = (app: Application, redisClient: RedisClient) => {
@@ -23,11 +23,11 @@ const routes = (app: Application, redisClient: RedisClient) => {
     adminRouter()
   );
   app.use('/api/category', categoryRouter());
-  app.use('/api/products', courseRouter(redisClient)); // Products routes (using course model for now)
+  app.use('/api/products', productRouter(redisClient)); // Products routes
   app.use('/api/video-streaming', videoStreamRouter());
-  app.use('/api/sellers', instructorRouter()); // Sellers routes
+  app.use('/api/sellers', sellerRouter()); // Sellers routes
   app.use('/api/payments', jwtAuthMiddleware, paymentRouter());
-  app.use('/api/customers', studentRouter(redisClient)); // Customers routes
+  app.use('/api/customers', customerRouter(redisClient)); // Customers routes
   app.use('/api/shop/chat', shopRouter()); // Shop AI Chat routes
 };
 

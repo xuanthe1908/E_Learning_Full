@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/helpers";
 import usePagination from "../../../hooks/usePagination";
 import useSearch from "../../../hooks/useSearch";
-import { searchCourseService } from "api/services/course/course-service";
+import { searchProductService } from "api/services/product/product-service";
 import END_POINTS from "constants/endpoints";
 import { USE_MOCK_DATA, MOCK_DELAY } from "../../../config/mockConfig";
 import { mockCategories } from "../../../data/mockAdminData";
@@ -60,7 +60,7 @@ const ListCategories: React.FC = () => {
   const handleSearch = async (e: React.FormEvent<HTMLInputElement>) => {
   try {
     const searchTerm = e.currentTarget.value;
-    const results = await searchCourseService(END_POINTS.SEARCH_COURSE, searchTerm, '');
+    const results = await searchProductService(END_POINTS.SEARCH_PRODUCT, searchTerm, '');
     setSearchQuery(searchTerm);
     console.log('Search results:', results);
     // Handle the results
@@ -217,3 +217,30 @@ const ListCategories: React.FC = () => {
 };
 
 export default ListCategories;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

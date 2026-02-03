@@ -5,11 +5,11 @@ import { useShop } from '../../hooks/useShop';
 import { ShopResponse, ChatMessage } from '../../api/services/shop/shopService';
 
 interface ShopInterfaceProps {
-  courseId?: string;
-  lessonId?: string;
+  productId?: string;
+  itemId?: string;
 }
 
-const ShopInterface: React.FC<ShopInterfaceProps> = ({ courseId, lessonId }) => {
+const ShopInterface: React.FC<ShopInterfaceProps> = ({ productId, itemId }) => {
   const {
     chats,
     currentChat,
@@ -44,7 +44,7 @@ const ShopInterface: React.FC<ShopInterfaceProps> = ({ courseId, lessonId }) => 
       try {
         const newChat = await createNewChat({
           title: message.substring(0, 30) + (message.length > 30 ? '...' : ''),
-          metadata: { courseId, lessonId }
+          metadata: { productId, itemId }
         });
         chatId = newChat._id;
       } catch (error) {
@@ -57,7 +57,7 @@ const ShopInterface: React.FC<ShopInterfaceProps> = ({ courseId, lessonId }) => 
 
         await sendChatMessage(chatId, {
         message,
-        context: { courseId, lessonId }
+        context: { productId, itemId }
         });
       setMessage('');
     } catch (error) {
@@ -108,7 +108,7 @@ const ShopInterface: React.FC<ShopInterfaceProps> = ({ courseId, lessonId }) => 
         {/* Header sidebar */}
         <div className="p-4 border-b border-gray-200">
           <button
-            onClick={() => createNewChat({ metadata: { courseId, lessonId } })}
+            onClick={() => createNewChat({ metadata: { productId, itemId } })}
             className="w-full flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
             disabled={loading}
           >
@@ -271,4 +271,31 @@ const ShopInterface: React.FC<ShopInterfaceProps> = ({ courseId, lessonId }) => 
 };
 
 export default ShopInterface;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

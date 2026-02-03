@@ -11,7 +11,7 @@ export const paymentInterface = (
 
   const getRevenueForEachMonth = async () => await repository.getRevenueForEachMonth();
 
-  const getCoursesEnrolledPerMonth = async () => await repository.getCoursesEnrolledPerMonth();
+  const getProductsPurchasedPerMonth = async () => await repository.getProductsPurchasedPerMonth();
 
   // ✅ ADD: VNPay payment methods
   const createPendingPayment = async (paymentData: any) =>
@@ -33,7 +33,7 @@ export const paymentInterface = (
     savePayment,
     getMonthlyRevenue,
     getRevenueForEachMonth,
-    getCoursesEnrolledPerMonth,
+    getProductsPurchasedPerMonth,
     // ✅ Export VNPay methods
     createPendingPayment,
     getPaymentByOrderId,

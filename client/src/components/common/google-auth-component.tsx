@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { googleLogin } from "../../api/endpoints/auth/student-auth";
+import { googleLogin } from "../../api/endpoints/auth/customer-auth";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../redux/reducers/authSlice";
 
@@ -22,7 +22,7 @@ function GoogleAuthComponent(): JSX.Element {
           accessToken,
           refreshToken,
         }: { accessToken: string; refreshToken: string } = response
-        dispatch(setToken({ accessToken, refreshToken,userType:"student" }));
+        dispatch(setToken({ accessToken, refreshToken,userType:"customer" }));
         toast.success(response?.message, {
           position: toast.POSITION.BOTTOM_RIGHT,
         });
@@ -60,3 +60,30 @@ function GoogleAuthComponent(): JSX.Element {
 }
 
 export default GoogleAuthComponent;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

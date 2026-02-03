@@ -1,7 +1,7 @@
 export interface DashData {
-    numberOfCourses: number
-    numberInstructors: number
-    numberOfStudents: number
+    numberOfproducts: number
+    numbersellers: number
+    numberOfcustomers: number
     monthlyRevenue: number
   }
   
@@ -9,15 +9,15 @@ export interface DashData {
   
   export interface GraphData {
     revenue: Revenue[]
-    trendingCourses: TrendingCourse[]
+    trendingproducts: TrendingCourse[]
     courseByCategory: CourseByCategory[]
   }
   
   export interface Revenue {
     month: string
     revenue: number
-    coursesAdded: number
-    coursesEnrolled: number
+    productsAdded: number
+    productsEnrolled: number
   }
   
   export interface TrendingCourse {
@@ -31,3 +31,25 @@ export interface DashData {
     courseCount: number
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

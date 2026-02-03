@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useParams } from "react-router-dom";
 import PaymentModal from "./payment-success-modal";
-import { enrollStudent } from "../../../api/endpoints/course/course";
+import { purchaseProduct } from "../../../api/endpoints/product/product";
 
 const PaymentFrom: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { courseId } = useParams();
+  const { productId } = useParams();
 
   const [message, setMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,7 +29,7 @@ const PaymentFrom: React.FC = () => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${window.location.origin}/course/${courseId}`,
+        return_url: `${window.location.origin}/course/${productId}`,
       },
       redirect: "if_required",
     });
@@ -38,7 +38,7 @@ const PaymentFrom: React.FC = () => {
       setMessage(error.message ?? "Something went wrong");
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       setMessage("Payment status:" + paymentIntent.status);
-      await enrollStudent(courseId ?? "", paymentIntent);
+      await purchaseProduct(productId ?? "", paymentIntent);
       setOpen(true);
     } else {
       setMessage("An unexpected error occurred.");
@@ -82,3 +82,30 @@ const PaymentFrom: React.FC = () => {
 };
 
 export default PaymentFrom;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

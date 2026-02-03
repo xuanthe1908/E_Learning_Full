@@ -48,7 +48,7 @@ const CartPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Giỏ hàng trống</h1>
             <p className="text-gray-600 mb-8">Hãy thêm sản phẩm vào giỏ hàng của bạn</p>
             <Link
-              to="/courses"
+              to="/shop"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-md transition-colors"
             >
               Tiếp tục mua sắm
@@ -81,7 +81,7 @@ const CartPage: React.FC = () => {
               {cartItems.map((item) => (
                 <div key={item._id} className="p-4">
                   <div className="flex gap-4">
-                    <Link to={`/courses/${item._id}`} className="flex-shrink-0">
+                    <Link to={`/products/${item._id}`} className="flex-shrink-0">
                       <img
                         src={item.thumbnailUrl}
                         alt={item.title}
@@ -89,7 +89,7 @@ const CartPage: React.FC = () => {
                       />
                     </Link>
                     <div className="flex-1 min-w-0">
-                      <Link to={`/courses/${item._id}`}>
+                      <Link to={`/products/${item._id}`}>
                         <h3 className="text-base font-semibold text-gray-900 hover:text-blue-600 line-clamp-1">
                           {item.title}
                         </h3>
@@ -177,7 +177,7 @@ const CartPage: React.FC = () => {
                 Đặt hàng
               </Link>
               <Link
-                to="/courses"
+                to="/products"
                 className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md text-center transition-colors"
               >
                 Tiếp tục mua sắm
@@ -191,4 +191,31 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

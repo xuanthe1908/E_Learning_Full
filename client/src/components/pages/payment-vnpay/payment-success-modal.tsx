@@ -19,11 +19,11 @@ const PaymentSuccessModal: React.FC<PaymentModalProps> = ({
   setOpen,
 }) => {
   const handleOpen = () => setOpen((cur) => !cur);
-  const {courseId} = useParams()
+  const {productId} = useParams()
   const navigate = useNavigate()
   const handleClose = ()=>{
     setOpen(!open)
-    navigate(`/courses/${courseId}/#success`)
+    navigate(`/products/${productId}/#success`)
   }
 
   return (
@@ -60,3 +60,30 @@ const PaymentSuccessModal: React.FC<PaymentModalProps> = ({
 };
 
 export default PaymentSuccessModal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,62 +4,62 @@
  */
 const END_POINTS = {
   // ========== AUTHENTICATION ==========
-  LOGIN_STUDENT: 'api/auth/student-login',
-  REGISTER_STUDENT: 'api/auth/student-register',
-  GOOGLE_LOGIN_STUDENT: 'api/auth/login-with-google',
-  REGISTER_INSTRUCTOR: 'api/auth/instructor/instructor-register',
-  LOGIN_INSTRUCTOR: 'api/auth/instructor/instructor-login',
+  LOGIN_CUSTOMER: 'api/auth/customer-login',
+  REGISTER_CUSTOMER: 'api/auth/customer-register',
+  GOOGLE_LOGIN_CUSTOMER: 'api/auth/login-with-google',
+  REGISTER_SELLER: 'api/auth/seller/seller-register',
+  LOGIN_SELLER: 'api/auth/seller/seller-login',
   LOGIN_ADMIN: 'api/auth/admin/admin-login',
   REFRESH_TOKEN: 'api/all/refresh-token/refresh',
 
-  // ========== SELLERS (instructor router mounted at /api/sellers) ==========
-  GET_INSTRUCTOR_REQUESTS: 'api/sellers/view-instructor-requests',
-  GET_INSTRUCTOR: 'api/sellers/view-instructor',
-  ACCEPT_INSTRUCTOR_REQUESTS: 'api/sellers/accept-instructor-request',
-  REJECT_INSTRUCTOR_REQUESTS: 'api/sellers/reject-instructor-request',
-  GET_INSTRUCTORS: 'api/sellers/get-all-instructors',
-  BLOCK_INSTRUCTORS: 'api/sellers/get-all-instructors/block-instructors',
-  UNBLOCK_INSTRUCTORS: 'api/sellers/get-all-instructors/unblock-instructors',
-  GET_BLOCKED_INSTRUCTORS: 'api/sellers/get-blocked-instructors',
-  GET_INSTRUCTOR_DETAILS: 'api/sellers/get-instructor-details',
-  INSTRUCTOR_UPDATE_PROFILE: 'api/sellers/update-profile',
-  INSTRUCTOR_CHANGE_PASSWORD: 'api/sellers/change-password',
-  GET_MY_STUDENTS: 'api/sellers/get-students-by-instructor',
+  // ========== SELLERS (seller router mounted at /api/sellers) ==========
+  GET_SELLER_REQUESTS: 'api/sellers/view-seller-requests',
+  GET_SELLER: 'api/sellers/view-seller',
+  ACCEPT_SELLER_REQUESTS: 'api/sellers/accept-seller-request',
+  REJECT_SELLER_REQUESTS: 'api/sellers/reject-seller-request',
+  GET_SELLERS: 'api/sellers/get-all-sellers',
+  BLOCK_SELLERS: 'api/sellers/get-all-sellers/block-sellers',
+  UNBLOCK_SELLERS: 'api/sellers/get-all-sellers/unblock-sellers',
+  GET_BLOCKED_SELLERS: 'api/sellers/get-blocked-sellers',
+  GET_SELLER_DETAILS: 'api/sellers/get-seller-details',
+  SELLER_UPDATE_PROFILE: 'api/sellers/update-profile',
+  SELLER_CHANGE_PASSWORD: 'api/sellers/change-password',
+  GET_MY_CUSTOMERS: 'api/sellers/get-customers-by-seller',
 
-  // ========== CUSTOMERS (student router mounted at /api/customers) ==========
-  GET_ALL_STUDENTS: 'api/customers/get-all-students',
-  BLOCK_STUDENT: 'api/customers/block-student',
-  UNBLOCK_STUDENT: 'api/customers/unblock-student',
-  GET_BLOCKED_STUDENTS: 'api/customers/get-all-blocked-students',
-  GET_STUDENT_DETAILS: 'api/customers/get-student-details',
+  // ========== CUSTOMERS (customer router mounted at /api/customers) ==========
+  GET_ALL_CUSTOMERS: 'api/customers/get-all-customers',
+  BLOCK_CUSTOMER: 'api/customers/block-customer',
+  UNBLOCK_CUSTOMER: 'api/customers/unblock-customer',
+  GET_BLOCKED_CUSTOMERS: 'api/customers/get-all-blocked-customers',
+  GET_CUSTOMER_DETAILS: 'api/customers/get-customer-details',
   UPDATE_PROFILE: 'api/customers/update-profile',
   CHANGE_PASSWORD: 'api/customers/change-password',
   CONTACT_US: 'api/customers/contact-us',
 
-  // ========== PRODUCTS (course router mounted at /api/products) ==========
-  ADD_COURSE: 'api/products/sellers/add-product',
-  EDIT_COURSE: 'api/products/sellers/edit-product',
-  GET_ALL_COURSES: 'api/products/list',
-  GET_COURSE: 'api/products',
-  GET_COURSES_BY_INSTRUCTORS: 'api/products/sellers/my-products',
-  GET_COURSE_BY_STUDENT: 'api/products/customers/my-products',
-  GET_RECOMMENDED_COURSES: 'api/products/recommended',
-  GET_TRENDING_COURSES: 'api/products/trending',
-  SEARCH_COURSE: 'api/products/search',
-  ENROLL_STUDENT: 'api/products/purchase',
+  // ========== PRODUCTS (product router mounted at /api/products) ==========
+  ADD_PRODUCT: 'api/products/sellers/add-product',
+  EDIT_PRODUCT: 'api/products/sellers/edit-product',
+  GET_ALL_PRODUCTS: 'api/products/list',
+  GET_PRODUCT: 'api/products',
+  GET_PRODUCTS_BY_SELLERS: 'api/products/sellers/my-products',
+  GET_PRODUCT_BY_CUSTOMER: 'api/products/customers/my-products',
+  GET_RECOMMENDED_PRODUCTS: 'api/products/recommended',
+  GET_TRENDING_PRODUCTS: 'api/products/trending',
+  SEARCH_PRODUCT: 'api/products/search',
+  PURCHASE_PRODUCT: 'api/products/purchase',
 
-  // ========== ITEMS / LESSONS (under /api/products) ==========
-  GET_LESSONS_BY_COURSE: 'api/products/sellers/get-items-by-product',
-  ADD_LESSON: 'api/products/sellers/add-item',
-  EDIT_LESSON: 'api/products/sellers/edit-item',
-  GET_LESSONS_BY_ID: 'api/products/items',
+  // ========== ITEMS (under /api/products) ==========
+  GET_ITEMS_BY_PRODUCT: 'api/products/sellers/get-items-by-product',
+  ADD_ITEM: 'api/products/sellers/add-item',
+  EDIT_ITEM: 'api/products/sellers/edit-item',
+  GET_ITEMS_BY_ID: 'api/products/items',
 
   // ========== QUIZZES (under /api/products/items) ==========
-  GET_QUIZZES_BY_LESSON: 'api/products/items',
+  GET_QUIZZES_BY_ITEM: 'api/products/items',
 
   // ========== DISCUSSIONS (under /api/products/items) ==========
   ADD_DISCUSSION: 'api/products/items/add-discussion',
-  GET_DISCUSSIONS_BY_LESSON: 'api/products/items/get-discussions-by-item',
+  GET_DISCUSSIONS_BY_item: 'api/products/items/get-discussions-by-item',
   EDIT_DISCUSSION: 'api/products/items/edit-discussion',
   DELETE_DISCUSSION: 'api/products/items/delete-discussion',
   REPLY_TO_DISCUSSION: 'api/products/items/reply-discussion',
@@ -112,14 +112,14 @@ const END_POINTS = {
   GET_MESSAGES: 'api/chat/get-messages',
   SEND_MESSAGE: 'api/chat/send-message',
   GET_CHAT_ROOMS: 'api/chat/get-rooms',
-  SEARCH_COURSES: 'api/search/courses',
-  SEARCH_INSTRUCTORS: 'api/search/instructors',
-  SEARCH_STUDENTS: 'api/search/students',
-  GET_COURSE_ANALYTICS: 'api/analytics/course',
-  GET_STUDENT_PROGRESS: 'api/analytics/student-progress',
-  GET_INSTRUCTOR_STATS: 'api/analytics/instructor-stats',
-  ADD_COURSE_REVIEW: 'api/reviews/add-review',
-  GET_COURSE_REVIEWS: 'api/reviews/get-reviews',
+  SEARCH_PRODUCTS: 'api/search/products',
+  SEARCH_SELLERS: 'api/search/sellers',
+  SEARCH_CUSTOMERS: 'api/search/customers',
+  GET_PRODUCT_ANALYTICS: 'api/analytics/product',
+  GET_CUSTOMER_PROGRESS: 'api/analytics/customer-progress',
+  GET_SELLER_STATS: 'api/analytics/seller-stats',
+  ADD_PRODUCT_REVIEW: 'api/reviews/add-review',
+  GET_PRODUCT_REVIEWS: 'api/reviews/get-reviews',
   UPDATE_REVIEW: 'api/reviews/update-review',
   DELETE_REVIEW: 'api/reviews/delete-review',
   ADD_TO_WISHLIST: 'api/wishlist/add',
@@ -135,3 +135,25 @@ const END_POINTS = {
 };
 
 export default END_POINTS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

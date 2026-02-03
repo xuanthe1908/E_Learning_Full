@@ -36,3 +36,30 @@ const SpinnerDialog: React.FC<SpinnerDialogProps> = ({ isUploading }) => {
 };
 
 export default SpinnerDialog;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

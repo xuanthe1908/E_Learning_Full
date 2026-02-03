@@ -24,7 +24,7 @@ const aiChatSchema = new Schema({
   },
   userType: {
     type: String,
-    enum: ['students', 'instructor'],
+    enum: ['customers', 'sellers', 'students', 'instructor'], // Support both old and new names
     required: true
   },
   title: {

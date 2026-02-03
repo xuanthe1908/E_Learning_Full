@@ -11,7 +11,7 @@ interface Props {
   data: CourseData[];
 }
 
-const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
+const TrendingproductsChart: React.FC<Props> = ({ data = [] }) => {
   // ✅ Safety check and data validation
   const safeData = Array.isArray(data) ? data : [];
   const validData = safeData
@@ -28,7 +28,7 @@ const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
 
   const chartOptions: Partial<ApexOptions> = {
     chart: {
-      id: 'trending-courses-chart',
+      id: 'trending-products-chart',
     },
     xaxis: {
       categories: displayData.map((course) => course.title),
@@ -68,4 +68,30 @@ const TrendingCoursesChart: React.FC<Props> = ({ data = [] }) => {
   );
 };
 
-export default TrendingCoursesChart;
+export default TrendingproductsChart;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

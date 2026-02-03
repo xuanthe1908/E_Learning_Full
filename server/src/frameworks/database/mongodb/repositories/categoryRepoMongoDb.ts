@@ -37,24 +37,24 @@ export const categoryRepositoryMongodb = () => {
     );
   };
 
-  const getCourseCountByCategory = async () => {
-    const courses = await Category.aggregate( [
+  const getProductCountByCategory = async () => {
+    const products = await Category.aggregate( [
       {
         $lookup:{
-          from:'course',
+          from:'product',
           localField:'name',
           foreignField:'category',
-          as:'courseDetails'
+          as:'productDetails'
         }
       },
       {
         $project: {
           name: 1, 
-          courseCount: { $size: '$courseDetails' } 
+          courseCount: { $size: '$productDetails' } 
         }
       }
     ]);
-    return courses
+    return products
   };
 
   return {
@@ -62,7 +62,7 @@ export const categoryRepositoryMongodb = () => {
     getCategoryById,
     getAllCategory,
     editCategory,
-    getCourseCountByCategory
+    getProductCountByCategory
   };
 };
 

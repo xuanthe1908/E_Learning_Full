@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { CourseInterface } from "../../types/course";
+import { ProductInterface } from "../../types/product";
 
-interface CartItem extends CourseInterface {
+interface CartItem extends ProductInterface {
   quantity: number;
 }
 
@@ -22,7 +22,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addToCart(state, action: PayloadAction<CourseInterface>) {
+    addToCart(state, action: PayloadAction<ProductInterface>) {
       const existingItem = state.items.find(
         (item) => item._id === action.payload._id
       );
@@ -95,4 +95,26 @@ export const selectCartItemCount = (state: RootState, productId: string) => {
 };
 
 export const cartReducer = cartSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

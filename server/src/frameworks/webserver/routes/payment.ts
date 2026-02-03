@@ -2,8 +2,8 @@ import express from 'express';
 import { vnpayService } from '../../../frameworks/services/vnpayService';
 import { vnpayServiceInterface } from '../../../app/services/vnpayServiceInterface';
 import vnpayController from '../../../adapters/controllers/vnpayController';
-import { courseDbRepository } from '../../../app/repositories/courseDbRepository';
-import { courseRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/courseReposMongoDb';
+import { productDbRepository } from '../../../app/repositories/productDbRepository';
+import { productRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/productReposMongoDb';
 
 import { paymentInterface } from '../../../app/repositories/paymentDbRepository';
 import { paymentRepositoryMongodb } from '../../../frameworks/database/mongodb/repositories/paymentRepoMongodb';
@@ -17,8 +17,8 @@ const paymentRouter = () => {
   const controller = vnpayController(
     vnpayServiceInterface,    // Argument 1: vnpayServiceInterface
     vnpayService,            // Argument 2: vnpayServiceImpl  
-    courseDbRepository,      // Argument 3: courseDbInterface
-    courseRepositoryMongodb, // Argument 4: courseDbImpl
+    productDbRepository,      // Argument 3: productDbInterface
+    productRepositoryMongodb, // Argument 4: productDbImpl
     paymentInterface,        // Argument 5: paymentDbInterface
     paymentRepositoryMongodb // Argument 6: paymentDbImpl
   );

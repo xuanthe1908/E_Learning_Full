@@ -28,3 +28,30 @@ const ShimmerCard:React.FC= () => {
 };
 
 export default ShimmerCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

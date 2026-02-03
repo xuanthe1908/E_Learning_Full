@@ -12,14 +12,19 @@ dotenv.config();
  */
 async function seedShopData() {
   try {
-    // Kết nối database
-    const mongoUri = process.env.DATABASE;
+    // Kết nối database - dùng đúng cấu hình như connection chính
+    const mongoUri = process.env.DB_CLUSTER_URL || process.env.DATABASE;
+    const dbName = process.env.DB_NAME || 'TutorTrek';
+    
     if (!mongoUri) {
-      throw new Error('DATABASE environment variable is not set');
+      throw new Error('DATABASE hoặc DB_CLUSTER_URL environment variable is not set');
     }
 
-    await mongoose.connect(mongoUri);
-    console.log('✅ Đã kết nối database thành công');
+    await mongoose.connect(mongoUri, {
+      dbName: dbName
+    });
+    console.log(`✅ Đã kết nối database thành công`);
+    console.log(`   Database: ${dbName}`);
 
     // Lấy seller (instructor) ID đầu tiên (hoặc tạo mới nếu chưa có)
     // Giả sử có ít nhất 1 seller trong database

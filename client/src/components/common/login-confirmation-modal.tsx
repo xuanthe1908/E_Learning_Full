@@ -38,3 +38,30 @@ const LoginConfirmation: React.FC<Props> = ({ confirm, setConfirm }) => {
 };
 
 export default LoginConfirmation;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

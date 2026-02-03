@@ -13,7 +13,7 @@ interface StepperProps {
   setIsFirstStep: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function AddCourseStepper({
+export default function AddProductStepper({
   activeStep,
   setActiveStep,
   setIsLastStep,
@@ -85,6 +85,33 @@ export default function AddCourseStepper({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

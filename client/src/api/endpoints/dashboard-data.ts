@@ -11,3 +11,26 @@ export const getDashboardData = () => {
 export const getGraphData = () => {
   return getGraphDataService(END_POINTS.GET_GRAPH_DATA_ADMIN);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

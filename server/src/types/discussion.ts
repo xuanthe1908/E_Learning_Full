@@ -1,14 +1,14 @@
 export interface Reply  {
-   studentId: string;
+   customerId: string;
     message: string;
     createdAt: Date;
     updatedAt: Date;
   }
   
  export interface AddDiscussionInterface  {
-    studentId: string;
+    customerId: string;
     message: string;
-    lessonId: string;
+    itemId: string;
     replies?: Reply[];
     createdAt: Date;
     updatedAt: Date;

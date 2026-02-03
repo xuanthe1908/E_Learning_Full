@@ -38,20 +38,25 @@ const shopController = (
       throw new AppError('User information not found', HttpStatusCodes.UNAUTHORIZED);
     }
 
-    const userTypeMap = {
-      'student': 'students',
-      'instructor': 'instructor',
-      'admin': 'instructor' // Admin được treat như instructor
+    // Map roles từ frontend (customer/seller) sang backend model names (customers/sellers)
+    const userTypeMap: { [key: string]: 'customers' | 'sellers' } = {
+      'customer': 'customers',
+      'student': 'customers', // Backward compatibility
+      'students': 'customers', // Backward compatibility
+      'seller': 'sellers',
+      'instructor': 'sellers', // Backward compatibility
+      'admin': 'sellers' // Admin được treat như seller
     };
 
     const userType = userTypeMap[role];
     if (!userType) {
-      throw new AppError('Invalid user role', HttpStatusCodes.BAD_REQUEST);
+      console.error('Invalid user role:', role);
+      throw new AppError(`Invalid user role: ${role}. Expected: customer, seller, admin`, HttpStatusCodes.BAD_REQUEST);
     }
 
     const chatData = createShop(
       userId,
-      userType as 'students' | 'instructor',
+      userType,
       title || 'Chat mới',
       metadata
     );
@@ -183,13 +188,37 @@ const shopController = (
   ];
 
   // Gọi AI service để tạo phản hồi
-  const aiResponse = await aiService.generateResponse(messages, context);
-
-  if (!aiResponse.success) {
-    throw new AppError('Lỗi khi tạo phản hồi AI: ' + aiResponse.error, HttpStatusCodes.INTERNAL_SERVER_ERROR);
+  let aiResponse;
+  try {
+    aiResponse = await aiService.generateResponse(messages, context);
+  } catch (error: any) {
+    console.error('Error calling AI service:', error);
+    // Return fallback response if AI service fails
+    const fallbackMessage = {
+      role: 'assistant' as const,
+      content: 'Xin lỗi, dịch vụ AI hiện đang gặp sự cố. Vui lòng thử lại sau vài phút hoặc liên hệ quản trị viên để được hỗ trợ.',
+      timestamp: new Date()
+    };
+    
+    await dbRepository.addMessage(chatId, fallbackMessage);
+    
+    res.status(HttpStatusCodes.OK).json({
+      success: true,
+      message: 'Đã gửi tin nhắn (dịch vụ AI tạm thời không khả dụng)',
+      data: {
+        chatId,
+        message: fallbackMessage
+      }
+    });
+    return;
   }
 
-  // Thêm phản hồi của AI
+  // Handle AI response (success or fallback)
+  if (!aiResponse.success && !aiResponse.isFallback) {
+    throw new AppError('Lỗi khi tạo phản hồi AI: ' + (aiResponse.error || 'Unknown error'), HttpStatusCodes.INTERNAL_SERVER_ERROR);
+  }
+
+  // Thêm phản hồi của AI (có thể là fallback nếu quota hết)
   const assistantMessage = {
     role: 'assistant' as const,
     content: aiResponse.content,
@@ -197,6 +226,11 @@ const shopController = (
   };
 
   await dbRepository.addMessage(chatId, assistantMessage);
+  
+  // Log warning nếu dùng fallback
+  if (aiResponse.isFallback) {
+    console.warn('⚠️ Using fallback response due to AI service error');
+  }
 
   // ✅ Cập nhật tiêu đề chat - cải thiện logic
   let updatedTitle = (chat as any).title;

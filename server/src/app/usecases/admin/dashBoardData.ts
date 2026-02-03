@@ -1,60 +1,60 @@
-import { CourseDbRepositoryInterface } from '../../../app/repositories/courseDbRepository';
-import { InstructorDbInterface } from '../../../app/repositories/instructorDbRepository';
-import { StudentsDbInterface } from '../../../app/repositories/studentDbRepository';
+import { ProductDbRepositoryInterface } from '../../../app/repositories/productDbRepository';
+import { SellerDbInterface } from '../../../app/repositories/sellerDbRepository';
+import { CustomersDbInterface } from '../../../app/repositories/customerDbRepository';
 import { PaymentInterface } from '../../../app/repositories/paymentDbRepository';
 import { CategoryDbInterface } from '@src/app/repositories/categoryDbRepository';
 
 export const getDashBoardDetailsU = async (
-  dbRepositoryCourse: ReturnType<CourseDbRepositoryInterface>,
-  dbRepositoryInstructor: ReturnType<InstructorDbInterface>,
-  dbRepositoryStudent: ReturnType<StudentsDbInterface>,
+  dbRepositoryProduct: ReturnType<ProductDbRepositoryInterface>,
+  dbRepositorySeller: ReturnType<SellerDbInterface>,
+  dbRepositoryCustomer: ReturnType<CustomersDbInterface>,
   dbRepositoryPayment: ReturnType<PaymentInterface>
 ) => {
-  const [numberOfCourses, numberInstructors, numberOfStudents, monthlyRevenue] =
+  const [numberOfProducts, numberSellers, numberOfCustomers, monthlyRevenue] =
     await Promise.allSettled([
-      dbRepositoryCourse.getTotalNumberOfCourses(),
-      dbRepositoryInstructor.getTotalNumberOfInstructors(),
-      dbRepositoryStudent.getTotalNumberOfStudents(),
+      dbRepositoryProduct.getTotalNumberOfProducts(),
+      dbRepositorySeller.getTotalNumberOfSellers(),
+      dbRepositoryCustomer.getTotalNumberOfCustomers(),
       dbRepositoryPayment.getMonthlyRevenue()
     ]);
 
   return {
-    numberOfCourses:
-      numberOfCourses.status === 'fulfilled' ? numberOfCourses.value : null,
-    numberInstructors:
-      numberInstructors.status === 'fulfilled' ? numberInstructors.value : null,
-    numberOfStudents:
-      numberOfStudents.status === 'fulfilled' ? numberOfStudents.value : null,
+    numberOfProducts:
+      numberOfProducts.status === 'fulfilled' ? numberOfProducts.value : null,
+    numberSellers:
+      numberSellers.status === 'fulfilled' ? numberSellers.value : null,
+    numberOfCustomers:
+      numberOfCustomers.status === 'fulfilled' ? numberOfCustomers.value : null,
     monthlyRevenue:
       monthlyRevenue.status === 'fulfilled' ? monthlyRevenue.value : null
   };
 };
 
 export const getGraphDetailsU = async (
-  dbRepositoryCourse: ReturnType<CourseDbRepositoryInterface>,
+  dbRepositoryProduct: ReturnType<ProductDbRepositoryInterface>,
   dbRepositoryCategory: ReturnType<CategoryDbInterface>,
   dbRepositoryPayment: ReturnType<PaymentInterface>
 ) => {
   const [
-    trendingCourses,
-    courseByCategory,
+    trendingProducts,
+    productByCategory,
     revenueForEachMonth,
-    coursesAdded,
-    coursesEnrolled
+    productsAdded,
+    productsPurchased
   ] = await Promise.allSettled([
-    dbRepositoryCourse.getTrendingCourse(),
-    dbRepositoryCategory.getCourseCountByCategory(),
+    dbRepositoryProduct.getTrendingProduct(),
+    dbRepositoryCategory.getProductCountByCategory(),
     dbRepositoryPayment.getRevenueForEachMonth(),
-    dbRepositoryCourse.getNumberOfCoursesAddedInEachMonth(),
-    dbRepositoryPayment.getCoursesEnrolledPerMonth()
+    dbRepositoryProduct.getNumberOfProductsAddedInEachMonth(),
+    dbRepositoryPayment.getProductsPurchasedPerMonth()
   ]);
 
-  let trending: Array<{ title: string; enrolled: number }> = [];
-  if (trendingCourses.status === 'fulfilled') {
-    trendingCourses.value.map((course) => {
+  let trending: Array<{ title: string; purchased: number }> = [];
+  if (trendingProducts.status === 'fulfilled') {
+    trendingProducts.value.map((product) => {
       trending.push({
-        title: course?.title,
-        enrolled: course.coursesEnrolled?.length
+        title: product?.title,
+        purchased: product.productsPurchased?.length
       });
     });
   }
@@ -62,13 +62,13 @@ export const getGraphDetailsU = async (
   let revenueData: Array<{
     month: string;
     revenue: number;
-    coursesAdded: number;
-    coursesEnrolled: number;
+    productsAdded: number;
+    productsPurchased: number;
   }> = [];
   if (
     revenueForEachMonth.status === 'fulfilled' &&
-    coursesAdded.status === 'fulfilled' &&
-    coursesEnrolled.status === 'fulfilled'
+    productsAdded.status === 'fulfilled' &&
+    productsPurchased.status === 'fulfilled'
   ) {
     const allMonths = Array.from({ length: 12 }, (_, index) => index + 1);
     const monthNames = [
@@ -87,27 +87,27 @@ export const getGraphDetailsU = async (
     ];
     revenueData = allMonths.map((month) => {
       const matchedRevenueMonth = revenueForEachMonth.value.find(
-        (data) => data.month === month
+        (data: { month: number; totalRevenue: number }) => data.month === month
       );
-      const matchedAddedMonth = coursesAdded.value.find(
-        (data) => data.month === month
+      const matchedAddedMonth = productsAdded.value.find(
+        (data: { month: number; count: number }) => data.month === month
       );
-      const matchedEnrolledMonth = coursesEnrolled.value.find(
-        (data) => data.month === month
+      const matchedPurchasedMonth = productsPurchased.value.find(
+        (data: { month: number; count: number }) => data.month === month
       );
       return {
         month: monthNames[month - 1],
         revenue: matchedRevenueMonth ? matchedRevenueMonth.totalRevenue : 0,
-        coursesAdded: matchedAddedMonth ? matchedAddedMonth.count : 0,
-        coursesEnrolled: matchedEnrolledMonth ? matchedEnrolledMonth.count : 0
+        productsAdded: matchedAddedMonth ? matchedAddedMonth.count : 0,
+        productsPurchased: matchedPurchasedMonth ? matchedPurchasedMonth.count : 0
       };
     });
   }
 
   return {
     revenue: revenueData,
-    trendingCourses: trending,
-    courseByCategory:
-      courseByCategory.status === 'fulfilled' ? courseByCategory.value : null
+    trendingProducts: trending,
+    productByCategory:
+      productByCategory.status === 'fulfilled' ? productByCategory.value : null
   };
 };

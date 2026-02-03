@@ -89,8 +89,8 @@ export const paymentRepositoryMongodb = () => {
     return revenueByMonth;
   };
 
-  const getCoursesEnrolledPerMonth = async () => {
-    const enrolled = await Payment.aggregate([
+  const getProductsPurchasedPerMonth = async () => {
+    const purchased = await Payment.aggregate([
       {
         $match: { status: 'completed' }
       },
@@ -113,7 +113,7 @@ export const paymentRepositoryMongodb = () => {
         }
       }
     ]);
-    return enrolled;
+    return purchased;
   };
 
   const getAllPayments = async (filters: any = {}) => {
@@ -133,8 +133,8 @@ export const paymentRepositoryMongodb = () => {
       }
     }
     
-    if (filters.courseId) {
-      query.courseId = filters.courseId;
+    if (filters.productId) {
+      query.productId = filters.productId;
     }
 
     const limit = parseInt(filters.limit) || 50;
@@ -158,7 +158,7 @@ export const paymentRepositoryMongodb = () => {
     updatePaymentStatus,
     getMonthlyRevenue,
     getRevenueForEachMonth,
-    getCoursesEnrolledPerMonth,
+    getProductsPurchasedPerMonth,
     getAllPayments,
     getPaymentById
   };

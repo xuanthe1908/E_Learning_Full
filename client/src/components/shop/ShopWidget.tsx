@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 import ShopInterface from './ShopInterface';
 
 interface ShopWidgetProps {
-  courseId?: string;
-  lessonId?: string;
+  productId?: string;
+  itemId?: string;
 }
 
-const ShopWidget: React.FC<ShopWidgetProps> = ({ courseId, lessonId }) => {
+const ShopWidget: React.FC<ShopWidgetProps> = ({ productId, itemId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -61,7 +61,7 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({ courseId, lessonId }) => {
         {!isMinimized && (
           <div className="h-[calc(100%-48px)]">
             {isLoggedIn ? (
-              <ShopInterface courseId={courseId} lessonId={lessonId} />
+              <ShopInterface productId={productId} itemId={itemId} />
             ) : (
               // Login prompt cho widget
               <div className="h-full flex items-center justify-center p-4">
@@ -93,4 +93,31 @@ const ShopWidget: React.FC<ShopWidgetProps> = ({ courseId, lessonId }) => {
 };
 
 export default ShopWidget;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

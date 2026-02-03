@@ -18,8 +18,8 @@ import { clearToken } from "../../redux/reducers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { USER_AVATAR } from "../../constants/common";
-import { selectStudent } from "../../redux/reducers/studentSlice";
-import LogoutConfirmationModal from "./student-logout-modal";
+import { selectCustomer } from "../../redux/reducers/customerSlice";
+import LogoutConfirmationModal from "./customer-logout-modal";
 
 const profileMenuItems = [
   {
@@ -47,7 +47,7 @@ const profileMenuItems = [
 export default function ProfileMenu() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const student = useSelector(selectStudent);
+  const Customer = useSelector(selectCustomer);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [logoutConfirmationOpen, setLogoutConfirmationOpen] = useState<boolean>(false);
 
@@ -94,7 +94,7 @@ export default function ProfileMenu() {
               size='sm'
               alt='candice wu'
               className='border border-blue-500 p-0.5'
-              src={student.studentDetails?.profilePic?.url || USER_AVATAR}
+              src={Customer.customerDetails?.profilePic?.url || USER_AVATAR}
             />
             <ChevronDownIcon
               strokeWidth={2.5}
@@ -142,3 +142,30 @@ export default function ProfileMenu() {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

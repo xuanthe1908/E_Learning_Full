@@ -28,14 +28,14 @@ export const routes = [
       },
       {
         icon: <AcademicCapIcon {...icon} />,
-        name: "Instructors",
-        path: "/instructors",
+        name: "sellers",
+        path: "/sellers",
         element: <AdminHomePage />,
       },
       {
         icon: <UserGroupIcon {...icon} />,
-        name: "Students",
-        path: "/students",
+        name: "customers",
+        path: "/customers",
         element: <AdminHomePage />,
       },
       {
@@ -46,8 +46,8 @@ export const routes = [
       },
       {
         icon: <Square3Stack3DIcon {...icon} />,
-        name: "Courses",
-        path: "/courses",
+        name: "products",
+        path: "/products",
         element: <AdminHomePage />,
       },
       {
@@ -99,3 +99,30 @@ export function Dashboard() {
 Dashboard.displayName = "/src/layout/dashboard.jsx";
 
 export default Dashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

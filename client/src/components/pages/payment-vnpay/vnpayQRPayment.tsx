@@ -10,9 +10,9 @@ const isValidObjectId = (id: string): boolean => {
 };
 
 const VNPayQRPayment: React.FC = () => {
-  const params = useParams<{ courseId: string }>();
+  const params = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const courseId = params.courseId;
+  const productId = params.productId;
   
   const [qrCode, setQrCode] = useState<string>('');
   const [orderId, setOrderId] = useState<string>('');
@@ -22,36 +22,36 @@ const VNPayQRPayment: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   console.log('🔍 VNPayQR - Raw params:', params);
-  console.log('🔍 VNPayQR - Extracted courseId:', courseId);
+  console.log('🔍 VNPayQR - Extracted productId:', productId);
 
   // ✅ Enhanced validation on mount
   useEffect(() => {
-    console.log('📝 Course ID from params:', courseId);
+    console.log('📝 Course ID from params:', productId);
     
-    if (!courseId) {
+    if (!productId) {
       setError('Course ID không được cung cấp');
       toast.error('Course ID không hợp lệ');
-      navigate('/courses');
+      navigate('/products');
       return;
     }
 
     // ✅ Validate ObjectId format
-    if (!isValidObjectId(courseId)) {
-      console.error('❌ Invalid ObjectId format:', courseId);
+    if (!isValidObjectId(productId)) {
+      console.error('❌ Invalid ObjectId format:', productId);
       setError('Course ID không đúng định dạng');
       toast.error('Course ID không hợp lệ');
-      navigate('/courses');
+      navigate('/products');
       return;
     }
 
-    console.log('✅ Valid ObjectId format:', courseId);
+    console.log('✅ Valid ObjectId format:', productId);
     createQRPayment();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId]);
+  }, [productId]);
 
   // Tạo thanh toán VNPay
   const createQRPayment = async () => {
-    if (!courseId) {
+    if (!productId) {
       setError('Course ID không hợp lệ');
       return;
     }
@@ -60,17 +60,17 @@ const VNPayQRPayment: React.FC = () => {
       setIsLoading(true);
       setError('');
       
-      console.log('🚀 Creating QR payment for courseId:', courseId);
-      console.log('📊 CourseId type:', typeof courseId);
-      console.log('📏 CourseId length:', courseId.length);
-      console.log('🔤 CourseId format test:', isValidObjectId(courseId));
+      console.log('🚀 Creating QR payment for productId:', productId);
+      console.log('📊 productId type:', typeof productId);
+      console.log('📏 productId length:', productId.length);
+      console.log('🔤 productId format test:', isValidObjectId(productId));
       
       // ✅ Additional validation before API call
-      if (!isValidObjectId(courseId)) {
+      if (!isValidObjectId(productId)) {
         throw new Error('Course ID không đúng định dạng ObjectId');
       }
       
-      const response = await createVNPayQRPayment(courseId);
+      const response = await createVNPayQRPayment(productId);
       
       console.log('📨 QR Payment response:', response);
       
@@ -128,7 +128,7 @@ const VNPayQRPayment: React.FC = () => {
       
       // Navigate back on critical errors
       if (errorMessage.includes('Course ID') || errorMessage.includes('ObjectId')) {
-        setTimeout(() => navigate('/courses'), 2000);
+        setTimeout(() => navigate('/products'), 2000);
       }
       
     } finally {
@@ -150,13 +150,13 @@ const VNPayQRPayment: React.FC = () => {
         
         if (status === 'completed') {
           toast.success('Thanh toán thành công! Chuyển hướng...');
-          navigate(`/courses/${courseId}#success`);
+          navigate(`/products/${productId}#success`);
         } else if (status === 'expired') {
           toast.error('Thanh toán đã hết hạn. Vui lòng thử lại.');
-          navigate(`/courses/${courseId}`);
+          navigate(`/products/${productId}`);
         } else if (status === 'failed') {
           toast.error('Thanh toán thất bại. Vui lòng thử lại.');
-          navigate(`/courses/${courseId}`);
+          navigate(`/products/${productId}`);
         }
         // Nếu status là 'pending', tiếp tục polling
       }
@@ -199,7 +199,7 @@ const VNPayQRPayment: React.FC = () => {
 
   // Hủy thanh toán và quay lại
   const handleCancel = () => {
-    navigate(`/courses/${courseId}`);
+    navigate(`/products/${productId}`);
   };
 
   // Poll payment status every 5 seconds when orderId exists
@@ -214,7 +214,7 @@ const VNPayQRPayment: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, isProcessing]);
 
-  // ✅ Error state for invalid courseId
+  // ✅ Error state for invalid productId
   if (error && error.includes('Course ID')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -229,7 +229,7 @@ const VNPayQRPayment: React.FC = () => {
             <p className="mt-1 text-sm text-gray-500">{error}</p>
             <div className="mt-6">
               <button
-                onClick={() => navigate('/courses')}
+                onClick={() => navigate('/products')}
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Quay lại danh sách khóa học
@@ -349,3 +349,29 @@ const VNPayQRPayment: React.FC = () => {
 };
 
 export default VNPayQRPayment;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

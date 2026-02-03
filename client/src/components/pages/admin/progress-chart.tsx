@@ -65,3 +65,29 @@ const CourseCategoryChart: React.FC<Props> = ({ data = [] }) => {
 };
 
 export default CourseCategoryChart;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

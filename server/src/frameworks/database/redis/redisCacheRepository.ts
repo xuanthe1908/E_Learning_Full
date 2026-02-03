@@ -1,4 +1,4 @@
-import { CourseInterface } from '@src/types/courseInterface';
+import { ProductInterface } from '@src/types/productInterface';
 import { RedisClient } from '../../../app';
 
 export function redisCacheRepository(redisClient: RedisClient) {
@@ -18,10 +18,10 @@ export function redisCacheRepository(redisClient: RedisClient) {
     return result === 1;
   };
 
-  const populateTrie = async (course: CourseInterface) => {
+  const populateTrie = async (product: ProductInterface) => {
     const trie: { [key: string]: any } = {}; // Initialize the trie object
 
-    const title = course.title.toLowerCase();
+    const title = product.title.toLowerCase();
     let currentNode: { [key: string]: any } = trie;
 
     for (const char of title) {
@@ -31,8 +31,8 @@ export function redisCacheRepository(redisClient: RedisClient) {
       currentNode = currentNode[char]; // Move to the next node
     }
 
-    currentNode['*'] = course.title; // Mark the end of the course title with '*'
-    redisClient.set('course-trie', JSON.stringify(trie)); // Store the trie in Redis
+    currentNode['*'] = product.title; // Mark the end of the product title with '*'
+    redisClient.set('product-trie', JSON.stringify(trie)); // Store the trie in Redis
   };
 
   return {

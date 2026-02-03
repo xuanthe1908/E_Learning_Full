@@ -181,7 +181,7 @@ const OrderConfirmation: React.FC = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              to="/courses"
+              to="/shop"
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-md text-center transition-colors"
             >
               Tiếp tục mua sắm
@@ -208,4 +208,31 @@ const OrderConfirmation: React.FC = () => {
 };
 
 export default OrderConfirmation;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

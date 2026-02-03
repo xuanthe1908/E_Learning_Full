@@ -1,0 +1,129 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {MdLibraryAdd} from "react-icons/md"
+import {
+  HomeIcon,
+} from "@heroicons/react/24/solid";
+import { Button, Typography } from "@material-tailwind/react";
+
+import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
+import { useLocation } from "react-router-dom";
+import {IoMdChatboxes} from 'react-icons/io'
+import { FaUserGraduate } from "react-icons/fa";
+import {UserCircleIcon} from "@heroicons/react/24/outline";
+
+
+const icon = {
+  className: "w-5 h-5 text-inherit",
+};
+const routes = [
+  {
+    title: "Dashboard",
+    icon: <HomeIcon {...icon} />,
+    value: "home",
+    path:'/sellers'
+  },
+  {
+    title: "Sản phẩm của tôi",
+    icon: <Square3Stack3DIcon {...icon} />,
+    value: "view-product",
+    path:'/sellers/view-products'
+  },
+  {
+    title: "Thêm sản phẩm",
+    icon: <MdLibraryAdd {...icon} />,
+    value: "add-course",
+    path:'/sellers/add-product'
+  },
+  {
+    title:"Khách hàng của tôi",
+    icon:<FaUserGraduate {...icon}/>,
+    value:"view-customers",
+    path:"/sellers/view-customers"
+  },
+  {
+    title:"Hồ sơ của tôi",
+    icon:<UserCircleIcon {...icon}/>,
+    value:"view-profile",
+    path:"/sellers/view-profile"
+  },
+  {
+    title:"Channels",
+    icon:<IoMdChatboxes {...icon}/>,
+    value:"view-channels",
+    path:'/sellers/view-channels'
+  },
+  
+];
+
+const SellerSideNav: React.FC = () => {
+  const location = useLocation()
+  const parts = location.pathname.split('/');
+  const result = parts.slice(2).join('/');
+  const [isActive, setIsActive] = useState<string>(result===""?'home':result);
+  const selected = false;
+  const handleClick = (active: string) => {
+    setIsActive(active);
+  };
+  return (
+    <nav className='bg-white h-screen w-64 border-r border-gray-300 flex flex-col'>
+      <ul className='py-6'>
+        {routes.map(({ title, icon, value,path },index) => {
+          return (
+            <Link to={path} key={index}>
+             <li className='py-2 px-4'>
+              <Button
+                variant={isActive ===value ? "gradient" : "text"}
+                color={isActive===value ? "blue" : "gray"}
+                className={`flex items-center gap-4 capitalize${
+                  isActive && selected ? " bg-indigo-600" : ""
+                }`}
+                fullWidth
+                value={value}
+                onClick={() => {
+                  handleClick(value);
+                }}
+              >
+                {icon}
+                <Typography color={isActive===value?'inherit':'gray'} className='font-bold capitalize'>
+                  {title}
+                </Typography>
+              </Button>
+            </li>
+            </Link>
+           
+          );
+        })}
+      </ul>
+    </nav>
+  );
+};
+
+export default SellerSideNav;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

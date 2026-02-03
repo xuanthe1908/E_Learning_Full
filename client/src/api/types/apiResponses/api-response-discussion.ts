@@ -1,15 +1,15 @@
 interface Replies {
   createdAt: string;
-  lessonId: string;
+  itemId: string;
   message: string;
   updatedAt: string;
-  studentId: string;
+  customerId: string;
   _id: string;
 }
 
 export interface ApiResponseDiscussion {
   createdAt: string;
-  lessonId: string;
+  itemId: string;
   message: string;
   replies: Replies[]; 
   updatedAt: string;
@@ -37,3 +37,25 @@ interface StudentDetails {
     };
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

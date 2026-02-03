@@ -15,10 +15,24 @@ export const vnpayService = () => {
   // Validate configuration
   const validateConfig = () => {
     const requiredConfigs = ['vnp_TmnCode', 'vnp_HashSecret', 'vnp_Url'];
+    const missingConfigs: string[] = [];
+    
     for (const config of requiredConfigs) {
-      if (!vnpayConfig[config as keyof typeof vnpayConfig]) {
-        throw new Error(`Missing VNPay configuration: ${config}`);
+      const value = vnpayConfig[config as keyof typeof vnpayConfig];
+      if (!value || value.trim() === '') {
+        missingConfigs.push(config);
       }
+    }
+    
+    if (missingConfigs.length > 0) {
+      console.error('❌ Missing VNPay configuration:', missingConfigs);
+      console.error('📋 Current config:', {
+        vnp_TmnCode: vnpayConfig.vnp_TmnCode ? '***' : 'MISSING',
+        vnp_HashSecret: vnpayConfig.vnp_HashSecret ? '***' : 'MISSING',
+        vnp_Url: vnpayConfig.vnp_Url,
+        vnp_ReturnUrl: vnpayConfig.vnp_ReturnUrl
+      });
+      throw new Error(`Missing VNPay configuration: ${missingConfigs.join(', ')}`);
     }
   };
 
@@ -110,43 +124,64 @@ export const vnpayService = () => {
     orderInfo: string,
     orderId: string
   ) => {
-    validateConfig();
+    try {
+      validateConfig();
+    } catch (configError: any) {
+      console.error('❌ VNPay config validation failed:', configError.message);
+      throw new Error(`VNPay configuration error: ${configError.message}`);
+    }
     
-    const date = new Date();
-    const createDate = formatDate(date);
-    const expireDate = formatDate(new Date(date.getTime() + 15 * 60 * 1000));
-    
-    const qrData = {
-      vnp_Version: '2.1.0',
-      vnp_Command: 'pay',
-      vnp_TmnCode: vnpayConfig.vnp_TmnCode,
-      vnp_Amount: amount * 100,
-      vnp_CreateDate: createDate,
-      vnp_ExpireDate: expireDate,
-      vnp_CurrCode: 'VND',
-      vnp_IpAddr: '127.0.0.1',
-      vnp_Locale: 'vn',
-      vnp_OrderInfo: orderInfo,
-      vnp_OrderType: 'other',
-      vnp_ReturnUrl: vnpayConfig.vnp_ReturnUrl,
-      vnp_TxnRef: orderId
-    };
+    try {
+      const date = new Date();
+      const createDate = formatDate(date);
+      const expireDate = formatDate(new Date(date.getTime() + 15 * 60 * 1000));
+      
+      const qrData = {
+        vnp_Version: '2.1.0',
+        vnp_Command: 'pay',
+        vnp_TmnCode: vnpayConfig.vnp_TmnCode,
+        vnp_Amount: amount * 100,
+        vnp_CreateDate: createDate,
+        vnp_ExpireDate: expireDate,
+        vnp_CurrCode: 'VND',
+        vnp_IpAddr: '127.0.0.1',
+        vnp_Locale: 'vn',
+        vnp_OrderInfo: orderInfo,
+        vnp_OrderType: 'other',
+        vnp_ReturnUrl: vnpayConfig.vnp_ReturnUrl,
+        vnp_TxnRef: orderId
+      };
 
-    const sortedData = sortObject(qrData);
-    const signData = querystring.stringify(sortedData, undefined, undefined, { 
-      encodeURIComponent: (str) => str 
-    });
-    
-    const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
-    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+      console.log('[VNPay] Creating QR payment with data:', {
+        orderId,
+        amount: amount * 100,
+        tmnCode: vnpayConfig.vnp_TmnCode ? '***' : 'MISSING',
+        returnUrl: vnpayConfig.vnp_ReturnUrl
+      });
 
-    return {
-      qrCode: `${vnpayConfig.vnp_Url}?${signData}&vnp_SecureHash=${signed}`,
-      paymentData: {
-        ...qrData,
-        vnp_SecureHash: signed
-      }
-    };
+      const sortedData = sortObject(qrData);
+      const signData = querystring.stringify(sortedData, undefined, undefined, { 
+        encodeURIComponent: (str) => str 
+      });
+      
+      const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
+      const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+
+      const qrCode = `${vnpayConfig.vnp_Url}?${signData}&vnp_SecureHash=${signed}`;
+      
+      console.log('[VNPay] QR Code generated successfully, length:', qrCode.length);
+
+      return {
+        qrCode,
+        paymentData: {
+          ...qrData,
+          vnp_SecureHash: signed
+        }
+      };
+    } catch (error: any) {
+      console.error('❌ Error creating QR payment:', error.message);
+      throw new Error(`Failed to create QR payment: ${error.message}`);
+    }
   };
 
   const checkPaymentStatus = async (orderId: string, transDate: string) => {

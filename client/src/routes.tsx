@@ -1,126 +1,126 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorElement from "./components/common/error-element";
-import { Student, Admin } from "./App";
-import { Instructor } from "./App";
-import InstructorDashboard from "./components/pages/instructors/instructor-dash-board";
+import { Customer, Admin } from "./App";
+import { Seller } from "./App";
+import SellerDashboard from "./components/pages/sellers/seller-dash-board";
 import AddCategory from "./components/pages/categories/add-category";
 import EditCategory from "./components/pages/categories/edit-category";
 import ListCategories from "./components/pages/categories/list-category";
-import DashHome from "./components/pages/student-dash/dash-home";
-import InstructorChannels from "./components/pages/channel/instructor-channels";
+import DashHome from "./components/pages/customer-dash/dash-home";
+import SellerChannels from "./components/pages/channel/seller-channels";
 import VNPayQRPayment from "./components/pages/payment-vnpay/vnpayQRPayment";
 import VNPayReturnHandler from "components/pages/payment-vnpay/vnpay-return-handler";
 
-const LazyListCourse = lazy(
-  () => import("./components/pages/course-pages/product-list")
+const LazyListProduct = lazy(
+  () => import("./components/pages/shop-pages/product-list")
 );
 
-const LazyInstructorsListing = lazy(
-  () => import("./components/pages/instructors/list-all-instructors")
+const LazySellersListing = lazy(
+  () => import("./components/pages/sellers/list-all-sellers")
 );
 
-const LazyStudentDash = lazy(
-  () => import("./components/pages/student-dash/user-dashboard")
+const LazyCustomerDash = lazy(
+  () => import("./components/pages/customer-dash/user-dashboard")
 );
 
-const LazyInstructorIndex = lazy(
+const LazySellerIndex = lazy(
   () =>
-    import("./components/pages/instructor-management/view-instructors-index")
+    import("./components/pages/seller-management/view-sellers-index")
 );
 
-const LazyStudents = lazy(
-  () => import("./components/pages/student-management/students-tab")
+const LazyCustomers = lazy(
+  () => import("./components/pages/customer-management/customers-tab")
 );
 
 const LazyCategories = lazy(
   () => import("./components/pages/categories/category-page")
 );
 
-const LazyViewCourse = lazy(
-  () => import("./components/pages/course-pages/product-detail")
+const LazyViewProduct = lazy(
+  () => import("./components/pages/shop-pages/product-detail")
 );
 
-const LazyWatchLesson = lazy(
-  () => import("./components/pages/course-pages/watch-lesson")
+const LazyWatchItem = lazy(
+  () => import("./components/pages/shop-pages/watch-item")
 );
 
-const LazyAddCourse = lazy(
-  () => import("./components/pages/add-course/add-course-form")
+const LazyAddProduct = lazy(
+  () => import("./components/pages/add-product/add-product-form")
 );
 
-const LazyViewLesson = lazy(
-  () => import("./components/pages/add-lesson/view-lessons")
+const LazyViewItems = lazy(
+  () => import("./components/pages/add-item/view-items")
 );
 
-const LazyListCourseInstructors = lazy(
-  () => import("./components/pages/add-lesson/list-course-for-instructors")
+const LazyListProductForSellers = lazy(
+  () => import("./components/pages/add-item/list-product-for-sellers")
 );
 
-const LazyEditLesson = lazy(
-  () => import("./components/pages/add-lesson/edit-lesson")
+const LazyEditItem = lazy(
+  () => import("./components/pages/add-item/edit-item")
 );
 
-const LazyEditCourse = lazy(
-  () => import("./components/pages/add-course/edit-course")
+const LazyEditProduct = lazy(
+  () => import("./components/pages/add-product/edit-product")
 );
 
-const LazyMyStudents = lazy(
-  () => import("./components/pages/instructors/my-students")
+const LazyMyCustomers = lazy(
+  () => import("./components/pages/sellers/my-customers")
 );
 
-const LazyInstructorProfile = lazy(
-  () => import("./components/pages/instructors/insructor-profile")
+const LazySellerProfile = lazy(
+  () => import("./components/pages/sellers/seller-profile")
 );
 
-const LazyViewInstructor = lazy(
-  () => import("./components/pages/instructors/view-instructor")
+const LazyViewSeller = lazy(
+  () => import("./components/pages/sellers/view-seller")
 );
 
-const LazyStudentProfile = lazy(
-  () => import("./components/pages/student-dash/my-profile")
+const LazyCustomerProfile = lazy(
+  () => import("./components/pages/customer-dash/my-profile")
 );
 
-const LazyStudentCourses = lazy(
-  () => import("./components/pages/student-dash/my-courses")
+const LazyCustomerProducts = lazy(
+  () => import("./components/pages/customer-dash/my-products")
 );
 
-const LazyStudentHomePage = lazy(
-  () => import("./components/pages/students/student-home-page")
+const LazyCustomerHomePage = lazy(
+  () => import("./components/pages/customers/customer-home-page")
 );
 
-const LazyStudentLogin = lazy(
-  () => import("./components/pages/students/student-login-page")
+const LazyCustomerLogin = lazy(
+  () => import("./components/pages/customers/customer-login-page")
 );
-const LazyStudentRegister = lazy(
-  () => import("./components/pages/students/student-registration-page")
+const LazyCustomerRegister = lazy(
+  () => import("./components/pages/customers/customer-registration-page")
 );
-const LazyInstructorLogin = lazy(
-  () => import("./components/pages/instructors/instructor-login-page")
+const LazySellerLogin = lazy(
+  () => import("./components/pages/sellers/seller-login-page")
 );
-const LazyInstructorRegister = lazy(
-  () => import("./components/pages/instructors/instructor-register-page")
+const LazySellerRegister = lazy(
+  () => import("./components/pages/sellers/seller-register-page")
 );
 const LazyAdminHome = lazy(
   () => import("./components/pages/admin/admin-home-page")
 );
-const LazyInstructorRequests = lazy(
+const LazySellerRequests = lazy(
   () =>
-    import("./components/pages/instructor-management/viewInstructor-requests")
+    import("./components/pages/seller-management/view-seller-requests")
 );
-const LazyViewMoreInstructorRequest = lazy(
+const LazyViewMoreSellerRequest = lazy(
   () =>
     import(
-      "./components/pages/instructor-management/view-more-instructor-request"
+      "./components/pages/seller-management/view-more-seller-request"
     )
 );
-const LazyViewBlockedInstructors = lazy(
+const LazyViewBlockedSellers = lazy(
   () =>
-    import("./components/pages/instructor-management/view-blocked-instructors")
+    import("./components/pages/seller-management/view-blocked-sellers")
 );
 
-const LazyCommunity = lazy(
-  () => import("./components/pages/community/community-home")
+const LazyChatAI = lazy(
+  () => import("./components/pages/shop/ShopPage")
 );
 
 const LazyAboutUs = lazy(() => import("./components/pages/about/about-us"));
@@ -142,14 +142,14 @@ const LazyOrderConfirmation = lazy(() => import('./components/pages/checkout/ord
 const AppRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Student />,
+    element: <Customer />,
     errorElement: <ErrorElement />,
     children: [
       {
         path: "/",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyStudentHomePage />
+            <LazyCustomerHomePage />
           </Suspense>  
         ),
       },
@@ -157,7 +157,7 @@ const AppRouter = createBrowserRouter([
         path: "/shop",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyListCourse />
+            <LazyListProduct />
           </Suspense>
         ),
       },
@@ -165,7 +165,15 @@ const AppRouter = createBrowserRouter([
         path: "/shop/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyViewCourse />
+            <LazyViewProduct />
+          </Suspense> 
+        ),
+      },
+      {
+        path: "/products/:productId",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyViewProduct />
           </Suspense> 
         ),
       },
@@ -173,7 +181,7 @@ const AppRouter = createBrowserRouter([
         path: "/shop/:productId/view/:itemId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyWatchLesson />
+            <LazyWatchItem />
           </Suspense>
         ),
       },
@@ -181,7 +189,7 @@ const AppRouter = createBrowserRouter([
         path: "/tutors", 
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyInstructorsListing />
+            <LazySellersListing />
           </Suspense>
         ),
       },
@@ -189,15 +197,15 @@ const AppRouter = createBrowserRouter([
         path: "/tutors/:tutorId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyViewInstructor />
+            <LazyViewSeller />
           </Suspense>
         ),
       },
       {
-        path: "/community",
+        path: "/chat-ai",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyCommunity />
+            <LazyChatAI />
           </Suspense>
         ),
       },
@@ -247,7 +255,7 @@ const AppRouter = createBrowserRouter([
     path: "/dashboard",
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <LazyStudentDash />
+        <LazyCustomerDash />
       </Suspense>
     ),
     children: [
@@ -259,7 +267,7 @@ const AppRouter = createBrowserRouter([
         path: "my-products",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyStudentCourses />
+            <LazyCustomerProducts />
           </Suspense>
         ),
       },
@@ -267,7 +275,7 @@ const AppRouter = createBrowserRouter([
         path: "my-profile",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyStudentProfile />
+            <LazyCustomerProfile />
           </Suspense>
         ),
       },
@@ -285,7 +293,7 @@ const AppRouter = createBrowserRouter([
     path: "/login",
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <LazyStudentLogin />
+        <LazyCustomerLogin />
       </Suspense>
     ),
   },
@@ -293,26 +301,26 @@ const AppRouter = createBrowserRouter([
     path: "/register",
     element: (
       <Suspense fallback={<div>Loading...</div>}>
-        <LazyStudentRegister />
+        <LazyCustomerRegister />
       </Suspense>
     ),
   },
-  {
-    path: "/instructors/login",
-    element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <LazyInstructorLogin />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/instructors/register",
-    element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <LazyInstructorRegister />
-      </Suspense>
-    ),
-  },
+      {
+        path: "/sellers/login",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazySellerLogin />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/sellers/register",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazySellerRegister />
+          </Suspense>
+        ),
+      },
   {
     path: "/admin",
     element: <Admin />,
@@ -327,10 +335,10 @@ const AppRouter = createBrowserRouter([
         ),
       },
       {
-        path: "instructors",
+        path: "sellers",
         element: (
           <Suspense fallback={<div>loading...</div>}>
-            <LazyInstructorIndex />
+            <LazySellerIndex />
           </Suspense>
         ),
         children: [
@@ -338,7 +346,7 @@ const AppRouter = createBrowserRouter([
             path: "requests",
             element: (
               <Suspense fallback={<div>loading...</div>}>
-                <LazyInstructorRequests />
+                <LazySellerRequests />
               </Suspense>
             ),
           },
@@ -346,7 +354,7 @@ const AppRouter = createBrowserRouter([
             path: "requests/:id",
             element: (
               <Suspense fallback={<div>loading...</div>}>
-                <LazyViewMoreInstructorRequest />
+                <LazyViewMoreSellerRequest />
               </Suspense>
             ),
           },
@@ -354,17 +362,17 @@ const AppRouter = createBrowserRouter([
             path: "blocked",
             element: (
               <Suspense fallback={<div>loading...</div>}>
-                <LazyViewBlockedInstructors />
+                <LazyViewBlockedSellers />
               </Suspense>
             ),
           },
         ],
       },
       {
-        path: "students",
+        path: "customers",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyStudents />
+            <LazyCustomers />
           </Suspense>
         ),
       },
@@ -391,10 +399,10 @@ const AppRouter = createBrowserRouter([
         ],
       },
       {
-        path: "courses",
+        path: "products",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyListCourse />
+            <LazyListProduct />
           </Suspense>
         ),
       },
@@ -405,19 +413,19 @@ const AppRouter = createBrowserRouter([
     ],
   },
   {
-    path: "/instructors",
-    element: <Instructor />,
+    path: "/sellers",
+    element: <Seller />,
     errorElement: <ErrorElement />,
     children: [
       {
         index: true,
-        element: <InstructorDashboard />,
+        element: <SellerDashboard />,
       },
       {
         path: "add-product",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyAddCourse />
+            <LazyAddProduct />
           </Suspense>
         ),
       },
@@ -425,7 +433,7 @@ const AppRouter = createBrowserRouter([
         path: "view-products",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyListCourseInstructors />
+            <LazyListProductForSellers />
           </Suspense>
         ),
       },
@@ -433,7 +441,7 @@ const AppRouter = createBrowserRouter([
         path: "edit-product/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyEditCourse />
+            <LazyEditProduct />
           </Suspense>
         ),
       },
@@ -441,7 +449,7 @@ const AppRouter = createBrowserRouter([
         path: "view-items/:productId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyViewLesson />
+            <LazyViewItems />
           </Suspense>
         ),
       },
@@ -449,15 +457,15 @@ const AppRouter = createBrowserRouter([
         path: "view-items/:productId/edit-item/:itemId",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyEditLesson />
+            <LazyEditItem />
           </Suspense>
         ),
       },
       {
-        path: "view-students",
+        path: "view-customers",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyMyStudents />
+            <LazyMyCustomers />
           </Suspense>
         ),
       },
@@ -465,16 +473,16 @@ const AppRouter = createBrowserRouter([
         path: "view-profile",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
-            <LazyInstructorProfile />
+            <LazySellerProfile />
           </Suspense>
         ),
       },
       {
         path: "view-channels",
-        element: <InstructorChannels />,
+        element: <SellerChannels />,
       },
       {
-        path: "shop/:productId/payment",
+        path: ":productId/payment",
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <LazyPayment />
@@ -485,3 +493,24 @@ const AppRouter = createBrowserRouter([
   },
 ]);
 export default AppRouter;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import RevenueChart from "./revenue-chart";
-import TrendingCoursesChart from "./trending-chart";
+import TrendingproductsChart from "./trending-chart";
 import CourseCategoryChart from "./progress-chart";
 import { Typography } from "@material-tailwind/react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,7 +36,7 @@ const AdminHomePage: React.FC = () => {
           totalUsers: mockAdminDashboard.totalUsers,
           totalSellers: mockAdminDashboard.totalSellers,
           totalCustomers: mockAdminDashboard.totalCustomers,
-          totalCourses: mockAdminDashboard.totalProducts,
+          totalproducts: mockAdminDashboard.totalProducts,
           totalRevenue: mockAdminDashboard.totalRevenue,
           totalOrders: mockAdminDashboard.totalOrders,
           pendingInstructorRequests: mockAdminDashboard.pendingSellerRequests,
@@ -57,7 +57,7 @@ const AdminHomePage: React.FC = () => {
         totalUsers: mockAdminDashboard.totalUsers,
         totalSellers: mockAdminDashboard.totalSellers,
         totalCustomers: mockAdminDashboard.totalCustomers,
-        totalCourses: mockAdminDashboard.totalProducts,
+        totalproducts: mockAdminDashboard.totalProducts,
         totalRevenue: mockAdminDashboard.totalRevenue,
         totalOrders: mockAdminDashboard.totalOrders,
         pendingInstructorRequests: mockAdminDashboard.pendingSellerRequests,
@@ -74,10 +74,10 @@ const AdminHomePage: React.FC = () => {
           revenueData: mockAdminDashboard.revenueChart.data.map((val, idx) => ({
             month: mockAdminDashboard.revenueChart.labels[idx].substring(0, 3),
             revenue: val,
-            coursesAdded: 0,
-            coursesEnrolled: 0,
+            productsAdded: 0,
+            productsEnrolled: 0,
           })),
-          trendingCourses: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
+          trendingproducts: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
             _id: order.orderId,
             title: order.productName,
             enrolled: idx + 1,
@@ -103,10 +103,10 @@ const AdminHomePage: React.FC = () => {
         revenueData: mockAdminDashboard.revenueChart.data.map((val, idx) => ({
           month: mockAdminDashboard.revenueChart.labels[idx].substring(0, 3),
           revenue: val,
-          coursesAdded: 0,
-          coursesEnrolled: 0,
+          productsAdded: 0,
+          productsEnrolled: 0,
         })),
-        trendingCourses: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
+        trendingproducts: mockAdminDashboard.recentOrders.slice(0, 5).map((order, idx) => ({
           _id: order.orderId,
           title: order.productName,
           enrolled: idx + 1,
@@ -151,9 +151,9 @@ const AdminHomePage: React.FC = () => {
 
   // ✅ Default data for charts when API data is null/undefined
   const defaultRevenueData = [
-    { month: 'Jan', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
-    { month: 'Feb', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
-    { month: 'Mar', revenue: 0, coursesAdded: 0, coursesEnrolled: 0 },
+    { month: 'Jan', revenue: 0, productsAdded: 0, productsEnrolled: 0 },
+    { month: 'Feb', revenue: 0, productsAdded: 0, productsEnrolled: 0 },
+    { month: 'Mar', revenue: 0, productsAdded: 0, productsEnrolled: 0 },
   ];
 
   const defaultTrendingData = [
@@ -189,7 +189,7 @@ const AdminHomePage: React.FC = () => {
                 Tổng sản phẩm
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberOfCourses ?? 0}
+                {dashboardData?.numberOfproducts ?? 0}
               </Typography>
             </div>
           </div>
@@ -203,7 +203,7 @@ const AdminHomePage: React.FC = () => {
                 Tổng sellers
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberInstructors ?? 0}
+                {dashboardData?.numbersellers ?? 0}
               </Typography>
             </div>
           </div>
@@ -217,7 +217,7 @@ const AdminHomePage: React.FC = () => {
                 Tổng customers
               </Typography>
               <Typography variant='body' color='gray'>
-                {dashboardData?.numberOfStudents ?? 0}
+                {dashboardData?.numberOfcustomers ?? 0}
               </Typography>
             </div>
           </div>
@@ -251,8 +251,8 @@ const AdminHomePage: React.FC = () => {
           Sản phẩm bán chạy
         </Typography>
         {/* ✅ Pass safe data with fallback */}
-        <TrendingCoursesChart 
-          data={graphData?.trendingCourses || defaultTrendingData} 
+        <TrendingproductsChart 
+          data={graphData?.trendingproducts || defaultTrendingData} 
         />
       </div>
     </div>
@@ -260,3 +260,29 @@ const AdminHomePage: React.FC = () => {
 };
 
 export default AdminHomePage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

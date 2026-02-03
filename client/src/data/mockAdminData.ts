@@ -1,7 +1,7 @@
 // Mock Data for Admin Pages
 
 // ==========================================
-// MOCK SELLERS (Instructors)
+// MOCK SELLERS (sellers)
 // ==========================================
 export interface MockSeller {
   _id: string;
@@ -78,7 +78,7 @@ export const mockSellers: MockSeller[] = [
 ];
 
 // ==========================================
-// MOCK CUSTOMERS (Students)
+// MOCK CUSTOMERS (customers)
 // ==========================================
 export interface MockCustomer {
   _id: string;
@@ -289,4 +289,26 @@ export const mockInstructorRequests: MockInstructorRequest[] = [
     isVerified: false
   }
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

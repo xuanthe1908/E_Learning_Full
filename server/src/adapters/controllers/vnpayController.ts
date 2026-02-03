@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Joi from 'joi';
 import { VNPayServiceInterface } from '../../app/services/vnpayServiceInterface';
 import { VNPayServiceImpl } from '../../frameworks/services/vnpayService';
-import { CourseDbRepositoryInterface } from '../../app/repositories/courseDbRepository';
-import { CourseRepositoryMongoDbInterface } from '../../frameworks/database/mongodb/repositories/courseReposMongoDb';
+import { ProductDbRepositoryInterface } from '../../app/repositories/productDbRepository';
+import { ProductRepositoryMongoDbInterface } from '../../frameworks/database/mongodb/repositories/productReposMongoDb';
 import { PaymentInterface } from '../../app/repositories/paymentDbRepository';
 import { PaymentImplInterface  } from '../../frameworks/database/mongodb/repositories/paymentRepoMongodb';
 import HttpStatusCodes from '../../constants/HttpStatusCodes';
@@ -13,19 +13,19 @@ import AppError from '../../utils/appError';
 
 // Validation schemas
 const createPaymentSchema = Joi.object({
-  courseId: Joi.string().required().trim(),
+  productId: Joi.string().required().trim(),
 });
 
 const vnpayController = (
   vnpayServiceInterface: VNPayServiceInterface,
   vnpayServiceImpl: VNPayServiceImpl,
-  courseDbInterface: CourseDbRepositoryInterface,
-  courseDbImpl: CourseRepositoryMongoDbInterface,
+  productDbInterface: ProductDbRepositoryInterface,
+  productDbImpl: ProductRepositoryMongoDbInterface,
   paymentDbInterface: PaymentInterface,
   paymentDbImpl: PaymentImplInterface
 ) => {
   const vnpayService = vnpayServiceImpl();
-  const dbRepositoryCourse = courseDbImpl();
+  const dbRepositoryProduct = productDbImpl();
   const dbRepositoryPayment = paymentDbImpl();
 
   const createPaymentUrl = asyncHandler(async (req: Request, res: Response) => {
@@ -38,38 +38,38 @@ const vnpayController = (
       );
     }
 
-    const { courseId } = value;
+    const { productId } = value;
     const ipAddr = (req.headers['x-forwarded-for'] as string) || 
                    req.connection.remoteAddress || 
                    req.socket.remoteAddress || 
                    '127.0.0.1';
 
     try {
-      // Get course details
-      const course = await dbRepositoryCourse.getAmountByCourseId(courseId);
-      if (!course) {
+      // Get product details
+      const product = await dbRepositoryProduct.getAmountByProductId(productId);
+      if (!product) {
         throw new AppError(
-          'Course not found',
+          'Product not found',
           HttpStatusCodes.NOT_FOUND
         );
       }
 
-      if (!course.price || course.price <= 0) {
+      if (!product.price || product.price <= 0) {
         throw new AppError(
-          'Invalid course price',
+          'Invalid product price',
           HttpStatusCodes.BAD_REQUEST
         );
       }
 
       // Generate unique order ID
       const orderId = generateOrderId();
-      const orderInfo = `Thanh toan khoa hoc ${course.title || courseId}`;
+      const orderInfo = `Thanh toan san pham ${product.title || productId}`;
       
       // Create payment record in database
       const paymentRecord = {
         orderId,
-        courseId,
-        amount: course.price,
+        productId,
+        amount: product.price,
         currency: 'VND',
         status: 'pending',
         paymentMethod: 'vnpay',
@@ -81,7 +81,7 @@ const vnpayController = (
       
       // Create VNPay payment URL
       const paymentUrl = vnpayService.createPaymentUrl(
-        course.price,
+        product.price,
         orderInfo,
         orderId,
         ipAddr
@@ -93,7 +93,7 @@ const vnpayController = (
         data: {
           paymentUrl,
           orderId,
-          amount: course.price,
+          amount: product.price,
           expiresAt: paymentRecord.expiresAt
         }
       });
@@ -107,37 +107,46 @@ const vnpayController = (
   });
 
 const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
-  const studentId = req.user?.id || req.user?.payload?.Id;
+  const customerId = req.user?.id || req.user?.payload?.Id;
+  console.log('[VNPay] Customer ID:', customerId ? 'Present' : 'Missing');
+  console.log('[VNPay] User object:', req.user ? 'Present' : 'Missing');
+  
   const { error, value } = createPaymentSchema.validate(req.body);
   if (error) {
     console.log('[Validation Error]', error.details[0].message);
     throw new AppError(`Validation error: ${error.details[0].message}`, HttpStatusCodes.BAD_REQUEST);
   }
 
-  const { courseId } = value;
-  console.log('[Step 1] courseId:', courseId);
+  const { productId } = value;
+  console.log('[Step 1] productId:', productId);
 
   try {
-    const course = await dbRepositoryCourse.getAmountByCourseId(courseId);
-    if (!course) {
-      console.log('[Step 2] Course not found in DB');
-      throw new AppError('Course not found', HttpStatusCodes.NOT_FOUND);
+    // Validate VNPay config first
+    console.log('[Step 1.5] Validating VNPay configuration...');
+    
+    const product = await dbRepositoryProduct.getAmountByProductId(productId);
+    if (!product) {
+      console.log('[Step 2] Product not found in DB');
+      throw new AppError('Product not found', HttpStatusCodes.NOT_FOUND);
     }
 
-    console.log('[Step 3] Course:', course);
+    console.log('[Step 3] Product:', {
+      id: product._id,
+      title: product.title,
+      price: product.price
+    });
 
-    if (!course.price || course.price <= 0) {
-      console.log('[Step 4] Invalid price:', course.price);
-      throw new AppError('Invalid course price', HttpStatusCodes.BAD_REQUEST);
+    if (!product.price || product.price <= 0) {
+      console.log('[Step 4] Invalid price:', product.price);
+      throw new AppError('Invalid product price', HttpStatusCodes.BAD_REQUEST);
     }
 
     const orderId = generateOrderId();
-    const orderInfo = `Thanh toan khoa hoc ${course.title || courseId}`;
-    const paymentRecord = {
+    const orderInfo = `Thanh toan san pham ${product.title || productId}`;
+    const paymentRecord: any = {
       orderId,
-      courseId,
-      studentId,
-      amount: course.price,
+      productId,
+      amount: product.price,
       currency: 'VND',
       status: 'pending',
       paymentMethod: 'vnpay_qr',
@@ -145,16 +154,31 @@ const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
       expiresAt: new Date(Date.now() + 15 * 60 * 1000)
     };
 
-    console.log('[Step 5] Saving payment record:', paymentRecord);
+    // Only add customerId if it exists
+    if (customerId) {
+      paymentRecord.customerId = customerId;
+    }
+
+    console.log('[Step 5] Saving payment record:', {
+      orderId,
+      productId,
+      customerId: customerId || 'Not provided',
+      amount: paymentRecord.amount
+    });
+    
     await dbRepositoryPayment.createPendingPayment(paymentRecord);
 
+    console.log('[Step 6] Creating QR payment with VNPay...');
     const qrPayment = await vnpayService.createQRPayment(
-      course.price,
+      product.price,
       orderInfo,
       orderId
     );
 
-    console.log('[Step 6] QR Payment created:', qrPayment);
+    console.log('[Step 7] QR Payment created successfully:', {
+      orderId,
+      hasQrCode: !!qrPayment.qrCode
+    });
 
     res.status(200).json({
       status: 'success',
@@ -162,21 +186,23 @@ const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
       data: {
         qrCode: qrPayment.qrCode,
         orderId,
-        amount: course.price,
-        courseId,
+        amount: product.price,
+        productId,
         expiresAt: paymentRecord.expiresAt
       }
     });
   } catch (error: any) {
-    console.error('[Step ERROR]', error.message, error.stack);
+    console.error('[Step ERROR]', error.message);
     console.error('[💥 QR Payment Error]', {
-    message: error.message,
-    stack: error.stack,
-    name: error.name,
-    cause: error.cause
-  });
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
+    // Return more specific error message
+    const errorMessage = error.message || 'Failed to create QR payment';
     throw new AppError(
-      'Failed to create QR payment',
+      errorMessage,
       HttpStatusCodes.INTERNAL_SERVER_ERROR
     );
   }
@@ -319,7 +345,7 @@ const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
         // Payment successful
         await Promise.all([
           dbRepositoryPayment.updatePaymentStatus(orderId, 'completed', updateData),
-          dbRepositoryCourse.enrollStudent(paymentRecord.courseId, paymentRecord.studentId)
+          dbRepositoryProduct.purchaseProduct(paymentRecord.productId, paymentRecord.customerId)
         ]);
 
         res.status(200).json({

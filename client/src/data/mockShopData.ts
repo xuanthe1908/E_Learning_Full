@@ -2,7 +2,7 @@
 export interface MockProduct {
   _id: string;
   title: string;
-  instructorId: string;
+  sellerId: string;
   instructorName: string;
   category: string;
   level: string;
@@ -22,7 +22,7 @@ export interface MockProduct {
   rating: number;
   isVerified: boolean;
   createdAt: string;
-  coursesEnrolled: string[];
+  productsEnrolled: string[];
   completionStatus: number;
 }
 
@@ -30,7 +30,7 @@ export const mockProducts: MockProduct[] = [
   {
     _id: '1',
     title: 'Laptop Dell XPS 15 9520 - Intel Core i7',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     instructorName: 'Nguyễn Văn An',
     category: 'Laptop',
     level: 'Mới',
@@ -56,13 +56,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.8,
     isVerified: true,
     createdAt: '2024-01-15T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '2',
     title: 'iPhone 15 Pro Max 256GB - Titanium',
-    instructorId: 'seller2',
+    sellerId: 'seller2',
     instructorName: 'Trần Thị Bình',
     category: 'Điện thoại',
     level: 'Mới',
@@ -88,13 +88,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.9,
     isVerified: true,
     createdAt: '2024-01-20T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '3',
     title: 'Samsung Galaxy Watch 6 Classic 47mm',
-    instructorId: 'seller2',
+    sellerId: 'seller2',
     instructorName: 'Trần Thị Bình',
     category: 'Đồng hồ thông minh',
     level: 'Mới',
@@ -120,13 +120,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.6,
     isVerified: true,
     createdAt: '2024-01-25T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '4',
     title: 'Tai nghe Sony WH-1000XM5 - Chống ồn chủ động',
-    instructorId: 'seller2',
+    sellerId: 'seller2',
     instructorName: 'Trần Thị Bình',
     category: 'Tai nghe',
     level: 'Mới',
@@ -152,13 +152,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.7,
     isVerified: true,
     createdAt: '2024-02-01T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '5',
     title: 'iPad Pro 12.9 inch M2 256GB - WiFi + Cellular',
-    instructorId: 'seller4',
+    sellerId: 'seller4',
     instructorName: 'Phạm Thị Dung',
     category: 'Máy tính bảng',
     level: 'Mới',
@@ -184,13 +184,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.9,
     isVerified: true,
     createdAt: '2024-02-05T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '6',
     title: 'MacBook Pro 14 inch M3 Pro - 18GB RAM, 512GB SSD',
-    instructorId: 'seller4',
+    sellerId: 'seller4',
     instructorName: 'Phạm Thị Dung',
     category: 'Laptop',
     level: 'Mới',
@@ -216,13 +216,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.8,
     isVerified: true,
     createdAt: '2024-02-10T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '7',
     title: 'AirPods Pro 2 với USB-C - Chống ồn chủ động',
-    instructorId: 'seller4',
+    sellerId: 'seller4',
     instructorName: 'Phạm Thị Dung',
     category: 'Tai nghe',
     level: 'Mới',
@@ -248,13 +248,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.7,
     isVerified: true,
     createdAt: '2024-02-15T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '8',
     title: 'Camera Canon EOS R6 Mark II - Full Frame',
-    instructorId: 'seller3',
+    sellerId: 'seller3',
     instructorName: 'Lê Minh Cường',
     category: 'Máy ảnh',
     level: 'Mới',
@@ -280,13 +280,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.8,
     isVerified: true,
     createdAt: '2024-02-20T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '9',
     title: 'Loa JBL Charge 5 - Bluetooth Portable',
-    instructorId: 'seller5',
+    sellerId: 'seller5',
     instructorName: 'Hoàng Văn Em',
     category: 'Âm thanh',
     level: 'Mới',
@@ -312,13 +312,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.5,
     isVerified: true,
     createdAt: '2024-02-25T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '10',
     title: 'Bàn phím cơ Keychron K8 Pro - Wireless Mechanical',
-    instructorId: 'seller5',
+    sellerId: 'seller5',
     instructorName: 'Hoàng Văn Em',
     category: 'Phụ kiện',
     level: 'Mới',
@@ -344,13 +344,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.6,
     isVerified: true,
     createdAt: '2024-03-01T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '11',
     title: 'Samsung Galaxy S24 Ultra 512GB - Titanium',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     instructorName: 'Nguyễn Văn An',
     category: 'Điện thoại',
     level: 'Mới',
@@ -376,13 +376,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.7,
     isVerified: true,
     createdAt: '2024-03-05T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '12',
     title: 'Xiaomi 14 Pro - Snapdragon 8 Gen 3',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     instructorName: 'Nguyễn Văn An',
     category: 'Điện thoại',
     level: 'Mới',
@@ -408,13 +408,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.6,
     isVerified: true,
     createdAt: '2024-03-10T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '13',
     title: 'ASUS ROG Zephyrus G16 - RTX 4060',
-    instructorId: 'seller5',
+    sellerId: 'seller5',
     instructorName: 'Hoàng Văn Em',
     category: 'Laptop',
     level: 'Mới',
@@ -440,13 +440,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.7,
     isVerified: true,
     createdAt: '2024-03-15T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '14',
     title: 'Bose QuietComfort 45 - Chống ồn',
-    instructorId: 'seller2',
+    sellerId: 'seller2',
     instructorName: 'Trần Thị Bình',
     category: 'Tai nghe',
     level: 'Mới',
@@ -472,13 +472,13 @@ export const mockProducts: MockProduct[] = [
     rating: 4.6,
     isVerified: true,
     createdAt: '2024-03-20T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   },
   {
     _id: '15',
     title: 'Apple Watch Series 9 - GPS + Cellular 45mm',
-    instructorId: 'seller4',
+    sellerId: 'seller4',
     instructorName: 'Phạm Thị Dung',
     category: 'Đồng hồ thông minh',
     level: 'Mới',
@@ -504,7 +504,7 @@ export const mockProducts: MockProduct[] = [
     rating: 4.8,
     isVerified: true,
     createdAt: '2024-03-25T10:00:00Z',
-    coursesEnrolled: [],
+    productsEnrolled: [],
     completionStatus: 0
   }
 ];
@@ -539,3 +539,25 @@ export const getCategoryIcon = (category: string): string => {
   };
   return icons[category] || '📦';
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

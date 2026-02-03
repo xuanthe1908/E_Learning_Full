@@ -1,40 +1,40 @@
 export interface ApiResponseRecommended {
   _id: string
-  instructor: Instructor
-  course: Course,
+  seller: Seller
+  product: Product,
   media:{
     profileUrl:string,
     thumbnailUrl:string,
   }
 }
 
-export interface Instructor {
+export interface Seller {
   _id: string
   firstName: string
   lastName: string
   email: string
 }
 
-export interface Course {
+export interface Product {
   _id: string
   name: string
   thumbnail: string
 }
 
   
-  export interface Courses {
+  export interface Products {
     _id: string
     title: string
     thumbnail: string
     introductionVideo: string
     description: string
     category: string
-    instructorId: string
+    sellerId: string
     isPaid: boolean
     price: number
-    enrollmentCount: number
+    purchaseCount: number
     rating: number
-    lessons: string[]
+    items: string[]
     isVerified: boolean
     duration: number
     requirements: string[]
@@ -43,7 +43,7 @@ export interface Course {
     createdAt: string
     reviews: any[]
     __v: number
-    coursesEnrolled: string[]
+    productsPurchased: string[]
     categoryId: string
   }
   
@@ -52,6 +52,28 @@ export interface Course {
     title: string
     thumbnailUrl: string;
     profileUrl:string;
-    instructorFirstName: string
-    instructorLastName: string
+    sellerFirstName: string
+    sellerLastName: string
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

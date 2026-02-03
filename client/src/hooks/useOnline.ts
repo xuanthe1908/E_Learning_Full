@@ -15,3 +15,24 @@ const handleOffline = () =>{ setIsOnline(false)};
   return isOnline;
 };
 export default useIsOnline;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

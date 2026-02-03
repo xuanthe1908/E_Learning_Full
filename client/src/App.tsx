@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
-import StudentHeader from "./components/partials/student-header";
+import CustomerHeader from "./components/partials/customer-header";
 import "react-toastify/dist/ReactToastify.css";
 import { Outlet } from "react-router-dom";
 import AdminLoginPage from "./components/pages/admin/admin-login-page";
 // import { Sidenav } from "./components/pages/admin/widgets/layout";  
 import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch } from "./redux/store";
-import InstructorSideNav from "./components/pages/instructors/instructor-side-nav";
-import InstructorHeader from "./components/pages/instructors/instructor-header";
+import SellerSideNav from "./components/pages/sellers/seller-side-nav";
+import SellerHeader from "./components/pages/sellers/seller-header";
 import useIsOnline from "./hooks/useOnline";
 import YouAreOffline from "./components/common/you-are-offline";
-import StudentFooter from "./components/partials/student-footer";
+import CustomerFooter from "./components/partials/customer-footer";
 import { selectIsLoggedIn, selectUserType } from "./redux/reducers/authSlice";
 import { selectIsFooterVisible } from "./redux/reducers/helperSlice";
-import { fetchStudentData } from "./redux/reducers/studentSlice";
+import { fetchCustomerData } from "./redux/reducers/customerSlice";
 import SessionExpired from "./components/common/session-expired-modal";
-import InstructorLoginPage from "./components/pages/instructors/instructor-login-page";
-import { getInstructorDetails } from "./api/endpoints/instructor";
-import { setDetails } from "./redux/reducers/instructorSlice";
+import SellerLoginPage from "./components/pages/sellers/seller-login-page";
+import { getSellerDetails } from "./api/endpoints/seller";
+import { setDetails } from "./redux/reducers/sellerSlice";
 import { AdminSideNav } from "./components/pages/admin/admin-side-nav";
 import { toast } from "react-toastify";
 import { USE_MOCK_DATA } from "./config/mockConfig";
 import { setupMockCustomerAuth, setupMockSellerAuth } from "./utils/mockAuth";   
 
-export const Student: React.FC = () => {
+export const Customer: React.FC = () => {
   const isOnline = useIsOnline();
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const dispatch = useDispatch<AppDispatch>();
@@ -41,12 +41,22 @@ export const Student: React.FC = () => {
       if (!localStorage.getItem('accessToken')) {
         localStorage.setItem('accessToken', 'mock.customer.token');
       }
+    } else {
+      // Clear mock tokens if they exist
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (accessToken && accessToken.startsWith('mock.')) {
+        localStorage.removeItem('accessToken');
+      }
+      if (refreshToken && refreshToken.startsWith('mock.')) {
+        localStorage.removeItem('refreshToken');
+      }
     }
   }, []);
   
   // ✅ Mock Mode: Override isLoggedIn check
   const mockIsLoggedIn = USE_MOCK_DATA ? true : isLoggedIn;
-  const mockUser = USE_MOCK_DATA ? 'student' : user;
+  const mockUser = USE_MOCK_DATA ? 'customer' : user;
 
   const handleCloseSessionExpired = () => {
     setShowSessionExpired(false);
@@ -73,10 +83,10 @@ export const Student: React.FC = () => {
   }`;
 
   useEffect(() => {
-    if ((USE_MOCK_DATA || isLoggedIn) && (mockUser === "student" || USE_MOCK_DATA)) {
+    if ((USE_MOCK_DATA || isLoggedIn) && (mockUser === "customer" || USE_MOCK_DATA)) {
       // In mock mode, skip API call
       if (!USE_MOCK_DATA) {
-        dispatch(fetchStudentData());
+        dispatch(fetchCustomerData());
       }
     }
   }, [dispatch, isLoggedIn, user, mockUser]);
@@ -92,10 +102,10 @@ export const Student: React.FC = () => {
       {isOnline ? (
         <div className='bg-white font-sans'>
           <div className={`${headerClassName}`}>
-            <StudentHeader />
+            <CustomerHeader />
           </div>
           <Outlet />
-          {footerVisible && <StudentFooter />}
+          {footerVisible && <CustomerFooter />}
         </div>
       ) : (
         <YouAreOffline />
@@ -104,7 +114,7 @@ export const Student: React.FC = () => {
   );
 };
 
-export const Instructor: React.FC = () => {
+export const Seller: React.FC = () => {
   const isOnline = useIsOnline();
   const user = useSelector(selectUserType);
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -118,42 +128,52 @@ export const Instructor: React.FC = () => {
       if (!localStorage.getItem('accessToken')) {
         localStorage.setItem('accessToken', 'mock.instructor.token');
       }
+    } else {
+      // Clear mock tokens if they exist
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (accessToken && accessToken.startsWith('mock.')) {
+        localStorage.removeItem('accessToken');
+      }
+      if (refreshToken && refreshToken.startsWith('mock.')) {
+        localStorage.removeItem('refreshToken');
+      }
     }
   }, []);
   
   // ✅ Mock Mode: Override isLoggedIn check
   const mockIsLoggedIn = USE_MOCK_DATA ? true : isLoggedIn;
-  const mockUser = USE_MOCK_DATA ? 'instructor' : user;
+  const mockUser = USE_MOCK_DATA ? 'seller' : user;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchInstructor = async () => {
+  const fetchSeller = async () => {
     // ✅ Mock Mode: Skip API call
     if (USE_MOCK_DATA) {
       return;
     }
 
     try {
-      const response = await getInstructorDetails();
+      const response = await getSellerDetails();
       dispatch(setDetails({details:response.data}))
     } catch (error) {
-      console.error("Error fetching instructor:", error);
+      console.error("Error fetching seller:", error);
     }
   };
 
   useEffect(() => {
-    fetchInstructor();
-  }, [fetchInstructor]);
+    fetchSeller();
+  }, [fetchSeller]);
 
   return (
     <>
       {isOnline ? (
-        (mockIsLoggedIn && mockUser === "instructor") ? (
+        (mockIsLoggedIn && mockUser === "seller") ? (
           <>
             <div className='fixed inset-x-0 top-0 flex flex-col font-sans'>
-              <InstructorHeader />
+              <SellerHeader />
               <div className='flex flex-1'>
                 <div className='w-64 h-screen overflow-y-auto'>
-                  <InstructorSideNav />
+                  <SellerSideNav />
                 </div>
                 <div className='flex  flex-col flex-1'>
                   <div className='p-4 bg-customBlueShade overflow-y-scroll h-screen'>
@@ -165,7 +185,7 @@ export const Instructor: React.FC = () => {
           </>
         ) : (
           <div>
-            <InstructorLoginPage />
+            <SellerLoginPage />
           </div>
         )
       ) : (
@@ -203,3 +223,25 @@ export const Admin: React.FC = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

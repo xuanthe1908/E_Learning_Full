@@ -15,8 +15,8 @@ export interface ShopResponse {
   messages: ChatMessage[];
   isActive: boolean;
   metadata?: {
-    courseId?: string;
-    lessonId?: string;
+    productId?: string;
+    itemId?: string;
     tags?: string[];
   };
   createdAt: Date;
@@ -26,8 +26,8 @@ export interface ShopResponse {
 export interface CreateChatRequest {
   title?: string;
   metadata?: {
-    courseId?: string;
-    lessonId?: string;
+    productId?: string;
+    itemId?: string;
     tags?: string[];
   };
 }
@@ -71,4 +71,27 @@ export const analyzeQueryService = async (query: string) => {
   const response = await api.post(END_POINTS.SHOP_ANALYZE_QUERY, { query });
   return response.data;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

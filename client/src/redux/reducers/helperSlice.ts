@@ -25,3 +25,25 @@ export const selectIsFooterVisible = (state: RootState) => state.helper.data.foo
 
 
 export const helperReducer = helperSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

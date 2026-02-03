@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 import Quiz from '../models/quiz';
 import { QuizInterface } from '@src/types/quiz';
 
-import { AddQuizInfoInterface, EditQuizInfoInterface } from '@src/types/courseInterface';
+import { AddQuizInfoInterface, EditQuizInfoInterface } from '@src/types/productInterface';
 
 export const quizRepositoryMongodb = () => {
-  const getQuizByLessonId = async (lessonId: string) => {
+  const getQuizByItemId = async (itemId: string) => {
     const quiz: QuizInterface | null = await Quiz.findOne({
-      lessonId: new mongoose.Types.ObjectId(lessonId)
+      itemId: new mongoose.Types.ObjectId(itemId)
     });
     return quiz;
   };
@@ -18,9 +18,9 @@ export const quizRepositoryMongodb = () => {
     return quizId;
   };
 
-  const editQuiz = async (lessonId: string, quizInfo: EditQuizInfoInterface) => {
+  const editQuiz = async (itemId: string, quizInfo: EditQuizInfoInterface) => {
     await Quiz.updateOne(
-      { lessonId: new mongoose.Types.ObjectId(lessonId) },
+      { itemId: new mongoose.Types.ObjectId(itemId) },
       { ...quizInfo }
     );
   };
@@ -28,7 +28,7 @@ export const quizRepositoryMongodb = () => {
   return {
     addQuiz,
     editQuiz,
-    getQuizByLessonId
+    getQuizByItemId
   };
 };
 

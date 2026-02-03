@@ -33,7 +33,7 @@ export default function CarouselComponent() {
               Khám phá bộ sưu tập sản phẩm đa dạng và chất lượng với giá cả hợp lý.
             </Typography>
             <div className='flex gap-2'>
-              <Link to='/courses'>
+              <Link to='/products'>
                 <Button size='lg' color='white'>
                   Xem sản phẩm
                 </Button>
@@ -70,7 +70,7 @@ export default function CarouselComponent() {
               Mua sắm từ sự thoải mái của chính ngôi nhà của bạn. Giao hàng nhanh chóng và dịch vụ khách hàng tận tâm.
             </Typography>
             <div className='flex justify-center gap-2'>
-              <Link to='/courses'>
+              <Link to='/products'>
                 <Button size='lg' color='white'>
                   Duyệt sản phẩm
                 </Button>
@@ -108,7 +108,7 @@ export default function CarouselComponent() {
               Nền tảng của chúng tôi cung cấp nhiều loại sản phẩm đa dạng.
             </Typography>
             <div className='flex gap-2'>
-              <Link to='/courses'>
+              <Link to='/products'>
                 <Button size='lg' color='white'>
                   Bắt đầu mua sắm
                 </Button>
@@ -125,3 +125,30 @@ export default function CarouselComponent() {
     </Carousel>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

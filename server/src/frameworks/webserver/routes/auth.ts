@@ -1,13 +1,13 @@
 import express from "express";
-import {studentDbRepository} from '../../../app/repositories/studentDbRepository'
-import {studentRepositoryMongoDB} from '../../../frameworks/database/mongodb/repositories/studentsRepoMongoDb'
+import {customerDbRepository} from '../../../app/repositories/customerDbRepository'
+import {customerRepositoryMongoDB} from '../../../frameworks/database/mongodb/repositories/customersRepoMongoDb'
 import authController from "../../../adapters/controllers/authController";
 import { authServiceInterface } from "../../../app/services/authServicesInterface";
 import { authService } from "../../services/authService";
 import {googleAuthService} from "../../../frameworks/services/googleAuthService"
 import { googleAuthServiceInterface } from "../../../app/services/googleAuthServicesInterface";
-import {instructorDbRepository} from "../../../app/repositories/instructorDbRepository"
-import {instructorRepoMongoDb} from "../../../frameworks/database/mongodb/repositories/instructorRepoMongoDb"
+import {sellerDbRepository} from "../../../app/repositories/sellerDbRepository"
+import {sellerRepoMongoDb} from "../../../frameworks/database/mongodb/repositories/sellerRepoMongoDb"
 import { adminDbRepository } from "../../../app/repositories/adminDbRepository";
 import { adminRepoMongoDb } from "../../../frameworks/database/mongodb/repositories/adminRepoMongoDb";
 import { refreshTokenDbRepository } from "../../../app/repositories/refreshTokenDBRepository";
@@ -23,10 +23,10 @@ const authRouter = () => {
     authService,
     cloudServiceInterface,
     s3Service,
-    studentDbRepository,
-    studentRepositoryMongoDB,  
-    instructorDbRepository,  
-    instructorRepoMongoDb,
+    customerDbRepository,
+    customerRepositoryMongoDB,  
+    sellerDbRepository,  
+    sellerRepoMongoDb,
     googleAuthServiceInterface,
     googleAuthService,
     adminDbRepository,
@@ -34,14 +34,14 @@ const authRouter = () => {
     refreshTokenDbRepository,
     refreshTokenRepositoryMongoDB
   );
-  //* Student
-  router.post("/student-register",controller.registerStudent)
-  router.post("/student-login", controller.loginStudent);
+  //* Customer
+  router.post("/customer-register",controller.registerCustomer)
+  router.post("/customer-login", controller.loginCustomer);
   router.post("/login-with-google",controller.loginWithGoogle)
   
-  //* Instructor
-  router.post("/instructor/instructor-register",upload.array('images'), controller.registerInstructor)
-  router.post("/instructor/instructor-login",controller.loginInstructor)
+  //* Seller
+  router.post("/seller/seller-register",upload.array('images'), controller.registerSeller)
+  router.post("/seller/seller-login",controller.loginSeller)
 
   //* Admin 
   router.post("/admin/admin-login",controller.loginAdmin)

@@ -84,11 +84,32 @@ export const selectAccessToken = (state:RootState)=> {
   const accessToken: string = state.auth.data.accessToken || "";
   return accessToken;
 }
-export const selectIsLoggedIn = () => {
-  const  accessToken = localStorage.getItem("accessToken");
-  return accessToken ? true : false;
+export const selectIsLoggedIn = (state: RootState) => {
+  return state.auth.isLoggedIn;
 };
 
 export const selectUserType = (state:RootState)=>state.auth.userType
 
 export const authReducer = authSlice.reducer;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

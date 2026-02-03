@@ -2,23 +2,23 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { AuthService } from '../../frameworks/services/authService';
 import { AuthServiceInterface } from '../../app/services/authServicesInterface';
-import { StudentsDbInterface } from '../../app/repositories/studentDbRepository';
-import { StudentRepositoryMongoDB } from '../../frameworks/database/mongodb/repositories/studentsRepoMongoDb';
+import { CustomersDbInterface } from '../../app/repositories/customerDbRepository';
+import { CustomerRepositoryMongoDB } from '../../frameworks/database/mongodb/repositories/customersRepoMongoDb';
 import {
-  studentLogin,
-  studentRegister,
+  customerLogin,
+  customerRegister,
   signInWithGoogle
-} from '../../app/usecases/auth/studentAuth';
+} from '../../app/usecases/auth/customerAuth';
 import {
-  instructorRegister,
-  instructorLogin
-} from '../../app/usecases/auth/instructorAuth';
-import { InstructorDbInterface } from '@src/app/repositories/instructorDbRepository';
-import { InstructorRepositoryMongoDb } from '@src/frameworks/database/mongodb/repositories/instructorRepoMongoDb';
-import { StudentRegisterInterface } from '@src/types/studentRegisterInterface';
+  sellerRegister,
+  sellerLogin
+} from '../../app/usecases/auth/sellerAuth';
+import { SellerDbInterface } from '@src/app/repositories/sellerDbRepository';
+import { SellerRepositoryMongoDb } from '@src/frameworks/database/mongodb/repositories/sellerRepoMongoDb';
+import { CustomerRegisterInterface } from '@src/types/customerRegisterInterface';
 import { GoogleAuthServiceInterface } from '@src/app/services/googleAuthServicesInterface';
 import { GoogleAuthService } from '@src/frameworks/services/googleAuthService';
-import { InstructorInterface } from '@src/types/instructorInterface';
+import { SellerInterface } from '@src/types/sellerInterface';
 import { adminLogin } from '../../app/usecases/auth/adminAuth';
 import { AdminDbInterface } from '@src/app/repositories/adminDbRepository';
 import { AdminRepositoryMongoDb } from '@src/frameworks/database/mongodb/repositories/adminRepoMongoDb';
@@ -31,10 +31,10 @@ const authController = (
   authServiceImpl: AuthService,
   cloudServiceInterface:CloudServiceInterface,
   CloudServiceImpl:CloudServiceImpl,
-  studentDbRepository: StudentsDbInterface,
-  studentDbRepositoryImpl: StudentRepositoryMongoDB,
-  instructorDbRepository: InstructorDbInterface,
-  instructorDbRepositoryImpl: InstructorRepositoryMongoDb,
+  customerDbRepository: CustomersDbInterface,
+  customerDbRepositoryImpl: CustomerRepositoryMongoDB,
+  sellerDbRepository: SellerDbInterface,
+  sellerDbRepositoryImpl: SellerRepositoryMongoDb,
   googleAuthServiceInterface: GoogleAuthServiceInterface,
   googleAuthServiceImpl: GoogleAuthService,
   adminDbRepository: AdminDbInterface,
@@ -42,9 +42,9 @@ const authController = (
   refreshTokenDbRepository: RefreshTokenDbInterface,
   refreshTokenDbRepositoryImpl: RefreshTokenRepositoryMongoDb
 ) => {
-  const dbRepositoryUser = studentDbRepository(studentDbRepositoryImpl());
-  const dbRepositoryInstructor = instructorDbRepository(
-    instructorDbRepositoryImpl()
+  const dbRepositoryCustomer = customerDbRepository(customerDbRepositoryImpl());
+  const dbRepositorySeller = sellerDbRepository(
+    sellerDbRepositoryImpl()
   );
   const dbRepositoryAdmin = adminDbRepository(adminDbRepositoryImpl());
   const dbRepositoryRefreshToken = refreshTokenDbRepository(
@@ -54,12 +54,12 @@ const authController = (
   const cloudService = cloudServiceInterface(CloudServiceImpl())
   const googleAuthService = googleAuthServiceInterface(googleAuthServiceImpl());
 
-  //? STUDENT
-  const registerStudent = asyncHandler(async (req: Request, res: Response) => {
-    const student: StudentRegisterInterface = req.body;
-    const { accessToken, refreshToken } = await studentRegister(
-      student,
-      dbRepositoryUser,
+  //? CUSTOMER
+  const registerCustomer = asyncHandler(async (req: Request, res: Response) => {
+    const customer: CustomerRegisterInterface = req.body;
+    const { accessToken, refreshToken } = await customerRegister(
+      customer,
+      dbRepositoryCustomer,
       dbRepositoryRefreshToken,
       authService
     );
@@ -71,12 +71,12 @@ const authController = (
     });
   });
 
-  const loginStudent = asyncHandler(async (req: Request, res: Response) => {
+  const loginCustomer = asyncHandler(async (req: Request, res: Response) => {
     const { email, password }: { email: string; password: string } = req.body;
-    const { accessToken, refreshToken } = await studentLogin(
+    const { accessToken, refreshToken } = await customerLogin(
       email,
       password,
-      dbRepositoryUser,
+      dbRepositoryCustomer,
       dbRepositoryRefreshToken,
       authService
     );
@@ -93,7 +93,7 @@ const authController = (
     const { accessToken, refreshToken } = await signInWithGoogle(
       credential,
       googleAuthService,
-      dbRepositoryUser,
+      dbRepositoryCustomer,
       dbRepositoryRefreshToken,
       authService
     );
@@ -105,15 +105,15 @@ const authController = (
     });
   }); 
 
-  //? INSTRUCTOR
-  const registerInstructor = asyncHandler(
+  //? SELLER
+  const registerSeller = asyncHandler(
     async (req: Request, res: Response) => {
       const files: Express.Multer.File[] = req.files as Express.Multer.File[];
-      const instructor: InstructorInterface = req.body;
-      await instructorRegister(
-        instructor,
+      const seller: SellerInterface = req.body;
+      await sellerRegister(
+        seller,
         files,
-        dbRepositoryInstructor,
+        dbRepositorySeller,
         authService,
         cloudService
       );
@@ -124,18 +124,18 @@ const authController = (
       });
     }
   );
-  const loginInstructor = asyncHandler(async (req: Request, res: Response) => {
+  const loginSeller = asyncHandler(async (req: Request, res: Response) => {
     const { email, password }: { email: string; password: string } = req.body;
-    const { accessToken, refreshToken } = await instructorLogin(
+    const { accessToken, refreshToken } = await sellerLogin(
       email,
       password,
-      dbRepositoryInstructor,
+      dbRepositorySeller,
       dbRepositoryRefreshToken,
       authService
     );
     res.status(200).json({
       status: 'success',
-      message: 'Instructor logged in successfully',
+      message: 'Seller logged in successfully',
       accessToken,
       refreshToken
     });
@@ -160,11 +160,11 @@ const authController = (
   });
 
   return {
-    loginStudent,
-    registerStudent,
+    loginCustomer,
+    registerCustomer,
     loginWithGoogle,
-    registerInstructor,
-    loginInstructor,
+    registerSeller,
+    loginSeller,
     loginAdmin
   };
 };

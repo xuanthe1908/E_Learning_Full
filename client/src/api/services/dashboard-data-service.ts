@@ -14,3 +14,25 @@ export const getGraphDataService = async (endpoint: string) => {
   );
   return response.data
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

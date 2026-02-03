@@ -20,24 +20,24 @@ const VNPayReturnHandler: React.FC = () => {
           // Payment successful
           toast.success('Thanh toán thành công!');
           
-          // Extract courseId from orderId if needed, or get from URL
-          const courseId = searchParams.get('courseId') || 'default';
+          // Extract productId from orderId if needed, or get from URL
+          const productId = searchParams.get('productId') || 'default';
           
           // Redirect to course page with success flag
-          navigate(`/courses/${courseId}#success`);
+          navigate(`/products/${productId}#success`);
         } else {
           // Payment failed
           const errorMessage = getErrorMessage(vnpResponseCode);
           toast.error(`Thanh toán thất bại: ${errorMessage}`);
           
           // Redirect back to course page
-          const courseId = searchParams.get('courseId') || 'default';
-          navigate(`/courses/${courseId}`);
+          const productId = searchParams.get('productId') || 'default';
+          navigate(`/products/${productId}`);
         }
       } catch (error) {
         console.error('Payment return handler error:', error);
         toast.error('Có lỗi xảy ra khi xử lý kết quả thanh toán');
-        navigate('/courses');
+        navigate('/products');
       } finally {
         setIsProcessing(false);
       }
@@ -80,3 +80,29 @@ const VNPayReturnHandler: React.FC = () => {
 };
 
 export default VNPayReturnHandler;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

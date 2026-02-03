@@ -1,21 +1,21 @@
 // Mock Data for Seller Dashboard
 
-import { GetCourseByInstructorInterface } from '../api/types/apiResponses/api-response-instructors';
+import { GetProductBySellerInterface } from '../api/types/apiResponses/api-response-sellers';
 
 // ==========================================
 // MOCK SELLER PRODUCTS
 // ==========================================
-export const mockSellerProducts: GetCourseByInstructorInterface[] = [
+export const mockSellerProducts: GetProductBySellerInterface[] = [
   {
     _id: 'product1',
     title: 'Laptop Dell XPS 15 9520 - Intel Core i7',
     thumbnailUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=1200&h=800&fit=crop',
     description: 'Laptop cao cấp với màn hình OLED 15.6 inch 4K, CPU Intel Core i7-12700H',
     category: 'Laptop',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     isPaid: true,
     price: 35000000,
-    enrollmentCount: 12,
+    purchaseCount: 12,
     rating: 4.8,
     duration: 120,
     requirements: ['Windows 11 Pro', 'RAM 16GB'],
@@ -23,7 +23,7 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     completionStatus: 0,
     createdAt: '2024-01-15T10:00:00Z',
     isVerified: true,
-    lessons: ['lesson1', 'lesson2'],
+    items: ['lesson1', 'lesson2'],
     reviews: [],
     __v: 0
   },
@@ -33,10 +33,10 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     thumbnailUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200&h=800&fit=crop',
     description: 'MacBook Pro với chip M3 Pro, màn hình Liquid Retina XDR',
     category: 'Laptop',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     isPaid: true,
     price: 55900000,
-    enrollmentCount: 8,
+    purchaseCount: 8,
     rating: 4.9,
     duration: 90,
     requirements: ['macOS Sonoma', 'iCloud account'],
@@ -44,7 +44,7 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     completionStatus: 0,
     createdAt: '2024-02-10T10:00:00Z',
     isVerified: true,
-    lessons: ['lesson3', 'lesson4'],
+    items: ['lesson3', 'lesson4'],
     reviews: [],
     __v: 0
   },
@@ -54,10 +54,10 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     thumbnailUrl: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=1200&h=800&fit=crop',
     description: 'Máy ảnh mirrorless full-frame với cảm biến 24.2MP',
     category: 'Máy ảnh',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     isPaid: true,
     price: 45900000,
-    enrollmentCount: 5,
+    purchaseCount: 5,
     rating: 4.7,
     duration: 150,
     requirements: ['Thẻ nhớ SDXC', 'Pin Canon LP-E6NH'],
@@ -65,7 +65,7 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     completionStatus: 0,
     createdAt: '2024-02-20T10:00:00Z',
     isVerified: true,
-    lessons: ['lesson5', 'lesson6'],
+    items: ['lesson5', 'lesson6'],
     reviews: [],
     __v: 0
   },
@@ -75,10 +75,10 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     thumbnailUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=1200&h=800&fit=crop',
     description: 'Galaxy S24 Ultra với S Pen, camera 200MP',
     category: 'Điện thoại',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     isPaid: true,
     price: 29900000,
-    enrollmentCount: 0,
+    purchaseCount: 0,
     rating: 0,
     duration: 60,
     requirements: ['SIM card', 'Samsung account'],
@@ -86,7 +86,7 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     completionStatus: 0,
     createdAt: '2024-03-05T10:00:00Z',
     isVerified: false,
-    lessons: [],
+    items: [],
     reviews: [],
     __v: 0
   },
@@ -96,10 +96,10 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     thumbnailUrl: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=1200&h=800&fit=crop',
     description: 'Laptop gaming với RTX 4060, màn hình 16 inch 165Hz',
     category: 'Laptop',
-    instructorId: 'seller1',
+    sellerId: 'seller1',
     isPaid: true,
     price: 42900000,
-    enrollmentCount: 15,
+    purchaseCount: 15,
     rating: 4.6,
     duration: 180,
     requirements: ['Windows 11', 'NVIDIA drivers'],
@@ -107,7 +107,7 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
     completionStatus: 0,
     createdAt: '2024-03-15T10:00:00Z',
     isVerified: true,
-    lessons: ['lesson7', 'lesson8'],
+    items: ['lesson7', 'lesson8'],
     reviews: [],
     __v: 0
   }
@@ -117,17 +117,17 @@ export const mockSellerProducts: GetCourseByInstructorInterface[] = [
 // MOCK SELLER STATS
 // ==========================================
 export interface MockSellerStats {
-  totalCourses: number;
-  totalStudents: number;
+  totalproducts: number;
+  totalcustomers: number;
   totalRevenue: number;
-  totalLessons: number;
+  totalitems: number;
 }
 
 export const mockSellerStats: MockSellerStats = {
-  totalCourses: 5,
-  totalStudents: 40,
+  totalproducts: 5,
+  totalcustomers: 40,
   totalRevenue: 209600000,
-  totalLessons: 8
+  totalitems: 8
 };
 
 // ==========================================
@@ -150,7 +150,7 @@ export const mockSellerInfo: MockSellerInfo = {
 };
 
 // ==========================================
-// MOCK SELLER STUDENTS
+// MOCK SELLER customers
 // ==========================================
 export interface MockSellerStudent {
   _id: string;
@@ -158,7 +158,7 @@ export interface MockSellerStudent {
   lastName: string;
   email: string;
   enrolledDate: string;
-  coursesEnrolled: number;
+  productsEnrolled: number;
   course?: string;
   dateJoined: string;
   isBlocked: boolean;
@@ -170,15 +170,14 @@ export interface MockSellerStudent {
   mobile?: string;
 }
 
-export const mockSellerStudents: MockSellerStudent[] = [
+export const mockSellercustomers: MockSellerStudent[] = [
   {
     _id: 'student1',
     firstName: 'Nguyễn',
     lastName: 'Thị Hoa',
     email: 'nguyenthihoa@customer.com',
     enrolledDate: '2024-03-01T10:00:00Z',
-    coursesEnrolled: 2,
-    course: 'Laptop Dell XPS 15, iPhone 15 Pro Max',
+    productsEnrolled: 2,
     dateJoined: '2024-03-01T10:00:00Z',
     isBlocked: false,
     isGoogleUser: false,
@@ -191,8 +190,7 @@ export const mockSellerStudents: MockSellerStudent[] = [
     lastName: 'Văn Hùng',
     email: 'tranvanhung@customer.com',
     enrolledDate: '2024-03-05T10:00:00Z',
-    coursesEnrolled: 1,
-    course: 'MacBook Pro 14 inch',
+    productsEnrolled: 1,
     dateJoined: '2024-03-05T10:00:00Z',
     isBlocked: false,
     isGoogleUser: false,
@@ -205,8 +203,7 @@ export const mockSellerStudents: MockSellerStudent[] = [
     lastName: 'Thị Lan',
     email: 'lethilan@customer.com',
     enrolledDate: '2024-03-10T10:00:00Z',
-    coursesEnrolled: 3,
-    course: 'Camera Canon EOS R6, Samsung Galaxy S24, ASUS ROG',
+    productsEnrolled: 3,
     dateJoined: '2024-03-10T10:00:00Z',
     isBlocked: false,
     isGoogleUser: true,
@@ -222,8 +219,7 @@ export const mockSellerStudents: MockSellerStudent[] = [
     lastName: 'Minh Khang',
     email: 'phamminhkhang@customer.com',
     enrolledDate: '2024-03-12T10:00:00Z',
-    coursesEnrolled: 1,
-    course: 'Laptop Dell XPS 15',
+    productsEnrolled: 1,
     dateJoined: '2024-03-12T10:00:00Z',
     isBlocked: false,
     isGoogleUser: false,
@@ -236,8 +232,7 @@ export const mockSellerStudents: MockSellerStudent[] = [
     lastName: 'Thị Mai',
     email: 'hoangthimai@customer.com',
     enrolledDate: '2024-03-15T10:00:00Z',
-    coursesEnrolled: 2,
-    course: 'iPhone 15 Pro Max, Samsung Galaxy Watch',
+    productsEnrolled: 2,
     dateJoined: '2024-03-15T10:00:00Z',
     isBlocked: false,
     isGoogleUser: false,
@@ -245,4 +240,26 @@ export const mockSellerStudents: MockSellerStudent[] = [
     mobile: '0956789012'
   }
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

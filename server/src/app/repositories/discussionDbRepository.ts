@@ -7,14 +7,14 @@ export const discussionDbRepository = (
   const addDiscussion = async (discussionInfo: AddDiscussionInterface) =>
     await repository.addDiscussion(discussionInfo);
 
-  const getDiscussionsByLesson = async (lessonId: string) =>
-    await repository.getDiscussionsByLesson(lessonId);
+  const getDiscussionsByLesson = async (itemId: string) =>
+    await repository.getDiscussionsByLesson(itemId);
 
   const editDiscussion = async (id:string,message:string)=>await repository.editDiscussion(id,message)
 
   const deleteDiscussionById = async (id:string) => await repository.deleteDiscussionById(id)
 
-  const replyDiscussion = async (id:string,reply:{studentId:string,message:string})=> await repository.replyDiscussion(id,reply)
+  const replyDiscussion = async (id:string,reply:{customerId:string,message:string})=> await repository.replyDiscussion(id,reply)
 
   const getRepliesByDiscussionId = async (id:string)=>await repository.getRepliesByDiscussionId(id)
 

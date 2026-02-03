@@ -6,7 +6,16 @@
   "scripts": {
     "start": "node ./build/app.js",
     "build": "tsc",
-    "dev": "nodemon ./src/app.ts"
+    "dev": "nodemon ./src/app.ts",
+    "setup-db": "ts-node src/scripts/setup-database.ts",
+    "setup-db:reset": "ts-node src/scripts/setup-database.ts --delete-old",
+    "setup-db:drop-all": "ts-node src/scripts/setup-database.ts --drop-all",
+    "cleanup-old": "ts-node src/scripts/cleanup-old-collections.ts",
+    "seed": "ts-node src/scripts/setup-database.ts",
+    "seed:reset": "ts-node src/scripts/setup-database.ts --delete-old",
+    "seed:drop-all": "ts-node src/scripts/setup-database.ts --drop-all",
+    "add-accounts": "ts-node src/scripts/add-accounts.ts",
+    "test-accounts": "ts-node src/scripts/test-and-fix-accounts.ts"
   },
   "author": "Lanvu",
   "license": "ISC",

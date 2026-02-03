@@ -104,14 +104,13 @@ export const s3Service = () => {
         Key: fileKey.trim(),
       });
       await s3.send(command);
-      console.log(`✅ File exists in S3: ${fileKey}`);
       return true;
     } catch (error: any) {
-      if (error.name === 'NotFound') {
-        console.warn(`⚠️ File not found in S3: ${fileKey}`);
+      if (error.name === 'NotFound' || error.$metadata?.httpStatusCode === 404) {
         return false;
       }
-      console.error('❌ Error checking file existence:', error);
+      // Log error but don't throw - allow getFile to handle it
+      console.error('❌ Error checking file existence:', error.message);
       return false;
     }
   };
@@ -128,12 +127,7 @@ export const s3Service = () => {
     }
 
     try {
-      const exists = await checkFileExists(fileKey);
-      if (!exists) {
-        console.error(`❌ File does not exist in S3: ${fileKey}`);
-        return '/placeholder-image.png';
-      }
-
+      // Try to generate signed URL directly - if file doesn't exist, it will throw
       const getObjectParams = {
         Bucket: configKeys.AWS_BUCKET_NAME,
         Key: fileKey.trim(),
@@ -144,10 +138,10 @@ export const s3Service = () => {
         expiresIn: 3600 // 1 hour
       });
       
-      console.log(`✅ Generated S3 signed URL for: ${fileKey}`);
       return signedUrl;
     } catch (error: any) {
-      console.error('❌ S3 getFile error for key:', fileKey, error.message);
+      // If file doesn't exist or other error, return placeholder
+      console.error(`❌ S3 getFile error for key: ${fileKey}`, error.message);
       return '/placeholder-image.png';
     }
   };

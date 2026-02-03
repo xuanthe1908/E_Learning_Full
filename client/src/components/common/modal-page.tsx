@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { SetStateAction, Dispatch } from "react";
 import {toast} from 'react-toastify'
-import { rejectInstructorRequest } from "../../api/endpoints/instructor-management";
+import { rejectSellerRequest } from "../../api/endpoints/seller-management";
 interface ModalProps {
   open:boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -21,7 +21,7 @@ export default function Modal({open,setOpen,id}:ModalProps) {
 
   const rejectRequest = async () => {
     try {
-      const response = await rejectInstructorRequest(id,selectedReason);
+      const response = await rejectSellerRequest(id,selectedReason);
       setOpen(false)
       toast.success(response?.data?.message, {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -131,3 +131,30 @@ export default function Modal({open,setOpen,id}:ModalProps) {
     </Transition.Root>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
