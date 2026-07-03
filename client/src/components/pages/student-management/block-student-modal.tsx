@@ -2,18 +2,26 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { SetStateAction, Dispatch } from "react";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 import { blockStudents } from "../../../api/endpoints/student-management";
+import { getApiErrorMessage } from "../../../utils/CustomApiError";
+
 interface ModalProps {
-  open:boolean;
+  open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  updated:boolean;
-  setUpdated:Dispatch<SetStateAction<boolean>>;
-  id:string
-};
-export default function BlockStudentModal({open,setOpen,updated,setUpdated,id}:ModalProps) {
+  studentId: string;
+  onBlocked: () => Promise<void>;
+}
+
+export default function BlockStudentModal({
+  open,
+  setOpen,
+  studentId,
+  onBlocked,
+}: ModalProps) {
   const cancelButtonRef = useRef(null);
   const [selectedReason, setSelectedReason] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const reasons = [
     "posted wrong comments",
@@ -21,18 +29,29 @@ export default function BlockStudentModal({open,setOpen,updated,setUpdated,id}:M
     "others",
   ];
 
-  const handleBlock = async (studentId: string, reason: string) => {
-    try {
-      const response = await blockStudents(studentId, reason);
-      toast.success(response?.message, {
+  const handleBlock = async () => {
+    if (!selectedReason) {
+      toast.error("Please select a reason for blocking", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
-      setUpdated(!updated)
+      return;
+    }
 
-    } catch (error: any) {
-      toast.error(error.data.message, {
+    try {
+      setSubmitting(true);
+      const response = await blockStudents(studentId, selectedReason);
+      toast.success(response?.message ?? "Student blocked successfully", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
+      setOpen(false);
+      setSelectedReason("");
+      await onBlocked();
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to block student"), {
+        position: toast.POSITION.BOTTOM_RIGHT,
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -111,13 +130,11 @@ export default function BlockStudentModal({open,setOpen,updated,setUpdated,id}:M
                 <div className='bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6'>
                   <button
                     type='button'
-                    className='inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto'
-                    onClick={()=>{
-                        handleBlock(id,selectedReason)
-                        setOpen(false)
-                    }}
+                    disabled={submitting}
+                    className='inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50 sm:ml-3 sm:w-auto'
+                    onClick={handleBlock}
                   >
-                    Block
+                    {submitting ? "Blocking..." : "Block"}
                   </button>
                   <button
                     type='button'

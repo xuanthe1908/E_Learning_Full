@@ -6,11 +6,12 @@ import { CloudServiceInterface } from '@src/app/services/cloudServiceInterface';
 
 export const editCourseU = async (
   courseId: string,
-  instructorId: string | undefined,
+  editorId: string | undefined,
   files: Express.Multer.File[],
   courseInfo: EditCourseInfo,
   cloudService: ReturnType<CloudServiceInterface>,
-  courseDbRepository: ReturnType<CourseDbRepositoryInterface>
+  courseDbRepository: ReturnType<CourseDbRepositoryInterface>,
+  options?: { isAdmin?: boolean }
 ) => {
   let isThumbnailUpdated = false,
     isGuideLinesUpdated = false;
@@ -20,9 +21,9 @@ export const editCourseU = async (
       HttpStatusCodes.BAD_REQUEST
     );
   }
-  if (!instructorId) {
+  if (!editorId) {
     throw new AppError(
-      'Please provide instructor id ',
+      'Please provide editor id ',
       HttpStatusCodes.BAD_REQUEST
     );
   }
@@ -33,6 +34,23 @@ export const editCourseU = async (
     );
   }
   const oldCourse = await courseDbRepository.getCourseById(courseId);
+  if (!oldCourse) {
+    throw new AppError('Course not found', HttpStatusCodes.NOT_FOUND);
+  }
+
+  const instructorId = options?.isAdmin
+    ? String(oldCourse.instructorId)
+    : editorId;
+
+  if (
+    !options?.isAdmin &&
+    String(oldCourse.instructorId) !== String(editorId)
+  ) {
+    throw new AppError(
+      'You are not allowed to edit this course',
+      HttpStatusCodes.FORBIDDEN
+    );
+  }
 
   if (files && files.length > 0) {
     const uploadPromises = files.map(async (file) => {

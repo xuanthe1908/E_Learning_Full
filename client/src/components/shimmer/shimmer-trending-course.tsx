@@ -4,7 +4,6 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Avatar,
 } from "@material-tailwind/react";
 
 export const TrendingCardShimmer: React.FC = () => {
@@ -29,16 +28,9 @@ export const TrendingCardShimmer: React.FC = () => {
           >
             Loading...
           </Typography>
-          <Typography variant='h5' className='mb-4 text-gray-400'>
+          <Typography variant='h5' className='text-gray-400'>
             Loading...
           </Typography>
-          <Avatar
-            size='xl'
-            variant='circular'
-            alt='Loading'
-            className='border-2 border-white'
-            src=''
-          />
         </div>
       </CardBody>
     </Card>

@@ -12,7 +12,7 @@ import { Media } from "../../../api/types/apiResponses/ap-response-lesson";
 import { BiVideo } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { selectStudentId } from "../../../redux/reducers/studentSlice";
-import { selectCourse } from "redux/reducers/courseSlice";
+import { selectCourse } from "../../../redux/reducers/courseSlice";
 import ShimmerEffectWatchLessons from "../../shimmer/watch-lessons-shimmer";
 import ShimmerVideoPlayer from "../../shimmer/shimmer-video-player";
 import AiChatWidget from "components/aiChat/AiChatWidget";

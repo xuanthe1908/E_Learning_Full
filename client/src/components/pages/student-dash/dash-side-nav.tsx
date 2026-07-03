@@ -30,10 +30,9 @@ const NavItems = [
     icon: <CgProfile className='h-6 w-6' />
   },
   {
-    path: "#",
+    path: "/dashboard/settings",
     name: "Settings",
     icon: <FiSettings className='h-6 w-6' />
-
   },
 ];
 

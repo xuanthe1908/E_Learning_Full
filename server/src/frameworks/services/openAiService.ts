@@ -66,7 +66,9 @@ export const openAiService = (config: AIServiceConfig) => {
       
       let errorMessage = 'Xin lỗi, tôi đang gặp sự cố kỹ thuật. Vui lòng thử lại sau.';
       
-      if (error.status === 429) {
+      if (error.code === 'insufficient_quota' || error.type === 'insufficient_quota') {
+        errorMessage = 'Dịch vụ AI tạm thời không khả dụng do hết hạn mức sử dụng. Vui lòng thử lại sau hoặc liên hệ quản trị viên.';
+      } else if (error.status === 429) {
         errorMessage = 'Hệ thống đang quá tải. Vui lòng thử lại sau vài phút.';
       } else if (error.status === 401) {
         errorMessage = 'Lỗi xác thực API. Vui lòng liên hệ quản trị viên.';

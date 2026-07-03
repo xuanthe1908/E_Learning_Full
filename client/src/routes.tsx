@@ -8,7 +8,6 @@ import AddCategory from "./components/pages/categories/add-category";
 import EditCategory from "./components/pages/categories/edit-category";
 import ListCategories from "./components/pages/categories/list-category";
 import DashHome from "./components/pages/student-dash/dash-home";
-import InstructorChannels from "./components/pages/channel/instructor-channels";
 import VNPayQRPayment from "./components/pages/payment-vnpay/vnpayQRPayment";
 import VNPayReturnHandler from "components/pages/payment-vnpay/vnpay-return-handler";
 
@@ -81,6 +80,10 @@ const LazyStudentProfile = lazy(
   () => import("./components/pages/student-dash/my-profile")
 );
 
+const LazyStudentSettings = lazy(
+  () => import("./components/pages/student-dash/student-settings-page")
+);
+
 const LazyStudentCourses = lazy(
   () => import("./components/pages/student-dash/my-courses")
 );
@@ -91,6 +94,14 @@ const LazyStudentHomePage = lazy(
 
 const LazyStudentLogin = lazy(
   () => import("./components/pages/students/student-login-page")
+);
+
+const LazyForgotPassword = lazy(
+  () => import("./components/pages/students/forgot-password-page")
+);
+
+const LazyResetPassword = lazy(
+  () => import("./components/pages/students/reset-password-page")
 );
 const LazyStudentRegister = lazy(
   () => import("./components/pages/students/student-registration-page")
@@ -103,6 +114,15 @@ const LazyInstructorRegister = lazy(
 );
 const LazyAdminHome = lazy(
   () => import("./components/pages/admin/admin-home-page")
+);
+const LazyAdminManageCourses = lazy(
+  () => import("./components/pages/admin/admin-manage-courses")
+);
+const LazyAdminEditCourse = lazy(
+  () => import("./components/pages/admin/admin-edit-course")
+);
+const LazyAdminSettings = lazy(
+  () => import("./components/pages/admin/admin-settings-page")
 );
 const LazyInstructorRequests = lazy(
   () =>
@@ -117,6 +137,11 @@ const LazyViewMoreInstructorRequest = lazy(
 const LazyViewBlockedInstructors = lazy(
   () =>
     import("./components/pages/instructor-management/view-blocked-instructors")
+);
+
+const LazyViewInstructorDetail = lazy(
+  () =>
+    import("./components/pages/instructor-management/view-instructor-detail")
 );
 
 const LazyCommunity = lazy(
@@ -268,6 +293,14 @@ const AppRouter = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "settings",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyStudentSettings />
+          </Suspense>
+        ),
+      },
     ],
   },
   {
@@ -283,6 +316,22 @@ const AppRouter = createBrowserRouter([
     element: (
       <Suspense fallback={<div>Loading...</div>}>
         <LazyStudentLogin />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyForgotPassword />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/reset-password",
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyResetPassword />
       </Suspense>
     ),
   },
@@ -355,6 +404,14 @@ const AppRouter = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "view/:id",
+            element: (
+              <Suspense fallback={<div>loading...</div>}>
+                <LazyViewInstructorDetail />
+              </Suspense>
+            ),
+          },
         ],
       },
       {
@@ -386,6 +443,30 @@ const AppRouter = createBrowserRouter([
             element: <EditCategory />,
           },
         ],
+      },
+      {
+        path: "courses",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAdminManageCourses />
+          </Suspense>
+        ),
+      },
+      {
+        path: "courses/edit/:courseId",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAdminEditCourse />
+          </Suspense>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyAdminSettings />
+          </Suspense>
+        ),
       },
     ],
   },
@@ -453,10 +534,6 @@ const AppRouter = createBrowserRouter([
             <LazyInstructorProfile />
           </Suspense>
         ),
-      },
-      {
-        path: "view-channels",
-        element: <InstructorChannels />,
       },
       {
       path: "courses/:courseId/payment",

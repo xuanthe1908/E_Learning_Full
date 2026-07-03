@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { v4 as uuidv4 } from 'uuid';
-import * as Joi from 'joi';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { CreatePaymentDto } from '../../dtos/payment.dto';
 import { VNPayServiceInterface } from '../../app/services/vnpayServiceInterface';
 import { VNPayServiceImpl } from '../../frameworks/services/vnpayService';
 import { CourseDbRepositoryInterface } from '../../app/repositories/courseDbRepository';
@@ -11,10 +13,17 @@ import { PaymentImplInterface  } from '../../frameworks/database/mongodb/reposit
 import HttpStatusCodes from '../../constants/HttpStatusCodes';
 import AppError from '../../utils/appError';
 
-// Validation schemas
-const createPaymentSchema = Joi.object({
-  courseId: Joi.string().required().trim(),
-});
+const validatePaymentBody = async (body: unknown): Promise<CreatePaymentDto> => {
+  const dto = plainToInstance(CreatePaymentDto, body);
+  const errors = await validate(dto, { whitelist: true });
+  if (errors.length > 0) {
+    const message = errors
+      .flatMap((error) => Object.values(error.constraints ?? {}))
+      .join(', ');
+    throw new AppError(`Validation error: ${message}`, HttpStatusCodes.BAD_REQUEST);
+  }
+  return dto;
+};
 
 const vnpayController = (
   vnpayServiceInterface: VNPayServiceInterface,
@@ -29,16 +38,7 @@ const vnpayController = (
   const dbRepositoryPayment = paymentDbImpl();
 
   const createPaymentUrl = asyncHandler(async (req: Request, res: Response) => {
-    // Validate input
-    const { error, value } = createPaymentSchema.validate(req.body);
-    if (error) {
-      throw new AppError(
-        `Validation error: ${error.details[0].message}`,
-        HttpStatusCodes.BAD_REQUEST
-      );
-    }
-
-    const { courseId } = value;
+    const { courseId } = await validatePaymentBody(req.body);
     const ipAddr = (req.headers['x-forwarded-for'] as string) || 
                    req.connection.remoteAddress || 
                    req.socket.remoteAddress || 
@@ -108,13 +108,7 @@ const vnpayController = (
 
 const createQRPayment = asyncHandler(async (req: Request, res: Response) => {
   const studentId = req.user?.id || req.user?.payload?.Id;
-  const { error, value } = createPaymentSchema.validate(req.body);
-  if (error) {
-    console.log('[Validation Error]', error.details[0].message);
-    throw new AppError(`Validation error: ${error.details[0].message}`, HttpStatusCodes.BAD_REQUEST);
-  }
-
-  const { courseId } = value;
+  const { courseId } = await validatePaymentBody(req.body);
   console.log('[Step 1] courseId:', courseId);
 
   try {

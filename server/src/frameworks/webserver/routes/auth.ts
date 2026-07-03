@@ -15,6 +15,8 @@ import { refreshTokenRepositoryMongoDB } from "../../../frameworks/database/mong
 import { s3Service } from "../../../frameworks/services/s3CloudService";
 import { cloudServiceInterface } from "../../../app/services/cloudServiceInterface";
 import upload from "../middlewares/multer";
+import { validateBody } from "../middlewares/validateBody";
+import { ForgotPasswordDto, ResetPasswordDto, StudentLoginDto } from "../../../dtos/auth.dto";
 const authRouter = () => {     
   const router = express.Router();
   
@@ -36,8 +38,18 @@ const authRouter = () => {
   );
   //* Student
   router.post("/student-register",controller.registerStudent)
-  router.post("/student-login", controller.loginStudent);
+  router.post("/student-login", validateBody(StudentLoginDto), controller.loginStudent);
   router.post("/login-with-google",controller.loginWithGoogle)
+  router.post(
+    "/forgot-password",
+    validateBody(ForgotPasswordDto),
+    controller.forgotPassword
+  );
+  router.post(
+    "/reset-password",
+    validateBody(ResetPasswordDto),
+    controller.resetPassword
+  );
   
   //* Instructor
   router.post("/instructor/instructor-register",upload.array('images'), controller.registerInstructor)

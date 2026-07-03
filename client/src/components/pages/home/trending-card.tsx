@@ -3,7 +3,6 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Avatar,
 } from "@material-tailwind/react";
 import { ApiResponseTrending } from "../../../api/types/apiResponses/api-response-home-page-listing";
 
@@ -13,7 +12,6 @@ interface Props {
 
 const TrendingCard: React.FC<Props> = ({ courseInfo }) => {
   const imageUrl = courseInfo?.thumbnailUrl;
-  const profileUrl = courseInfo.profileUrl
   return (
     <div>
       <Card
@@ -37,18 +35,12 @@ const TrendingCard: React.FC<Props> = ({ courseInfo }) => {
           >
             {courseInfo.title}
           </Typography>
-          <Typography variant='h5' className='mb-4 text-gray-400'>
+          <Typography variant='h5' className='text-gray-400'>
+            Giảng viên:{" "}
             {courseInfo.instructorFirstName +
               " " +
               courseInfo.instructorLastName}
           </Typography>
-          <Avatar
-            size='xl'
-            variant='circular'
-            alt='tania andrew'
-            className='border-2 border-white'
-            src={profileUrl}
-          />
         </CardBody>
       </Card>
     </div>

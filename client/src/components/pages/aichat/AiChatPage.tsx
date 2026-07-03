@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import AiChatInterface from 'components/aiChat/AiChatInterface';
-import { selectIsLoggedIn } from 'redux/reducers/authSlice';
+import { selectIsLoggedIn } from '../../../redux/reducers/authSlice';
 
 
 const AiChatPage: React.FC = () => {

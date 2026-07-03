@@ -26,6 +26,12 @@ import { RefreshTokenDbInterface } from '@src/app/repositories/refreshTokenDBRep
 import { RefreshTokenRepositoryMongoDb } from '@src/frameworks/database/mongodb/repositories/refreshTokenRepoMongoDb';
 import { CloudServiceImpl } from '@src/frameworks/services/s3CloudService';
 import { CloudServiceInterface } from '@src/app/services/cloudServiceInterface';
+import {
+  requestPasswordResetU,
+  resetPasswordWithTokenU,
+} from '../../app/usecases/auth/passwordReset';
+import { sendEmailService } from '../../frameworks/services/sendEmailService';
+import { ForgotPasswordDto, ResetPasswordDto } from '../../dtos/auth.dto';
 const authController = (
   authServiceInterface: AuthServiceInterface,
   authServiceImpl: AuthService,
@@ -159,13 +165,37 @@ const authController = (
     });
   });
 
+  const emailService = sendEmailService();
+
+  const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+    const { email, role } = req.body as ForgotPasswordDto;
+    const result = await requestPasswordResetU(email, role, emailService);
+    res.status(200).json({
+      status: 'success',
+      message: result.message,
+      data: null,
+    });
+  });
+
+  const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+    const { token, newPassword } = req.body as ResetPasswordDto;
+    const result = await resetPasswordWithTokenU(token, newPassword);
+    res.status(200).json({
+      status: 'success',
+      message: result.message,
+      data: null,
+    });
+  });
+
   return {
     loginStudent,
     registerStudent,
     loginWithGoogle,
     registerInstructor,
     loginInstructor,
-    loginAdmin
+    loginAdmin,
+    forgotPassword,
+    resetPassword,
   };
 };
 

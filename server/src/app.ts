@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express, { Application, NextFunction } from 'express';
 import connectToMongoDb from './frameworks/database/mongodb/connection';
 import http from 'http';
@@ -13,6 +14,8 @@ import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketDa
 import { Server } from 'socket.io';
 import socketConfig from './frameworks/websocket/socket';
 import { authService } from './frameworks/services/authService';
+import setupSwagger from './frameworks/webserver/swagger/setupSwagger';
+import mountMonitoringRoutes from './frameworks/webserver/routes/monitoring';
 
 colors?.enable();
 
@@ -33,6 +36,9 @@ connectToMongoDb();
 const redisClient = connection().createRedisClient();
 
 expressConfig(app);
+
+mountMonitoringRoutes(app);
+setupSwagger(app);
 
 routes(app, redisClient); 
 

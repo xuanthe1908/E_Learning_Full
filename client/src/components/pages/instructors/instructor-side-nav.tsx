@@ -8,7 +8,6 @@ import { Button, Typography } from "@material-tailwind/react";
 
 import { Square3Stack3DIcon } from "@heroicons/react/24/outline";
 import { useLocation } from "react-router-dom";
-import {IoMdChatboxes} from 'react-icons/io'
 import { FaUserGraduate } from "react-icons/fa";
 import {UserCircleIcon} from "@heroicons/react/24/outline";
 
@@ -46,12 +45,6 @@ const routes = [
     icon:<UserCircleIcon {...icon}/>,
     value:"view-profile",
     path:"/instructors/view-profile"
-  },
-  {
-    title:"Channels",
-    icon:<IoMdChatboxes {...icon}/>,
-    value:"view-channels",
-    path:'/instructors/view-channels'
   },
   
 ];

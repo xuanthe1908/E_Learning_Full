@@ -12,6 +12,10 @@ import {
   getDashBoardDetailsU,
   getGraphDetailsU
 } from '../../app/usecases/admin/dashBoardData';
+import { changeAdminPasswordU } from '../../app/usecases/admin/changePassword';
+import { authServiceInterface } from '../../app/services/authServicesInterface';
+import { authService } from '../../frameworks/services/authService';
+import { CustomRequest } from '../../types/customRequest';
 import { PaymentInterface } from '../../app/repositories/paymentDbRepository';
 import { PaymentImplInterface } from '../../frameworks/database/mongodb/repositories/paymentRepoMongodb';
 import { CategoryDbInterface } from '../../app/repositories/categoryDbRepository';
@@ -39,6 +43,8 @@ const adminController = (
   const dbRepositoryStudent = studentDbRepository(studentDbRepositoryImpl());
   const dbRepositoryPayment = paymentDbRepository(paymentDbRepositoryImpl());
   const dbRepositoryCategory = categoryDbRepository(categoryDbRepositoryImpl());
+
+  const authServiceImpl = authServiceInterface(authService());
 
   const getDashBoardDetails = asyncHandler(
     async (req: Request, res: Response) => {
@@ -70,9 +76,29 @@ const adminController = (
     });
   });
 
+  const changePassword = asyncHandler(
+    async (req: CustomRequest, res: Response) => {
+      const passwordInfo: { currentPassword: string; newPassword: string } =
+        req.body;
+      const adminId: string | undefined = req.user?.Id;
+      await changeAdminPasswordU(
+        adminId,
+        passwordInfo,
+        authServiceImpl,
+        dbRepositoryAdmin
+      );
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully changed password',
+        data: null
+      });
+    }
+  );
+
   return {
     getDashBoardDetails,
-    getGraphDetails
+    getGraphDetails,
+    changePassword
   };
 };
 

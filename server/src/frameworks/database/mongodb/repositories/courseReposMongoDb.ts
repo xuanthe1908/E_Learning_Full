@@ -138,12 +138,9 @@ export const courseRepositoryMongodb = () => {
       {
         $project: {
           title: '$title',
-          coursesEnrolled: '$coursesEnrolled',
           thumbnail: '$thumbnail',
           instructorFirstName: { $arrayElemAt: ['$instructor.firstName', 0] },
-          instructorLastName: { $arrayElemAt: ['$instructor.lastName', 0] },
-          instructorProfile: { $arrayElemAt: ['$instructor.profilePic', 0] },
-          profileUrl: ''
+          instructorLastName: { $arrayElemAt: ['$instructor.lastName', 0] }
         }
       }
     ]);

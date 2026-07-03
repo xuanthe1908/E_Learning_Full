@@ -139,12 +139,21 @@ export const getInstructorByIdUseCase = async (
     throw new AppError('Invalid instructor id', HttpStatusCodes.BAD_REQUEST);
   }
   const instructor = await instructorRepository.getInstructorById(instructorId);
-  if (instructor?.profilePic.key) {
-    const profilePic = await cloudService.getFile(instructor?.profilePic.key);
-    instructor.profileUrl = profilePic;
+  if (!instructor) {
+    throw new AppError('Instructor not found', HttpStatusCodes.NOT_FOUND);
   }
-  if (instructor) {
-    instructor.password = 'no password';
+  if (instructor.profilePic?.key) {
+    instructor.profileUrl = await cloudService.getFile(instructor.profilePic.key);
   }
+  if (instructor.certificates?.length) {
+    await Promise.all(
+      instructor.certificates.map(async (certificate) => {
+        if (certificate?.key) {
+          certificate.url = await cloudService.getFile(certificate.key);
+        }
+      })
+    );
+  }
+  instructor.password = 'no password';
   return instructor;
 };

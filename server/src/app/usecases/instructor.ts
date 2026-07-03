@@ -85,8 +85,7 @@ export const getStudentsForInstructorsU = async (
   );
   await Promise.all(
     students.map(async (student) => {
-      if (student.profilePic.key) {
-        student.profileUrl = ""
+      if (student?.profilePic?.key) {
         student.profileUrl = await cloudService.getFile(student.profilePic.key);
       }
     })

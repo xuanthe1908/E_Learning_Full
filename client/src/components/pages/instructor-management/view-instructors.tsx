@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PencilIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
@@ -28,6 +29,7 @@ import usePagination from "../../../hooks/usePagination";
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions", ""];
 
 const ViewInstructors: React.FC = () => {
+  const navigate = useNavigate();
   const [instructors, setInstructors] = useState([]);
   const [open, setOpen] = useState(false);
   const [updated, setUpdated] = useState(false);
@@ -99,7 +101,7 @@ const ViewInstructors: React.FC = () => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className='overflow-scroll px-0'>
+      <CardBody className='overflow-x-auto px-0'>
         <table className='w-full min-w-max table-auto text-left'>
           <thead>
             <tr>
@@ -228,7 +230,13 @@ const ViewInstructors: React.FC = () => {
                     </td>
                     <td className={classes}>
                       <Tooltip content='Edit User'>
-                        <IconButton variant='text' color='blue-gray'>
+                        <IconButton
+                          variant='text'
+                          color='blue-gray'
+                          onClick={() =>
+                            navigate(`/admin/instructors/view/${_id}`)
+                          }
+                        >
                           <PencilIcon className='h-4 w-4' />
                         </IconButton>
                       </Tooltip>

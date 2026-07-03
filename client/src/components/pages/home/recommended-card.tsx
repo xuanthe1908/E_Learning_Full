@@ -3,7 +3,6 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Avatar,
 } from "@material-tailwind/react";
 import { ApiResponseRecommended } from "../../../api/types/apiResponses/api-response-home-page-listing";
 
@@ -14,7 +13,6 @@ interface Props {
 const RecommendedCard: React.FC<Props> = ({ courseInfo }) => {
   const { course, instructor, media } = courseInfo;
   const imageUrl = media.thumbnailUrl;
-  const profileUrl = media.profileUrl;
   return (
     <Card
       shadow={false}
@@ -37,16 +35,9 @@ const RecommendedCard: React.FC<Props> = ({ courseInfo }) => {
         >
           {course?.name}
         </Typography>
-        <Typography variant='h5' className='mb-4 text-gray-400'>
-          {instructor?.firstName + " " + instructor?.lastName}
+        <Typography variant='h5' className='text-gray-400'>
+          Giảng viên: {instructor?.firstName + " " + instructor?.lastName}
         </Typography>
-        <Avatar
-          size='xl'
-          variant='circular'
-          alt='tania andrew'
-          className='border-2 border-white'
-          src={profileUrl}
-        />
       </CardBody>
     </Card>
   );

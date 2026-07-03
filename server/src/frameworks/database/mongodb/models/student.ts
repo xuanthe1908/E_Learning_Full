@@ -95,7 +95,12 @@ const studentSchema = new Schema<IStudent>({
   blockedReason: {
     type: String,
     default: ''
-  }
+  },
+  coursesEnrolled: [{
+    type: Schema.Types.ObjectId,
+    ref: 'course',
+    default: [],
+  }],
 });
 
 

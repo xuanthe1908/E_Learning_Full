@@ -21,6 +21,10 @@ export const editCourse = (courseId: string, courseInfo: FormData) => {
   return editCourseService(END_POINTS.EDIT_COURSE, courseId, courseInfo);
 };
 
+export const adminEditCourse = (courseId: string, courseInfo: FormData) => {
+  return editCourseService(END_POINTS.ADMIN_EDIT_COURSE, courseId, courseInfo);
+};
+
 export const getCourseByInstructor = () => {
   return getCoursesByInstructorService(END_POINTS.GET_COURSES_BY_INSTRUCTORS);
 };

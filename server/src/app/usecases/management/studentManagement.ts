@@ -8,7 +8,10 @@ export const getAllStudentsU = async (
   cloudService:ReturnType<CloudServiceInterface>,
   studentRepository: ReturnType<StudentsDbInterface>
 ) => {
-  const students:StudentInterface[]|null = await studentRepository.getAllStudents();
+  const students = await studentRepository.getAllStudents();
+  if (!students?.length) {
+    return students ?? [];
+  }
   await Promise.all(
     students.map(async (student) => {
       if (student?.profilePic?.key) {
@@ -59,7 +62,10 @@ export const getAllBlockedStudentsU = async (
   cloudService:ReturnType<CloudServiceInterface>,
   studentRepository: ReturnType<StudentsDbInterface>
 ) => {
-  const blockedStudents:StudentInterface[]|null = await studentRepository.getAllBlockedStudents();
+  const blockedStudents = await studentRepository.getAllBlockedStudents();
+  if (!blockedStudents?.length) {
+    return blockedStudents ?? [];
+  }
   await Promise.all(
     blockedStudents.map(async (student) => {
       if (student?.profilePic?.key) {

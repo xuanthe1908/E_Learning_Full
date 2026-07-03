@@ -1,4 +1,4 @@
-import { configureStore,combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { authReducer } from "./reducers/authSlice";
 import { courseReducer } from "./reducers/courseSlice";
 import { studentReducer } from "./reducers/studentSlice";
@@ -6,11 +6,12 @@ import { helperReducer } from "./reducers/helperSlice";
 import { instructorReducer } from "./reducers/instructorSlice";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { baseApi } from './api/baseApi';
 
 const persistConfig = {
-  key: 'root', // Key to use for storing data in storage
-  storage,     // Storage mechanism (local storage or session storage)
-  whitelist: ['course', 'student', 'instructor'], // Reducers to persist
+  key: 'root',
+  storage,
+  whitelist: ['course', 'student', 'instructor'],
 };
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
@@ -19,6 +20,7 @@ const persistedReducer = persistReducer(persistConfig, combineReducers({
   student: studentReducer,
   instructor: instructorReducer,
   helper: helperReducer,
+  [baseApi.reducerPath]: baseApi.reducer,
 }));
 
 const store = configureStore({
@@ -28,7 +30,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }),
+    }).concat(baseApi.middleware),
 });
 
 const persistor = persistStore(store); 

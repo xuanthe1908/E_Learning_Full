@@ -6,8 +6,15 @@ export const adminDbRepository = (
   const getAdminByEmail = async (email: string) =>
     await repository.getAdminByEmail(email);
 
+  const getAdminById = async (id: string) => await repository.getAdminById(id);
+
+  const changePassword = async (id: string, password: string) =>
+    await repository.changePassword(id, password);
+
   return {
-    getAdminByEmail
+    getAdminByEmail,
+    getAdminById,
+    changePassword,
   };
 };
 

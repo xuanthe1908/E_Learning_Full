@@ -58,7 +58,7 @@ export default function ProfileMenu() {
         navigate("/dashboard/my-profile");
         break;
       case "Settings":
-        navigate("#");
+        navigate("/dashboard/settings");
         break;
       case "Inbox":
         break;

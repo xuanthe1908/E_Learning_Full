@@ -12,12 +12,25 @@ import { RiSearchLine } from "react-icons/ri";
 import FilterCoursesSelectBox from "./filter-course-selectbox";
 import { debounce } from "lodash";
 import { MdSentimentDissatisfied } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { selectIsLoggedIn } from "../../../redux/reducers/authSlice";
+import { selectStudentId } from "../../../redux/reducers/studentSlice";
+
+const isEnrolledInCourse = (
+  coursesEnrolled: unknown[] | undefined,
+  studentId: string | null
+) => {
+  if (!studentId || !coursesEnrolled?.length) return false;
+  return coursesEnrolled.some((id) => String(id) === String(studentId));
+};
 
 const ListCourse: React.FC = () => {
   const [courses, setCourses] = useState<CourseInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterQuery, setFilterQuery] = useState<string>("");
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const studentId = useSelector(selectStudentId);
 
   const fetchCourse = async () => {
     try {
@@ -146,10 +159,16 @@ const ListCourse: React.FC = () => {
         <div className='w-10/12'>
           <div className='flex mt-3  flex-wrap justify-center'>
             {courses.length ? (
-              courses?.map((course: CourseInterface, index: number) => (
+              courses?.map((course: CourseInterface) => (
                 <Link to={course._id} key={course._id} className='mt-5'>
                   <div className='m-2'>
-                    <CourseCard {...course} />
+                    <CourseCard
+                      {...course}
+                      isEnrolled={
+                        isLoggedIn &&
+                        isEnrolledInCourse(course.coursesEnrolled, studentId)
+                      }
+                    />
                   </div>
                 </Link>
               ))

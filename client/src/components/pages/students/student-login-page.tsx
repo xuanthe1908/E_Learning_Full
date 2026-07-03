@@ -92,12 +92,12 @@ const StudentLoginPage: React.FC = () => {
                     Password
                   </label>
                   <div className='text-sm'>
-                    <a
-                      href='/'
+                    <Link
+                      to='/forgot-password'
                       className='font-semibold text-blue-600 hover:text-indigo-500'
                     >
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className='mt-2'>

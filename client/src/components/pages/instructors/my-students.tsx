@@ -1,6 +1,5 @@
 import {
   MagnifyingGlassIcon,
-  ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
 import {
   Card,
@@ -66,27 +65,21 @@ const MyStudents: React.FC = () => {
             </div>
           </div>
         </CardHeader>
-        <CardBody className='overflow-scroll px-0'>
+        <CardBody className='overflow-x-auto px-0'>
           <table className='mt-4 w-full min-w-max table-auto text-left'>
             <thead>
               <tr>
-                {TABLE_HEAD.map((head, index) => (
+                {TABLE_HEAD.map((head) => (
                   <th
                     key={head}
-                    className='cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50'
+                    className='border-y border-blue-gray-100 bg-blue-gray-50/50 p-4'
                   >
                     <Typography
                       variant='small'
                       color='blue-gray'
-                      className='flex items-center justify-between gap-2 font-normal leading-none opacity-70'
+                      className='font-normal leading-none opacity-70'
                     >
-                      {head}{" "}
-                      {index !== TABLE_HEAD.length - 1 && (
-                        <ChevronUpDownIcon
-                          strokeWidth={2}
-                          className='h-4 w-4'
-                        />
-                      )}
+                      {head}
                     </Typography>
                   </th>
                 ))}

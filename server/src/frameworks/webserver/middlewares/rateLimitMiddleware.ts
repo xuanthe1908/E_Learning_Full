@@ -13,8 +13,8 @@ const getUserIdFromRequest = (req: Request): string => {
     req.user?.id ||
     req.user?.Id ||
     req.user?.payload?.Id ||
-    req.ip // fallback nếu không có userId
-  );
+    req.ip
+  ) ?? 'unknown';
 };
 
 // Rate limiting cho AI chat - 20 tin nhắn mỗi phút

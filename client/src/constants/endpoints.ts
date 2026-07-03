@@ -6,7 +6,8 @@ const END_POINTS = {
     REGISTER_INSTRUCTOR: 'api/auth/instructor/instructor-register',
     LOGIN_INSTRUCTOR: 'api/auth/instructor/instructor-login',
     LOGIN_ADMIN: 'api/auth/admin/admin-login',
-    REFRESH_TOKEN: 'api/all/refresh-token/refresh',
+    FORGOT_PASSWORD: 'api/auth/forgot-password',
+    RESET_PASSWORD: 'api/auth/reset-password',
 
     // ========== INSTRUCTOR MANAGEMENT ENDPOINTS (Admin) ==========
     GET_INSTRUCTOR_REQUESTS: 'api/instructors/view-instructor-requests',
@@ -28,7 +29,7 @@ const END_POINTS = {
     GET_ALL_STUDENTS: 'api/students/get-all-students',
     BLOCK_STUDENT: 'api/students/block-student',
     UNBLOCK_STUDENT: 'api/students/unblock-student',
-    GET_BLOCKED_STUDENTS: 'api/students/get-blocked-students',
+    GET_BLOCKED_STUDENTS: 'api/students/get-all-blocked-students',
 
     // ========== STUDENT PROFILE ENDPOINTS ==========
     GET_STUDENT_DETAILS: 'api/students/get-student-details',
@@ -38,6 +39,7 @@ const END_POINTS = {
     // ========== COURSE ENDPOINTS ==========
     ADD_COURSE: 'api/courses/instructors/add-course',
     EDIT_COURSE: 'api/courses/instructors/edit-course',
+    ADMIN_EDIT_COURSE: 'api/courses/admin/edit-course',
     GET_ALL_COURSES: 'api/courses/get-all-courses',
     GET_COURSE: 'api/courses/get-course',
     GET_COURSES_BY_INSTRUCTORS: 'api/courses/get-course-by-instructor',
@@ -91,6 +93,7 @@ const END_POINTS = {
     ADMIN_DASHBOARD_DATA: 'api/admin/dashboard-details',
     GET_GRAPH_DATA: 'api/admin/graph-data',
     GET_GRAPH_DATA_ADMIN: 'api/admin/graph-data',
+    ADMIN_CHANGE_PASSWORD: 'api/admin/change-password',
 
     // ========== CONTACT ENDPOINTS ==========
     CONTACT_US: 'api/contact/submit',

@@ -34,6 +34,8 @@ const adminRouter = () => {
  
   router.get('/graph-data',controller.getGraphDetails)
 
+  router.patch('/change-password', controller.changePassword)
+
   return router;
 };
 

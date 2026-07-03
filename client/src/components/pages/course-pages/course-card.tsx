@@ -1,19 +1,23 @@
 import { formatToINR } from "../../../utils/helpers";
 import { CourseInterface } from "../../../types/course";
+import { MdDone } from "react-icons/md";
 
-const CourseCard: React.FC<CourseInterface> = ({
+type CourseCardProps = CourseInterface & {
+  isEnrolled?: boolean;
+};
+
+const CourseCard: React.FC<CourseCardProps> = ({
   rating,
   price,
   isPaid,
   title,
   thumbnailUrl,
   description,
+  isEnrolled = false,
 }) => {
-  // Safe rating value
   const safeRating = rating && !isNaN(Number(rating)) ? Math.max(0, Math.min(5, Number(rating))) : 0;
   const formattedRating = safeRating.toFixed(1);
-  console.log("DEBUG: CourseCard data", { title, isPaid, price });
-  // Custom star rating component đẹp hơn
+
   const StarRating = ({ value }: { value: number }) => {
     const stars = Array.from({ length: 5 }, (_, index) => {
       const filled = index < Math.round(value);
@@ -36,6 +40,12 @@ const CourseCard: React.FC<CourseInterface> = ({
       <div className="relative">
         <img src={thumbnailUrl} className="h-48 w-full object-cover rounded-md" alt={title} />
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-black/60 rounded-md" />
+        {isEnrolled && (
+          <span className="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-semibold text-white shadow-md">
+            <MdDone className="text-sm" />
+            Enrolled
+          </span>
+        )}
       </div>
       <div className="pt-4">
         <div className="mb-3">

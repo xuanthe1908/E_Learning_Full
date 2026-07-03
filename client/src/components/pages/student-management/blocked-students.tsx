@@ -14,7 +14,6 @@ import {
   Tooltip,
   Input,
 } from "@material-tailwind/react";
-import { unblockInstructors } from "../../../api/endpoints/instructor-management";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/helpers";
 import usePagination from "../../../hooks/usePagination";
@@ -25,15 +24,13 @@ import {
 
 import { Students } from "../../../api/types/student/student";
 import { USER_AVATAR } from "../../../constants/common";
+import { getApiErrorMessage } from "../../../utils/CustomApiError";
+
 const TABLE_HEAD = ["Name", "Email", "Date Joined", "Status", "Actions", ""];
 
-interface Props {
-  updated: boolean;
-  setUpdated: (val: boolean) => void;
-}
-const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
+const BlockedStudents: React.FC = () => {
   const [students, setStudents] = useState<Students[]>([]);
-  // const [updated, setUpdated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const ITEMS_PER_PAGE = 4;
   const {
     currentPage,
@@ -43,29 +40,33 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
     goToPreviousPage,
     goToNextPage,
   } = usePagination(students, ITEMS_PER_PAGE);
-  const fetchBlockedInstructors = async () => {
+  const fetchBlockedStudents = async () => {
     try {
+      setLoading(true);
       const response = await getAllBlockedStudents();
-      setStudents(response?.data);
-    } catch (error: any) {
-      toast.error(error?.data?.message, {
+      const list = response?.data ?? response;
+      setStudents(Array.isArray(list) ? list : []);
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to load blocked students"), {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
-    fetchBlockedInstructors();
-  }, [updated]);
+    fetchBlockedStudents();
+  }, []);
 
   const handleUnblock = async (studentId: string) => {
     try {
       const response = await unblockStudent(studentId);
-      toast.success(response?.message, {
+      toast.success(response?.message ?? "Student unblocked successfully", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
-      setUpdated(!updated);
-    } catch (error: any) {
-      toast.error(error?.message, {
+      await fetchBlockedStudents();
+    } catch (error: unknown) {
+      toast.error(getApiErrorMessage(error, "Failed to unblock student"), {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     }
@@ -92,7 +93,7 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
           </div>
         </div>
       </CardHeader>
-      <CardBody className='overflow-scroll px-0'>
+      <CardBody className='overflow-x-auto px-0'>
         <table className='w-full min-w-max table-auto text-left'>
           <thead>
             <tr>
@@ -113,15 +114,17 @@ const BlockedStudents: React.FC<Props> = ({ updated, setUpdated }) => {
             </tr>
           </thead>
           <tbody className=''>
-            {currentData.length === 0 ? (
-              <tr className='p-5'>
-                <Typography
-                  color='gray'
-                  variant='h6'
-                  className='mt-1 p-2 font-normal'
-                >
+            {loading ? (
+              <tr>
+                <td colSpan={TABLE_HEAD.length} className="p-8 text-center text-gray-500">
+                  Loading blocked students...
+                </td>
+              </tr>
+            ) : currentData.length === 0 ? (
+              <tr>
+                <td colSpan={TABLE_HEAD.length} className="p-8 text-center text-gray-500">
                   No blocked students found
-                </Typography>
+                </td>
               </tr>
             ) : (
               currentData.map(

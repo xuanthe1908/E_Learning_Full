@@ -11,13 +11,17 @@ import { getAllCategories } from "../../../api/endpoints/category";
 import Modal from "react-modal";
 import { Document, Page, pdfjs } from "react-pdf";
 import { AiOutlineClose } from "react-icons/ai";
-import { editCourse } from "../../../api/endpoints/course/course";
+import { editCourse, adminEditCourse } from "../../../api/endpoints/course/course";
 pdfjs.GlobalWorkerOptions.workerSrc = "/path/to/pdf.worker.js";
 
 const isValidObjectId = (id: string): boolean => {
   const objectIdRegex = /^[0-9a-fA-F]{24}$/;
   return objectIdRegex.test(id);
 };
+
+interface EditCourseProps {
+  isAdminMode?: boolean;
+}
 
 interface InitialValType {
   title: string;
@@ -49,7 +53,7 @@ const initialValues: InitialValType = {
   level:""
 };
 const levels = ["easy", "medium", "hard"];
-const EditCourse: React.FC = () => {
+const EditCourse: React.FC<EditCourseProps> = ({ isAdminMode = false }) => {
   const [paid, setPaid] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [guidelines, setGuidelines] = useState<File | null>(null);
@@ -59,6 +63,9 @@ const EditCourse: React.FC = () => {
   const params = useParams<{ courseId: string }>();
   const navigate = useNavigate();
   const courseId = params.courseId;
+  const coursesListPath = isAdminMode
+    ? "/admin/courses"
+    : "/instructors/view-course";
 
   console.log('🔍 EditCourse - Raw params:', params);
   console.log('🔍 EditCourse - Extracted courseId:', courseId);
@@ -67,16 +74,16 @@ const EditCourse: React.FC = () => {
   useEffect(() => {
     if (!courseId) {
       toast.error('Course ID is missing');
-      navigate('/instructor/courses');
+      navigate(coursesListPath);
       return;
     }
 
     if (!isValidObjectId(courseId)) {
       toast.error('Invalid course ID format');
-      navigate('/instructor/courses');
+      navigate(coursesListPath);
       return;
     }
-  }, [courseId, navigate]);
+  }, [courseId, navigate, coursesListPath]);
   const [categories, setCategories] = useState<ApiResponseCategory[] | null>(
     null
   );
@@ -139,10 +146,14 @@ const EditCourse: React.FC = () => {
       guidelines && formData.append("files", guidelines);
       thumbnail && formData.append("files", thumbnail);
       Object.keys(values).forEach((key) => formData.append(key, values[key]));
-      const response = await editCourse(courseId ?? "", formData);
+      const saveCourse = isAdminMode ? adminEditCourse : editCourse;
+      const response = await saveCourse(courseId ?? "", formData);
       toast.success(response.data.message, {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
+      if (isAdminMode) {
+        navigate(coursesListPath);
+      }
     } catch (error: any) {
       toast.error(error.data.message, {
         position: toast.POSITION.BOTTOM_RIGHT,

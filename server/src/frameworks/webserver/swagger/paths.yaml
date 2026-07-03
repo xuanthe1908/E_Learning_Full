@@ -1,0 +1,101 @@
+paths:
+  /api/auth/student-login:
+    post:
+      tags: [Authentication]
+      summary: Student login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Login successful
+  /api/auth/forgot-password:
+    post:
+      tags: [Authentication]
+      summary: Request password reset email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, role]
+              properties:
+                email:
+                  type: string
+                  format: email
+                role:
+                  type: string
+                  enum: [student, instructor]
+      responses:
+        '200':
+          description: Reset email sent
+  /api/auth/reset-password:
+    post:
+      tags: [Authentication]
+      summary: Reset password with token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 8
+      responses:
+        '200':
+          description: Password updated
+  /api/courses/get-all-courses:
+    get:
+      tags: [Courses]
+      summary: List all courses
+      security: []
+      responses:
+        '200':
+          description: Course list
+  /api/courses/enroll-student/{courseId}:
+    post:
+      tags: [Courses]
+      summary: Enroll student in a course
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Enrollment successful
+  /api/students/get-all-students:
+    get:
+      tags: [Admin - Students]
+      summary: View learners (admin)
+      responses:
+        '200':
+          description: Student list
+  /api/admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Admin dashboard metrics
+      responses:
+        '200':
+          description: Dashboard data

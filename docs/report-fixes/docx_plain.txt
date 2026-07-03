@@ -1,0 +1,1535 @@
+
+VIETNAM NATIONAL UNIVERSITY, HANOI 
+INTERNATIONAL SCHOOL 
+ 
+GRADUATION PROJECT 
+ 
+ 
+ 
+ 
+PROJECT NAME:  
+DESIGN AND IMPLEMENTATION OF AN ONLINE COURSE MARKETPLACE
+
+ Student’s name: Trần Đức Mạnh
+
+
+
+
+
+
+
+
+
+Hanoi - Year 2026
+
+
+
+
+VIETNAM NATIONAL UNIVERSITY, HANOI
+ INTERNATIONAL SCHOOL 
+ 
+GRADUATION PROJECT 
+ 
+ 
+ 
+PROJECT NAME: 
+Design and Implementation of an Online Course Marketplace
+
+ 
+SUPERVISOR: TS Lê Duy Tiến
+STUDENT: Trần Đức Mạnh
+STUDENT ID: 21070858
+MAJOR: Informatics and Computer Engineering 
+ 
+
+
+
+
+
+Hanoi - Year 2026
+
+
+
+
+
+Pledge
+I – Tran Duc Manh – commit The project is my own research under the guidance of Dr. Le Duy Tien. The results stated are honest, my own work, not copied by any other work. All references including images, tables, figures, and citations—are clearly and fully sourced in the bibliography. I take full responsibility for even one copy that violates the school's statutes.
+					
+Hanoi, 2026
+Author 
+
+
+Tran Duc Manh
+
+
+
+
+
+
+
+
+
+
+
+
+Acknowledgments
+I would like to sincerely thank Dr. Le Duy Tien for his enthusiasm to guide me throughout the process of making the design project to achieve today's results!
+I would like to express my heartfelt gratitude to you for the invaluable guidance and support that you provided to us throughout the completion of the project. His consistency and depth of knowledge, coupled with your enthusiastic and dedicated spirit, helped me overcome challenges and develop skills comprehensively.
+I also want to convey my appreciation for your precious assistance and advice in editing and refining the project. Your constructive feedback and detailed comments have aided me in gaining a deeper understanding of the content and enhancing my abilities in evaluation and self-assessment.
+Additionally, I want to extend my thanks to the entire school, friends, family, and everyone who shared knowledge, opinions, and encouragement during the process of working on this project.
+The support from you and the surrounding community has been a significant source of motivation, contributing greatly to the successful completion of this project. I believe that the knowledge and skills acquired here will serve as a solid foundation for future development.
+.
+
+
+
+
+
+
+
+
+
+
+
+Table of Contents
+ TOC \o "1-3" \h \z \u Pledge	 PAGEREF _Toc202836461 \h 3
+Acknowledgments	 PAGEREF _Toc202836462 \h 4
+PROLOGUE	 PAGEREF _Toc202836463 \h 9
+Set a problem	 PAGEREF _Toc202836464 \h 9
+Objectives and scope of the topic	 PAGEREF _Toc202836465 \h 9
+Primary Objectives	 PAGEREF _Toc202836466 \h 9
+Secondary Objectives	 PAGEREF _Toc202836467 \h 9
+Scope	 PAGEREF _Toc202836468 \h 10
+Technical Scope	 PAGEREF _Toc202836469 \h 10
+Functional Scope	 PAGEREF _Toc202836470 \h 10
+Research Scope	 PAGEREF _Toc202836471 \h 10
+Solution- oriented	 PAGEREF _Toc202836472 \h 10
+1. FRONTEND	 PAGEREF _Toc202836473 \h 10
+2. BACKEND	 PAGEREF _Toc202836474 \h 11
+Project layout	 PAGEREF _Toc202836475 \h 13
+CHAPTER 1: INTRODUCTION	 PAGEREF _Toc202836476 \h 14
+1.	Potential Features	 PAGEREF _Toc202836477 \h 14
+2.	Architecture Recommendations	 PAGEREF _Toc202836478 \h 14
+3.	TypeScript Implementation Strategies	 PAGEREF _Toc202836479 \h 15
+4.	Integration and Deployment	 PAGEREF _Toc202836480 \h 15
+5.	Educational Impact and Future Directions	 PAGEREF _Toc202836481 \h 16
+6.	Conclusion	 PAGEREF _Toc202836482 \h 16
+CHAPTER 2: SYSTEM ANALYSIS AND DESIGN	 PAGEREF _Toc202836483 \h 17
+I.	Technologies used	 PAGEREF _Toc202836484 \h 17
+1.	Frond-end	 PAGEREF _Toc202836485 \h 17
+2.	Backend	 PAGEREF _Toc202836486 \h 23
+II.	Function overview	 PAGEREF _Toc202836487 \h 26
+1.	Overview use case diagram	 PAGEREF _Toc202836488 \h 26
+2.	Sequence Diagram	 PAGEREF _Toc202836489 \h 30
+CHAPTER 3: WEB DEVELOPMENT	 PAGEREF _Toc202836490 \h 43
+1.	System Requirement	 PAGEREF _Toc202836491 \h 43
+1.1.	FUNCTIONAL REQUIREMENT	 PAGEREF _Toc202836492 \h 43
+1.2.	NON-FUNCTIONAL REQUIREMENTS	 PAGEREF _Toc202836493 \h 44
+1.3. TECHNICAL REQUIREMENTS	 PAGEREF _Toc202836494 \h 45
+1.4. UI/UX REQUIREMENTS	 PAGEREF _Toc202836495 \h 46
+1.5. INTEGRATION REQUIREMENTS	 PAGEREF _Toc202836496 \h 47
+1.6. MAINTENANCE REQUIREMENTS	 PAGEREF _Toc202836497 \h 47
+1.7. CONSTRAINTS & ASSUMPTIONS	 PAGEREF _Toc202836498 \h 47
+2.	Database development	 PAGEREF _Toc202836499 \h 48
+API List:	 PAGEREF _Toc202836500 \h 51
+3.	Student interface:	 PAGEREF _Toc202836501 \h 55
+4. Teacher’s Interface:	 PAGEREF _Toc202836502 \h 64
+5. Admin Interface	 PAGEREF _Toc202836503 \h 66
+CONCLUSION	 PAGEREF _Toc202836504 \h 69
+REFERENCES	 PAGEREF _Toc202836505 \h 70
+
+
+
+
+
+
+
+
+
+
+
+LIST OF FIGURES 
+	 TOC \h \z \c "Figure" Figure 1. Typescript	 PAGEREF _Toc201182147 \h 17
+	Figure 2. TailwindCSS	 PAGEREF _Toc201182148 \h 19
+	Figure 3. ViteJS	 PAGEREF _Toc201182149 \h 21
+	Figure 4. MongoDB	 PAGEREF _Toc201182150 \h 23
+	Figure 5. Redis	 PAGEREF _Toc201182151 \h 25
+	Figure 6. Admin Use Case Diagram	 PAGEREF _Toc201182152 \h 26
+	Figure 7. Teacher Use Case Diagram	 PAGEREF _Toc201182153 \h 28
+	Figure 8. Student Use Case Diagram	 PAGEREF _Toc201182154 \h 29
+	Figure 9. User Registration Sequence Diagram	 PAGEREF _Toc201182155 \h 30
+	Figure 10. User Login Sequence Diagram	 PAGEREF _Toc201182156 \h 31
+	Figure 11. Course Creation Sequence Diagram	 PAGEREF _Toc201182157 \h 33
+	Figure 12. Payment Processing Sequence Diagram	 PAGEREF _Toc201182158 \h 34
+	Figure 13. Search Course Sequence Diagram	 PAGEREF _Toc201182159 \h 35
+	Figure 14. Course Enrollment Sequence Diagram	 PAGEREF _Toc201182160 \h 37
+	Figure 15. Content Management Sequence Diagram	 PAGEREF _Toc201182161 \h 38
+	Figure 16. User Management Sequence Diagram (Admin)	 PAGEREF _Toc201182162 \h 40
+	Figure 17. Password Reset Sequence Diagram	 PAGEREF _Toc201182163 \h 41
+	Figure 18. Database Entity–relationship model	 PAGEREF _Toc201182164 \h 50
+	Figure 19. Login API	 PAGEREF _Toc201182165 \h 51
+	Figure 20. Courses API	 PAGEREF _Toc201182166 \h 52
+	Figure 21. View Learners API	 PAGEREF _Toc201182167 \h 53
+	Figure 22. Content Moderation API	 PAGEREF _Toc201182168 \h 54
+	Figure 23. Student Home Page	 PAGEREF _Toc201182169 \h 55
+	Figure 24. Edit Profile Page	 PAGEREF _Toc201182170 \h 56
+	Figure 25. Student’s Course Page	 PAGEREF _Toc201182171 \h 57
+	Figure 26. Course Selection Page	 PAGEREF _Toc201182172 \h 57
+	Figure 27. Course Payment Page	 PAGEREF _Toc201182173 \h 58
+	Figure 28. Choose Payment Method	 PAGEREF _Toc201182174 \h 60
+	Figure 29. Payment Successful.	 PAGEREF _Toc201182175 \h 62
+	Figure 30. AI Assistant	 PAGEREF _Toc201182176 \h 63
+	Figure 31. Teacher's Home Page	 PAGEREF _Toc201182177 \h 64
+	Figure 32. Teacher's Course List	 PAGEREF _Toc201182178 \h 65
+	Figure 33. Add Course	 PAGEREF _Toc201182179 \h 66
+	Figure 34. Admin Home Page	 PAGEREF _Toc201182180 \h 67
+	Figure 35. Manage Student (Admin)	 PAGEREF _Toc201182181 \h 68
+	Figure 36. Manage Course (Admin)	 PAGEREF _Toc201182182 \h 68
+
+
+	LIST OF TABLE
+	 TOC \h \z \c "Table" Table 1. Admin Use Case Table	 PAGEREF _Toc201182183 \h 27
+	Table 2. Teacher Use Case Table	 PAGEREF _Toc201182184 \h 28
+	Table 3. Student Use Case Table	 PAGEREF _Toc201182185 \h 29
+	Table 4. User Registration Sequence Table	 PAGEREF _Toc201182186 \h 31
+	Table 5. User Login Sequence Table	 PAGEREF _Toc201182187 \h 32
+	Table 6. Course Creation Sequence Table	 PAGEREF _Toc201182188 \h 33
+	Table 8. Payment Processing Sequence	 PAGEREF _Toc201182189 \h 34
+	Table 9. Search Course Sequence Table	 PAGEREF _Toc201182190 \h 36
+	Table 10. Course Enrollment Sequence Table	 PAGEREF _Toc201182191 \h 37
+	Table 11. Content Management Sequence Table	 PAGEREF _Toc201182192 \h 39
+	Table 12. User Management Sequence Table	 PAGEREF _Toc201182193 \h 40
+	Table 13. Password Reset Sequence Table	 PAGEREF _Toc201182194 \h 42
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROLOGUE
+Set a problem
+In an era defined by digital transformation, education stands at a critical crossroads. The traditional boundaries of learning have dissolved, replaced by interconnected virtual environments that transcend physical limitations of time and space. My journey into developing an online course marketplace emerges from this evolving educational landscape—one where technology and pedagogy intertwine to create new possibilities for knowledge acquisition and skill development.
+This thesis represents more than an academic requirement; it embodies my vision for accessible, engaging, and effective online education. As we navigate a post-pandemic world where remote learning has shifted from contingency to mainstream practice, the need for thoughtfully designed e-learning experiences has never been more apparent. The digital divide continues to challenge educational equity, while advances in educational technology offer unprecedented opportunities to personalize learning pathways.
+The following pages document the technical architecture and user experience design of the proposed online learning platform. The work is a combination of computer science, education and user experience design—a multidisciplinary approach that reflects the complex nature of modern educational technology.
+As we continue to reimagine education for the digital age, I offer this contribution with the hope that it advances our collective understanding of effective e-learning design and implementation. The future of education is being written in code and connectivity, and I am honored to add my voice to this transformative conversation.
+Objectives and scope of the topic
+Primary Objectives
+Research and analyze current online course marketplaces to identify best practices and areas for improvement
+Design and develop a user-centered online course marketplace web application that enhances the learning experience through intuitive navigation and engaging interface
+Implement core functionalities including course management, user authentication, content delivery, and progress tracking systems
+Secondary Objectives
+Investigate adaptive learning technologies that can personalize educational content based on individual learning patterns
+Develop a responsive design that ensures accessibility across various devices and screen sizes
+Document the development process and technical decisions to provide insights for similar projects
+Contribute to academic understanding of e-learning design principles and user experience in educational technology
+Scope
+Technical Scope
+	Front-end development using React, React Native, Nx React and relevant frameworks
+Back-end implementation with Typescript and Javascript for user management and content storage
+Security measures for protecting user data and educational content
+Cross-browser compatibility and mobile responsiveness
+Functional Scope
+User registration and profile management system 
+Course creation, enrollment, and management functionalities
+Assessment tools including quizzes, assignments, and progress tracking
+Administrative dashboard with analytics and reporting capabilities
+Research Scope
+Literature review on e-learning theories and best practices
+User research through surveys and interviews to identify requirements
+Usability testing to evaluate the platform's effectiveness
+Solution- oriented
+System Architecture
+The system is clearly divided into two main components with detailed implementation specifications:
+1. FRONTEND
+Technologies Stack
+Core Technologies: HTML5, TailwindCSS, JavaScript (ES6+), React.js (v18+)
+State Management: Redux Toolkit with RTK Query
+Build Tools: Vite.js for faster development and optimized builds
+TypeScript: For component props typing and shared type definitions with backend
+Implementation Details
+     Component Architecture: 
+Component Separation: Clear distinction between UI, feature, and layout components
+TypeScript Integration: Strong typing throughout components
+Reusable UI Components: Well-designed Button, Alert, Spinner components
+Hook Integration: Good use of Redux hooks and custom hooks
+Responsive Design: Tailwind Classes for Mobile-Friendly Design
+TailwindCSS Implementation: 
+	Custom configuration extending the base theme
+	Defined color palette, typography, spacing, and breakpoints
+	Dark mode support using Tailwind's dark mode strategy
+	Responsive variants for all screen sizes (mobile-first approach)
+Application Structure: 
+			Feature-based folder organization
+			Protected route system for authenticated sections
+			Path-based code splitting for optimized loading
+			Public section (courses, grades) vs private sections (dashboards)
+Authentication & Security: 
+			JWT token management with refresh token rotation
+			Role-based access control (buyer vs seller permissions)
+			Session timeout handling
+2. BACKEND
+Technology Stack
+	Core Technologies: TypeScript 5.0+, Node.js 18+, Express.js 4.18+
+	Database: MongoDB
+	API Documentation: Swagger/OpenAPI 3.0
+	Testing: Swagger/ CURL
+Implementation Details
+		Project Structure: 
+			Domain-driven design approach
+			Modular architecture with feature-based organization
+			Clear separation between controllers, services, repositories, and entities
+			Environment-specific configuration management
+		API Architecture: 
+			RESTful API design with proper resource naming
+			Versioned API endpoints (e.g., /api/v1/*)
+			Standard HTTP methods and status codes
+			Query parameter support for filtering, sorting, and pagination
+		Database Design: 
+			Appropriate programming strategies for optimal query performanceForeign key constraints for data integrity
+			Transaction management for multi-step operations
+			Detailed entity relationships (User,  Courses, Payment, etc.)
+		Authentication & Authorization: 
+			JWT implementation with asymmetric key encryption
+			Role-based access control system (RBAC)
+			Rate limiting to prevent abuse
+		Data Validation & Error Handling: 
+			Request body validation using class-validator
+			Standardized error response format
+			Detailed logging for troubleshooting
+			Different error types (ValidationError, AuthError, etc.)
+		Performance Optimization: 
+			Response caching strategy with MongoDB
+			Query optimization with proper indexing
+			Connection pooling for database access
+			Streaming for large data transfers
+		Logging & Monitoring: 
+			Log levels based on environment
+			Request/response logging middleware
+			Error tracking and reporting
+			Performance metrics collection
+		Testing Strategy: 
+			Unit tests for services and utilities
+			Integration tests for API endpoints
+			Mock repositories for database isolation
+			Test coverage reporting
+Project layout
+Chapter 1: Introduction
+Chapter 2: System analysis and design
+Chapter 3: Web development
+
+
+
+
+
+
+
+
+
+
+
+CHAPTER 1: INTRODUCTION
+In today's rapidly evolving digital landscape, online course marketplaces have become indispensable tools for educational innovation. My TypeScript-based online course marketplace represents a strategic fusion of modern web development and educational technology. TypeScript offers crucial advantages through its static typing system, catching errors during development rather than at runtime—essential for applications where reliability directly impacts learning experiences. The platform addresses several critical educational needs: it promotes accessibility by transcending geographical limitations; enables interactive learning through dynamic content and real-time feedback; facilitates personalized learning pathways through adaptive algorithms; ensures scalability to handle varying user loads while maintaining performance; and leverages data analytics to provide instructors with valuable insights into learner engagement and content effectiveness. This graduation project demonstrates not only technical proficiency but also an understanding of educational challenges in the digital age, potentially transforming how knowledge is shared and accessed within academic communities and beyond.
+	Potential Features
+My TypeScript-based online course marketplace incorporates a rich array of features designed to enhance the educational experience. At its core, the platform offers robust course management capabilities, allowing instructors to create, organize, and deliver varied content types including videos, readings, and interactive elements—all benefiting from TypeScript's type safety for consistent data handling. Student engagement is fostered through personalized learning paths that adapt based on performance metrics and learning preferences, implementing TypeScript interfaces to ensure standardized progress tracking. Interactive learning tools include theory lessons, exercises and quizzes, and AI interactions. Administrative features benefit from TypeScript's type checking to ensure data integrity across user management, enrollment systems, and analytics dashboards that provide actionable insights into learning patterns. Mobile responsiveness and accessibility compliance round out the feature set, creating a comprehensive learning environment that reflects both technical proficiency and an understanding of modern educational needs.
+Architecture Recommendations
+The online course marketplace architecture employs a modern, scalable approach optimized for educational applications. The frontend implements a component-based structure using React with TypeScript, ensuring type safety across the UI layer while enabling responsive design that adapts seamlessly to various devices. State management leverages TypeScript's union types and interfaces to maintain predictable application state with Redux or Context API. For the backend, I've adopted a microservices architecture where discrete services handle specific functionalities like authentication, course management, and assessment processing—each benefiting from TypeScript's strong typing for API contracts. Data persistence utilizes a hybrid approach with relational databases for structured user and course data, document stores for unstructured learning materials, and caching mechanisms for performance optimization. The communication layer employs RESTful APIs with comprehensive TypeScript interfaces defining request and response types, ensuring reliable data exchange between frontend and backend components. Security is implemented through JWT-based authentication, role-based access control, and data encryption—all enhanced by TypeScript's ability to enforce security patterns at compile time. 
+TypeScript Implementation Strategies
+The TypeScript implementation strategy centers on leveraging the language's robust type system to enhance code quality and developer productivity. I start with a comprehensive type definition layer that models the educational domain—creating interfaces for courses, lessons, assessments, and user profiles with precise property typing to ensure data consistency throughout the application. The implementation employs generics extensively to create reusable components like paginated lists, form handlers, and data fetching utilities that work across different entity types while maintaining type safety. For API communication, I define explicit request and response interfaces using TypeScript's utility types, enabling compile-time validation before data leaves or enters the application. Error handling benefits from TypeScript's union types to represent different error states with associated data. Code organization follows a feature-based modular approach with clear separation of concerns, where shared types are centralized in a dedicated types directory. This comprehensive TypeScript strategy ensures a maintainable codebase that can evolve alongside educational requirements while minimizing runtime errors that could disrupt the learning experience.
+Integration and Deployment
+The integration strategy for the online course marketplace focuses on interoperability with existing educational ecosystems. The platform supports data exchange through standardized formats, with TypeScript interfaces ensuring consistency during import and export operations. The platform is containerized using MongoDB, with type-safe configuration management across different environments, with TypeScript helping to ensure that logging and metrics collection are consistent and reliable. This comprehensive approach to integration and deployment ensures that the online course marketplace can operate effectively within broader educational technology ecosystems while maintaining the reliability and performance necessary for effective learning experiences.
+Educational Impact and Future Directions
+Beyond technical considerations, this TypeScript-based online course marketplace has significant potential to transform educational experiences. The combination of type safety and flexible educational features enables instructors to focus on pedagogical innovation rather than worrying about system reliability. Students benefit from a consistent, personalized learning environment that adapts to their needs while providing immediate feedback—strengthening the learning process through continuous engagement. As educational technology continues to evolve, the platform's TypeScript foundation provides adaptability to incorporate emerging trends such as AI-powered tutoring, advanced learning analytics, and immersive educational experiences. Future development could expand the platform's capabilities to include machine learning models for predicting student success, blockchain-based credential verification, or extended reality components for experiential learning—all made more reliable through TypeScript's strong typing system. The platform demonstrates how thoughtful technical choices can enhance educational outcomes, creating a foundation for continuous improvement in how knowledge is shared, accessed, and applied.
+Conclusion
+This comprehensive approach to developing a TypeScript-based online course marketplace represents a significant contribution to educational technology. By leveraging TypeScript's powerful type system throughout the application—from frontend components to backend services and API contracts—the platform achieves a level of reliability and maintainability crucial for educational applications. The thoughtful feature set addresses core needs in modern education, while the scalable architecture ensures the platform can grow alongside educational demands. This graduation project exemplifies how modern web development practices can be applied to create meaningful solutions that enhance learning experiences. As education continues its digital transformation, platforms like this will play an increasingly important role in making knowledge more accessible, engaging, and effective for diverse learners worldwide.
+CHAPTER 2: SYSTEM ANALYSIS AND DESIGN
+Technologies used
+Frond-end
+The Front-end of my Online course marketplace web application is a modern React application built entirely in Typescript, applying basic to advance techniques and best practices in web application development. The architecture is designed to support multiple user roles (administrators, teachers and students) with separate interfaces and functions for each group. In addition, the User Interface is enhanced when using TailwindCSS thanks to its high customizability and optimized performance. This CSS framework allows for rapid development through utility classes that help design responsively for many different devices. The system uses libraries such as React Query for state management and API interaction, Redux for global state management, and React Router for smooth navigation between pages. The front-end architecture is organized in a component-based model, with components that are small, highly reusable, and easy to maintain. Custom hooks are developed to handle complex logic such as user authentication, authorization, and online learning session management. To enhance the learning experience, the system integrates interactive features such as real-time chat, bulletin boards, and intuitive learning progress tracking tools.
+ TypeScript:
+
+Figure  SEQ Figure \* ARABIC 1. Typescript
+TypeScript is a project source code developed by Microsoft, it can be considered as an upgrade of Javascript because the version adds static typing options and class-driven objects which are not present in Javascript. TypeScript can be used to develop applications that run on the client side (Angular2) and server side (NodeJS) [1]. 
+Advantages of TypeScript
+TypeScript provides significant benefits for modern web development through its static type checking system, which catches errors during development rather than runtime, dramatically reducing debugging time and preventing production bugs. The enhanced IDE support offers powerful features like intelligent auto-completion, real-time error highlighting, and seamless code navigation, creating a more productive development experience.
+The language serves as self-documenting code through type definitions that clearly communicate data structures and component interactions, making it invaluable for team collaboration and code maintenance. During refactoring, TypeScript's comprehensive type checking acts as a safety net, immediately flagging compatibility issues before they become runtime errors—especially crucial for large applications.
+TypeScript enables developers to use modern JavaScript features while maintaining compatibility across different runtime environments through configurable transpilation. The language extends JavaScript with robust object-oriented programming constructs including interfaces, generics and access modifiers, facilitating cleaner architecture and better code organization for complex applications like online course marketplaces.
+The growing ecosystem further strengthens TypeScript's value proposition, with thousands of type definitions available through DefinitelyTyped and increasing native TypeScript support from major libraries and frameworks, ensuring seamless integration with existing tools and reducing development friction.
+Disadvantages of TypeScript
+TypeScript presents several challenges despite its benefits. The primary obstacle is the learning curve, as developers must master new concepts like interfaces, generics, and type guards, temporarily slowing development during adoption. The additional build step adds complexity, requiring transpilation and build tool configuration while increasing compilation times. Writing comprehensive type definitions creates ongoing overhead, especially for complex objects or libraries lacking proper types. TypeScript can provide false security since type assertions can bypass checking and runtime errors remain possible at code boundaries. Integration with existing JavaScript libraries often requires creating separate type declarations, adding maintenance burden. Initial project setup involves more complexity than JavaScript, requiring configuration of compilers, build tools, and testing frameworks. Advanced features can also increase bundle sizes if not properly optimized. However, for complex applications like online course marketplaces, the long-term benefits of improved maintainability and fewer runtime errors typically justify the initial investment costs.
+ TailwindCSS
+
+Figure  SEQ Figure \* ARABIC 2. TailwindCSS
+Nowadays, when creating a new website in a short period of time or with a small development team, most people tend to use Bootstrap Framework to help speed up the development process. Bootstrap’s ease of use, rich documentation, and many predefined CSS components are the reasons why Bootstrap is so popular. However, as the project gets bigger and more users start using it, developer performance and page load concerns arise. While using Bootstrap, it is likely that all the available utility classes will be used, leading to a significant increase in CSS as well as unused components. One solution is to use Tailwind CSS Framework.
+Tailwind is a CSS Framework for Rapid UI Development. When it comes to CSS Frameworks, the first things that come to mind are Bootstrap, Material Design or Bulma. However, although Tailwind is considered a CSS Framework, it does not follow the same philosophy as other CSS Frameworks. Tailwind is primarily a widget framework or rather a widget package. Tailwind does not provide a default theme or any predefined UI components. 
+Tailwind provides tools for rapid development while allowing the developer to maintain. While there is no limit to the imagination with Tailwind, the design is structured in such a way that the developer can create a self-imposed rule to avoid increasing the size of CSS or repeating properties.
+Advantage of TailwindCSS:
+Tailwind CSS provides exceptional flexibility through its utility-first approach, offering granular control over design elements without fighting against opinionated framework styles. This methodology accelerates development by eliminating custom CSS writing, allowing developers to rapidly prototype and iterate by applying utility classes directly in HTML without context-switching between files.
+The framework produces highly optimized production builds through PurgeCSS integration, automatically removing unused utilities to create remarkably small file sizes that improve load times and application performance—crucial for online course marketplaces where performance impacts user experience. Tailwind enforces consistent design systems through configurable design tokens controlling colors, spacing, and typography, preventing inconsistent UI elements and ensuring visual harmony across complex multi-role applications serving administrators, teachers, and students.
+Responsive design becomes straightforward with Tailwind's intuitive breakpoint system, using prefix-based utilities to specify different styles across screen sizes without complex media queries, ensuring optimal experiences across all devices. The component extraction pattern encourages thoughtful reusability, allowing developers to start with utilities and extract components as patterns emerge, leading to organic component library evolution based on actual needs rather than assumptions. The growing ecosystem provides substantial advantages through numerous plugins, comprehensive documentation, and strong community support that accelerates problem-solving for complex development projects.
+Disadvantage of TailwindCSS: 
+Tailwind CSS presents several challenges despite its benefits. The steep learning curve requires developers to memorize hundreds of utility classes, temporarily slowing productivity and potentially delaying team onboarding for e-learning projects. Many developers criticize Tailwind's approach of mixing presentation logic directly into HTML markup, arguing this violates separation of concerns principles and creates maintenance challenges in larger applications.
+Tailwind projects often suffer from verbose HTML markup due to accumulated utility classes, making templates harder to read and maintain, especially for complex components. This density can impede code reviews and increase cognitive load when understanding component structures. Communication with design teams becomes challenging since designers think in component-level terms rather than individual utility properties, requiring additional documentation to bridge this conceptual gap.
+Development environments include the entire utility library, resulting in large CSS files that can slow browser rendering and developer tools, particularly impacting less powerful machines as applications grow in complexity. Customizing Tailwind beyond defaults requires additional setup and configuration knowledge, potentially presenting challenges when implementing specialized e-learning features.
+Adopting Tailwind in existing projects presents migration challenges, as it represents a fundamentally different styling approach than traditional CSS methodologies. Incremental introduction requires careful planning to prevent style conflicts and maintain consistency. For university students developing online course marketplaces, while Tailwind offers compelling advantages in development speed and design consistency, the learning curve and maintenance challenges should be carefully considered, especially for team projects with varying experience levels..
+ViteJS
+
+
+Figure  SEQ Figure \* ARABIC 3. ViteJS
+Vite is a modern web application development and building tool, created by Evan You, the developer of Vue.js. Vite's goal is to solve the problems of speed, performance, and programming experience when developing web applications with React, Vue, and many other frameworks. 
+Meanwhile, React is a popular JavaScript library for building powerful and flexible user interfaces. When combining Vite and React (Vite React), you can take advantage of both technologies to create fast, smooth, and easily maintainable applications.
+Advantages of Vite.js:
+Vite.js delivers exceptional development speed through its innovative approach to module bundling, leveraging native ES modules to serve files on-demand rather than processing entire applications upfront. This architecture enables near-instantaneous server start times and lightning-fast hot module replacement (HMR), dramatically improving development experience for large applications like online course marketplaces.
+The intelligent HMR system precisely updates only affected modules while preserving application state, allowing developers to see changes immediately without losing context or requiring full page reloads. This responsive feedback loop accelerates UI development and feature testing across complex interfaces. Vite provides seamless TypeScript integration out-of-the-box through esbuild, delivering substantially faster transpilation than traditional compilers without requiring complex configuration [2]. 
+The build optimization process generates production-ready assets with impressive efficiency through modern code splitting, tree shaking, and asset optimization, creating highly optimized bundles that improve load times and runtime performance—crucial for e-learning applications where performance impacts user experience and learning effectiveness.
+Vite offers exceptional flexibility through its plugin ecosystem and framework-agnostic architecture, providing first-class support for React, Vue, and Svelte while remaining independent of specific UI libraries. The simplified configuration experience features sensible defaults requiring minimal adjustment, with a clear API for customization when needed. Built-in features include CSS preprocessing, static asset handling, and environment variable management, streamlining the development toolchain and allowing student developers to focus on application features rather than build tool maintenance.
+Disadvantages of Vite.js:
+Despite its strengths, Vite.js presents several challenges for development teams. The framework's relative newness means the ecosystem is still maturing, with some specialized plugins and integrations being unavailable or less robust than established bundlers like Webpack. This limitation might impact integration with specialized e-learning tools or libraries [3]
+Vite's development server relies heavily on native ES modules, creating compatibility challenges with older browsers during development. While production builds resolve most issues, testing in environments without modern JavaScript support may require additional configuration, affecting workflows when older browser support is required.
+Migration from existing build tools presents complexities, as configurations, plugins, and optimizations may not directly translate between bundlers, requiring significant refactoring. For established online course marketplaces with complex build processes, this overhead could temporarily impact development velocity. Documentation gaps regarding advanced configurations and edge cases can increase problem-solving time when implementing specialized requirements.
+Vite's opinionated defaults occasionally conflict with specific project requirements or established patterns. While the configuration API allows overrides, some architectural decisions may require workarounds. For large-scale monorepo setups or non-standard project structures, Vite's conventions may prove restrictive, potentially impacting complex e-learning ecosystems with multiple interconnected applications.
+Integration challenges arise with legacy code or older libraries relying on CommonJS modules or global dependencies. While compatibility plugins exist, these sometimes introduce complexity or performance penalties. For university students developing online course marketplaces, Vite offers compelling advantages through development speed and simplified workflows, but ecosystem immaturity and compatibility challenges should be considered for projects with specific browser support or integration requirements.
+Backend
+MongoDB
+
+Figure  SEQ Figure \* ARABIC 4. MongoDB
+MongoDB is a NoSQL document-oriented database management system designed to store, retrieve, and manage document-based data. Unlike traditional relational databases that use tables and rows, MongoDB stores data as BSON (Binary JSON) documents within collections. This allows MongoDB to handle complex and flexible data structures naturally.
+MongoDB was developed by 10gen (now MongoDB Inc.) in 2007 and has become one of the world's most popular NoSQL databases. The name "MongoDB" derives from the word "humongous," reflecting its capability to handle massive volumes of data [4]. 
+Advantage of MongoDB:
+MongoDB is a highly popular NoSQL database known for its flexibility, scalability, and performance. One of its primary advantages is its schema-less design, which allows developers to store documents with varying structures. This makes MongoDB ideal for applications where requirements evolve over time. Its document-based storage format (BSON) is similar to JSON, making it intuitive and easy to work with, especially for developers familiar with JavaScript and modern web technologies. MongoDB also offers high performance through fast read and write operations, and its ability to index data ensures low latency access.
+Another significant benefit of MongoDB is its support for horizontal scalability through sharding, which enables the system to handle large volumes of data and traffic by distributing data across multiple servers. It also ensures high availability via replica sets, allowing automatic failover and redundancy to minimize downtime. The database supports a powerful query language that includes features like filtering, aggregation, full-text search, and geospatial queries, along with robust indexing capabilities.
+MongoDB is well-suited for modern applications such as real-time analytics, content management systems, mobile apps, and IoT solutions. Additionally, it includes built-in security features such as authentication, role-based access control, and encryption options, which help protect sensitive data. Overall, MongoDB provides a flexible, performant, and developer-friendly platform for building scalable and reliable applications.
+Disadvantage of MongoDB: 
+Despite its many strengths, MongoDB also has some limitations that may make it less suitable for certain applications. One major drawback is the lack of support for complex joins and transactions in earlier versions, which can make it harder to maintain data integrity in systems that rely heavily on relational data. Although newer versions have added multi-document transaction support, it still doesn't match the robustness and maturity of traditional relational databases like PostgreSQL or MySQL. Additionally, because MongoDB uses a flexible schema, it can lead to inconsistent data if not carefully managed, especially in large teams or projects without strict data validation. Storage can also be less efficient, as documents often store redundant data and the BSON format can consume more space than equivalent relational tables. Lastly, while MongoDB provides great scalability, managing sharded clusters and replicas can add complexity and require more operational effort. 
+Redis
+Redis (Remote Dictionary Server) is an open source data store that operates entirely in-memory. Developed by Salvatore Sanfilippo in 2009, Redis has become one of the most popular NoSQL databases today, featuring extremely fast speeds and low latency, making it a great choice for many real-time applications and scenarios [4].
+Figure  SEQ Figure \* ARABIC 5. Redis
+Advantages of Redis:
+Redis is extremely fast since it's an in-memory database - data access happens at RAM speed rather than disk speed. This makes it perfect for caching, session storage, and real-time applications where millisecond response times matter [5]. 
+It supports rich data structures beyond simple key-value pairs, including lists, sets, sorted sets, hashes, and streams. This flexibility lets you model complex data relationships efficiently. Redis also provides built-in persistence options, so you can save your in-memory data to disk periodically or log every write operation.
+The pub/sub messaging feature makes Redis useful for real-time notifications and chat applications. It handles high concurrency well and can process hundreds of thousands of operations per second. Redis also supports clustering and replication for scaling across multiple servers.
+Atomic operations ensure data consistency even with concurrent access, and features like expiration policies automatically clean up old data, making it ideal for caching scenarios.
+Disadvantages of Redis:
+The biggest limitation is that your dataset must fit in RAM, which can be expensive for large amounts of data. If your server crashes and you haven't configured persistence properly, you could lose data since everything is stored in memory.
+Redis has limited query capabilities compared to SQL databases - you can't perform complex joins or analytical queries. It's designed for simple operations on individual keys or data structures.
+Memory management can be tricky - Redis doesn't automatically free memory when you delete keys, and memory fragmentation can become an issue over time. The single-threaded nature (for data operations) means CPU-intensive operations can block other requests [6].
+Persistence options come with trade-offs: frequent snapshots impact performance, while append-only files can grow very large. Redis also lacks the ACID properties that traditional databases provide, so it's not suitable as a primary database for complex transactional applications.
+Function overview
+Overview use case diagram
+ Admin Use Case Diagram
+
+Figure  SEQ Figure \* ARABIC 6. Admin Use Case Diagram
+This is a Use Case Diagram that illustrates the functions that an Admin can perform in my Online course marketplace system. This diagram clearly shows the role and permissions of the Admin in the system, demonstrating that the Admin has full authority to manage users, approve requests, and monitor platform activities. This is an important part of designing the authorization system for the Online course marketplace, ensuring that the Admin can effectively control and manage the entire system.
+Table  SEQ Table \* ARABIC 1. Admin Use Case Table
+Use Case ID
+
+Use Case Name
+
+Description
+
+Purpose
+
+Category
+UC-01
+Login
+Admin authenticates to access system
+Secure access to administrative functions
+
+Authentication
+UC-02
+View Dashboard
+Admin sees system overview and metricscourses, sets policies
+Monitor overall platform health and activity
+Monitoring
+UC-03
+Manage Instructors
+Admin controls instructor accounts and permissions
+Maintain quality of teaching staff
+User Management
+UC-04
+Block/
+Unblock Users
+Admin restricts or restores user access
+Enforce platform rules and safety
+User Management
+UC-05
+Approve Requests
+Admin reviews and approves pending applications
+Quality control before content goes live
+Content Control
+UC-06
+View Analytics
+Admin accesses detailed system reports
+Make data-driven decisions for platform improvement
+Analytics
+ Teacher Use Case Diagram
+
+
+
+
+Figure  SEQ Figure \* ARABIC 7. Teacher Use Case Diagram
+This is a Use Case Diagram that illustrates the functions that a Teacher (Instructor) can perform in my Online course marketplace system. This diagram demonstrates the comprehensive role of instructors in the Online course marketplace, showing they have full control over their educational content and student management. The Teacher role focuses on content creation, course management, and monitoring student progress, which are essential functions for delivering quality online education.
+Table  SEQ Table \* ARABIC 2. Teacher Use Case Table
+Use Case ID
+
+Use Case Name
+
+Description
+			
+			Purpose
+
+Category
+UC-01
+Login/
+Register
+Teacher logs in or creates account
+Access system and authenticate identity
+Authentication
+UC-02
+Create Course
+Teacher creates new course
+Build educational content for students
+Content 
+UC-03
+Manage Lessons
+Teacher adds/edits lessons
+Organize course materials and structure
+Content 
+UC-04
+View Students
+Teacher sees student list
+Monitor student enrollment and progress
+Management
+UC-05
+Update Profile
+Teacher edits profile info
+Maintain professional information
+Profile
+UC-06
+View Analytics
+Teacher views list of students enrolled in their courses
+Track performance and improve courses
+Analytics
+ Student Use Case Diagram
+
+Figure  SEQ Figure \* ARABIC 8. Student Use Case Diagram
+This is a Use Case Diagram that illustrates the functions that a Student can perform in my Online course marketplace system. This diagram showcases the student-centric learning experience in the Online course marketplace, emphasizing the learner's journey from discovery to completion. The Student role focuses on content consumption, learning engagement, and accessing support features.
+Table  SEQ Table \* ARABIC 3. Student Use Case Table
+Use Case ID
+
+Use Case Name
+
+Description
+
+Purpose
+
+Category
+UC-01
+Login/
+Register
+Student logs in or creates new account
+Access learning platform and personal dashboard
+Authentication
+UC-02
+Browse Courses
+Student explores available courses and content
+Discover learning opportunities and course details
+Discovery
+UC-03
+Enroll in Course
+Student registers for selected courses
+Gain access to course materials and community
+Enrollment
+UC-04
+Watch Lessons
+Student views video lectures and materials
+Learn course content and acquire knowledge
+Learning
+UC-05
+Take Quizzes
+Student completes assessments and tests
+Validate understanding and track progress
+Assessment
+UC-06
+Make Payment
+Student pays for premium courses
+Purchase access to paid educational content
+Commerce
+
+Sequence Diagram
+User Registration Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 9. User Registration Sequence Diagram
+This is a Sequence Diagram that illustrates the user registration process flow in my Online course marketplace system which include participants:
+User - The person registering for an account
+API - The backend API server (Express.js)
+Database - MongoDB database
+Auth Service - Authentication service for security operations
+
+Table  SEQ Table \* ARABIC 4. User Registration Sequence Table
+Step
+From
+To
+Action
+Description
+1
+User
+API
+Send registration request
+User submits registration form with personal details
+2
+API
+Database
+Check if email exists
+API validates email uniqueness in database
+3
+Database
+API
+Return validation result
+Database confirms email availability
+4
+API
+Auth Service
+Request password encryption
+API sends password for secure hashing
+5
+Auth Service
+API
+Return encrypted password
+Service returns securely hashed password
+6
+API
+Database
+Save user information
+API stores complete user profile in database
+7
+API
+Auth Service
+Generate access token
+API requests authentication token creation
+8
+API
+User
+Success notification
+API returns success message with access token
+
+User Login Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 10. User Login Sequence Diagram
+This is a Sequence Diagram that illustrates the user login authentication process flow in my Online course marketplace system which include participants:
+User - The person attempting to log in
+API - The backend API server (Express.js)
+Database - MongoDB database
+Auth Service - Authentication service for security operations
+Table  SEQ Table \* ARABIC 5. User Login Sequence Table
+Step
+From
+To
+Action
+Description
+1
+User
+API
+Send login request
+User submits email and password credentials
+2
+API
+Database
+Find user by email
+API queries database for user account
+3
+Database
+API
+Return user data
+Database returns user profile and hashed password
+4
+API
+Auth Service
+Verify password
+API sends credentials for password validation
+5
+Auth Service
+API
+Password validation result
+Service confirms password authenticity
+6
+API
+Auth Service
+Generate authentication tokens
+API requests access and refresh token creation
+7
+API
+User
+Login successful response
+API returns tokens for authenticated session
+This is a Sequence Diagram that illustrates the course creation process flow in my Online course marketplace system which include participants:
+Instructor - The teacher creating a new course
+API - The backend API server (Express.js)
+Database - MongoDB database for data persistence
+
+
+
+Course Creation Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 11. Course Creation Sequence Diagram
+This sequence diagram represents a sophisticated course creation workflow with advanced file handling capabilities. This diagram demonstrates an enterprise-grade content management system that handles complex multimedia course creation with robust file management, security, and performance optimization.
+Table  SEQ Table \* ARABIC 6. Course Creation Sequence Table
+Step
+From
+To
+Action
+Description
+1
+Instructor
+API
+Create course
+Instructor submits initial course details and metadata
+2
+API
+Database
+Save course data
+API stores basic course information in database
+3
+Instructor
+API
+Upload files
+Instructor uploads media files (videos, images, documents)
+4
+API
+Database
+Store files
+API saves uploaded files to storage system
+5
+Database
+API
+File URLs
+Database returns accessible URLs for stored files
+6
+API
+Database
+Update course
+API updates course record with file references
+7
+API
+Instructor
+Course created
+API confirms successful course creation to instructor
+
+Payment Processing Sequence Diagram
+
+This is a Sequence Diagram that illustrates the VNPay payment and course enrollment process flow in my Online course marketplace system which include participants:
+Student - The learner purchasing a course
+API - The backend API server (Express.js)
+VNPay - Vietnamese payment gateway service
+Database - MongoDB database for enrollment tracking
+
+Figure  SEQ Figure \* ARABIC 12. Payment Processing Sequence Diagram
+Table  SEQ Table \* ARABIC 7. Payment Processing Sequence
+Step
+From
+To
+Action
+Description
+1
+Student
+API
+Create payment
+Student initiates course enrollment with course ID
+2
+API
+Database
+Get course price
+API retrieves course pricing information
+3
+API
+VNPay
+Generate QR payment
+API requests VNPay QR code for course payment
+4
+VNPay
+API
+Return QR code
+VNPay returns payment QR code and transaction ID
+5
+API
+Student
+Show QR code
+Display QR code for mobile payment scanning
+6
+Student
+VNPay
+Scan QR & Pay
+Student scans QR code and completes payment
+7
+VNPay
+API
+Payment confirmed
+VNPay webhook confirms successful payment
+8
+API
+Database
+Enroll student in course
+Add student to course enrollment records
+9
+API
+Student
+Enrollment successful
+Confirm successful course enrollment
+
+Search Course Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 13. Search Course Sequence Diagram
+Table  SEQ Table \* ARABIC 8. Search Course Sequence Table
+Step
+From
+To
+Action
+Description
+1
+User
+Cache Middleware
+Search courses
+User submits search query with text and filters
+2
+Cache Middleware
+Redis Cache
+Check cached results
+Middleware checks for existing cached search results
+3
+Redis Cache
+Cache Middleware
+No cached data
+Cache miss - no results found for this query
+4
+Cache Middleware
+API
+Process search
+Forward search request to API for processing
+5
+API
+-
+Parse filters
+API validates and processes search parameters
+6
+API
+Database
+MongoDB text search
+Execute full-text search with filters on course collection
+7
+Database
+API
+Course results
+Return matching courses with metadata
+8
+API
+Cloud Service
+Get thumbnail URLs
+Request accessible URLs for course thumbnails
+9
+Cloud Service
+API
+Return URLs
+Provide URLs for course media assets
+10
+API
+Redis Cache
+Cache results
+Store search results in Redis for future requests
+11
+Cache Middleware
+User
+Search results
+Return formatted search results to user
+
+Course Enrollment Sequence Diagram
+
+This is a Sequence Diagram that illustrates the comprehensive course search and caching architecture in your Online course marketplace system which include participants:
+User - The student searching for courses
+Cache Middleware - Redis caching layer interceptor
+API - The backend API server (Express.js)
+Redis Cache - In-memory data store for performance
+Database - MongoDB for course data
+Cloud Service - AWS S3/CloudFront for media assets
+
+Figure  SEQ Figure \* ARABIC 14. Course Enrollment Sequence Diagram
+Table  SEQ Table \* ARABIC 9. Course Enrollment Sequence Table
+Step
+From
+To
+Action
+Description
+1
+Student
+JWT Auth Check
+Enroll in course
+Student initiates enrollment with course ID and payment info
+2
+JWT Auth Check
+-
+Verify student
+System validates JWT token and student status
+3
+JWT Auth Check
+API
+Authorization confirmed
+Student cleared to proceed with enrollment
+4
+API
+Course Database
+Get course details
+Retrieve course information, pricing, and availability
+5
+Course Database
+API
+Return course data
+Course details including isPaid status and price
+6
+API
+-
+Check payment requirement
+API determines if payment processing is needed
+7
+API
+Payment Database
+Save payment record
+Store payment transaction details
+8
+API
+Course Database
+Enroll student
+Add student to course enrollment list
+9
+Course Database
+API
+Update course enrollment
+Increment enrollment count and update records
+10
+API
+Student
+Enrollment successful
+Confirm successful course enrollment
+
+Content Management Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 15. Content Management Sequence Diagram
+This is a Sequence Diagram that illustrates the complete course and lesson content management lifecycle in your Online course marketplace system which include participants:
+Teacher - The instructor creating and managing educational content
+API - The backend API server (Express.js)
+Database - MongoDB for course and lesson data
+Media Storage - AWS S3/CloudFront for multimedia assets
+Table  SEQ Table \* ARABIC 10. Content Management Sequence Table
+Step
+From
+To
+Action
+Description
+1
+Teacher
+Login
+Create Course
+Teacher initiates course creation
+2
+API
+Database
+Save course
+Store course metadata
+3
+API
+Media Storage
+Upload files
+Upload thumbnails and documents
+4
+Server
+API
+File URLs
+Return accessible file URLs
+5
+API
+Teacher
+Success
+Course creation confirmed
+6
+Teacher
+API
+Add Lesson
+Create new lesson content
+7
+API
+Database
+Save lesson
+Store lesson information
+8
+API
+Media Storage
+Upload video
+Upload lesson video file
+9
+Media Storage
+API
+Video URL
+Return video access URL
+10
+API
+Teacher
+Success
+Lesson creation confirmed
+11
+Teacher
+API
+Edit Content
+Modify existing content
+12
+API
+Database
+Update data
+Save content changes
+13
+Database
+API
+Updated
+Confirm data update
+14
+API
+Teacher
+Success
+Edit operation completed
+
+User Management Sequence Diagram (Admin)
+
+Figure  SEQ Figure \* ARABIC 16. User Management Sequence Diagram (Admin)
+This Admin User Management Sequence Diagram demonstrates a sophisticated platform governance system with comprehensive user lifecycle management. This sequence diagram represents a professional-grade administrative system that balances platform control with user rights, ensuring educational quality while maintaining transparent and accountable governance processes essential for a trusted e-learning environment.
+Table  SEQ Table \* ARABIC 11. User Management Sequence Table
+Step
+From
+To
+Action
+Description
+1
+Admin
+API
+View users
+Admin requests to see all users/instructors
+2
+API
+Database
+Get users
+API queries database for user information
+3
+System
+API
+User list
+Database returns user data with status
+4
+API
+Admin
+Display users
+API presents formatted user list to admin
+5
+Admin
+API
+Approve instructor
+Admin approves pending instructor request
+6
+API
+Database
+Update status
+API changes instructor status to approved
+7
+API
+Admin
+Success
+Confirmation of successful approval
+8
+Admin
+
+Block user
+Admin blocks a user account
+9
+API
+Database
+Update user
+API sets user status to blocked
+10
+API
+Admin
+Success
+Confirmation of successful blocking
+11
+Admin
+API
+Unblock user
+Admin restores blocked user account
+12
+API
+Database
+Restore user
+API removes blocked status from user
+13
+API
+Admin
+Success
+Confirmation of successful unblocking
+
+Password Reset Sequence Diagram
+
+Figure  SEQ Figure \* ARABIC 17. Password Reset Sequence Diagram
+This is a Sequence Diagram that illustrates the password reset functionality in your Online course marketplace system. This sequence demonstrates a secure and user-friendly password reset system that follows industry best practices for account recovery while maintaining the high security standards required for an online course marketplace web application handling sensitive user data and learning content.
+
+Table  SEQ Table \* ARABIC 12. Password Reset Sequence Table
+Step
+From
+To
+Action
+Description
+1
+User
+API
+Click reset link
+User clicks password reset link from email
+2
+API
+Database
+Verify token
+API checks if reset token exists and is valid
+3
+Database
+Auth Service
+Check token
+Validate token expiration and authenticity
+4
+Auth Service
+API
+Valid
+Confirm token is valid and not expired
+5
+API
+User
+Show form
+Display password reset form to user
+6
+User
+API
+New password
+User submits new password
+7
+API
+Auth Service
+Hash password
+Encrypt new password using bcrypt
+8
+API
+Database
+Update password
+Save new hashed password to user record
+9
+API
+User
+Success
+Confirm password reset completion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHAPTER 3: WEB DEVELOPMENT
+System Requirement
+My project is a comprehensive online learning platform that connects teachers and students, allowing teachers to upload courses and students to access and learn from them.Technology Stack: TypeScript, JavaScript, React.js, Node.js, Express.js, MongoDB, Redis, Docker, Clean Architecture
+FUNCTIONAL REQUIREMENT
+User Management & Authentication:
+	FR-001: The system must allow students to register accounts with email, password, full name, phone number, and interests
+FR-002: The system must support Google OAuth login for students
+FR-003: The system must allow instructors to register with detailed information including: certificates, qualifications, experience, skills
+FR-004: The system must have separate login functionality for Admin
+FR-005: The system must use JWT tokens for authentication and authorization
+FR-006: The system must have automatic refresh token functionality
+FR-007: Students can update personal information, profile picture, and change password
+FR-008: Instructors can update profile, profile picture, and change password
+FR-009: The system must store profile pictures on cloud storage (AWS S3/Cloudinary)
+- Instructor Management:
+FR-010: Admin can view list of instructor registration requests
+FR-011: Admin can accept or reject instructor registration requests
+FR-012: The system must send email notifications for approval results
+FR-013: Admin can block/unblock instructor accounts with specific reasons
+FR-014: Admin can view list of all instructors and blocked instructors
+FR-015: The system must maintain block/unblock history with reasons
+- Student Management:
+FR-016: Admin can block/unblock student accounts with specific reasons
+FR-017: Admin can view list of all students and blocked students
+FR-018: Instructors can view list of students in their courses
+- Course Management:
+FR-019: Instructors can create new courses with information: title, description, category, level, price, thumbnail, introduction video
+FR-020: Instructors can edit information of created courses
+FR-021: The system must support upload and storage of multimedia files (video, images)
+FR-022: Courses must have information: syllabus, requirements, tags, duration
+FR-023: Instructors can add lessons to courses with videos and documents
+FR-024: Instructors can edit lesson content
+FR-025: The system must support video streaming for lessons
+FR-026: Students can view list of all courses
+FR-027: Students can search courses by keywords, category, level
+FR-028: The system must display recommended and trending courses
+FR-029: Students can enroll in courses (free/paid)
+FR-030: Students can view enrolled courses
+- Quiz and Assessment System
+FR-031: Instructors can create quizzes for each lesson
+FR-032: Quizzes must support multiple-choice questions with multiple options
+FR-033: The system must store and display quiz results
+- Discussion System
+FR-034: Students can create discussion topics in each lesson
+FR-035: Students can reply and interact in discussions
+FR-036: Students can edit and delete their own comments
+FR-037: The system must display creation and update time for discussions
+- AI Chat System
+FR-038: The system must integrate AI chatbot for learning support
+FR-039: AI chat must save conversation history per user
+FR-040: The system must support AI chat according to course/lesson context
+NON-FUNCTIONAL REQUIREMENTS
+-  Performance:
+NFR-001: Page load time must not exceed 3 seconds
+NFR-002: API response time must not exceed 500ms for regular requests
+NFR-003: Video streaming must be smooth, supporting adaptive bitrate
+NFR-004: The system must support at least 1000 concurrent users
+- Security:
+NFR-005: All API endpoints must be protected by JWT authentication
+NFR-006: Passwords must be hashed using bcrypt
+NFR-007: The system must prevent XSS, CSRF attacks
+NFR-008: Use HTTPS for all communications
+NFR-009: Sanitize all user inputs to prevent MongoDB injection
+NFR-010: Implement rate limiting for APIs
+- Scalability:
+NFR-011: The system must be containerized with Docker
+NFR-012: Database must support horizontal scaling
+NFR-013: Use Redis cache to optimize performance
+NFR-014: Clean Architecture for easy maintenance and extension
+- Availability:
+NFR-015: Minimum 99% uptime
+NFR-016: The system must have a backup strategy for database
+NFR-017: Comprehensive error handling and logging
+- Compatibility:
+NFR-018: Responsive frontend, supporting mobile devices
+NFR-019: Cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+NFR-020: Standard RESTful API, easy to integrate
+1.3. TECHNICAL REQUIREMENTS
+- Backend Requirements:
+TR-001: Node.js version ≥ 18
+TR-002: Express.js framework
+TR-003: TypeScript for type safety
+TR-004: MongoDB with Mongoose ODM
+TR-005: Redis for caching and session management
+TR-006: JWT for authentication
+TR-007: Bcrypt for password hashing
+TR-008: Multer for file uploads
+TR-009: Nodemailer for email service
+TR-010: Helmet for security headers
+- Frontend Requirements:
+TR-011: React.js ≥ 18
+TR-012: TypeScript
+TR-013: Redux/Redux Toolkit for state management
+TR-014: Tailwind CSS for styling
+TR-015: Axios for HTTP requests
+TR-016: Formik + Yup for form validation
+TR-017: React OAuth for Google authentication
+- DevOps & Deployment
+TR-018: Docker containers
+TR-019: Nginx reverse proxy
+TR-020: AWS S3 or Cloudinary for file storage
+TR-021: Environment variables for configuration
+- Database Requirements
+TR-022: MongoDB for main database
+TR-023: Redis for caching
+TR-024: Database indexes for performance
+TR-025: Data validation schemas
+1.4. UI/UX REQUIREMENTS
+- Responsive Design
+UIR-001: Interface must be responsive on all devices
+UIR-002: Mobile-first design approach
+UIR-003: Consistent design system with Tailwind CSS
+- User Experience
+UIR-004: Simple, intuitive navigation
+UIR-005: Loading states for all async operations
+UIR-006: Clear, helpful error messages
+UIR-007: Real-time form validation
+- Accessibility
+UIR-008: Semantic HTML structure
+UIR-009: Keyboard navigation support
+UIR-010: Screen reader compatibility
+
+1.5. INTEGRATION REQUIREMENTS
+- Third-party Services:
+IR-001: Google OAuth integration
+IR-002: Cloud storage service (AWS S3/Cloudinary)
+IR-003: Email service provider
+IR-004: Payment gateway (future requirement)
+- API Design:
+IR-005: RESTful API design
+IR-006: Comprehensive API documentation
+IR-007: API versioning strategy
+IR-008: Rate limiting implementation
+1.6. MAINTENANCE REQUIREMENTS
+- Monitoring & Logging:
+MR-001: Comprehensive error logging
+MR-002: Performance monitoring
+MR-003: User activity logging-
+- Testing:
+MR-004: Unit tests for critical functions
+MR-005: Integration tests for APIs
+MR-006: End-to-end testing for user flows
+- Documentation:
+MR-007: Up-to-date API documentation
+MR-008: Code documentation
+MR-009: Deployment guides
+MR-010: User manuals
+1.7. CONSTRAINTS & ASSUMPTIONS
+- Technical Constraints:
+Must use existing technology stack
+Cloud storage costs limitation
+Database performance limitations
+- Business Constraints:
+Development timeline
+Resource limitations
+Budget constraints
+- Assumptions:
+Users have stable internet connection
+Modern browser support
+Basic computer literacy
+Database development
+The Online course marketplace employs a sophisticated NoSQL database architecture built on MongoDB with Redis caching to deliver optimal performance and scalability. The database design follows a document-oriented approach with 10+ carefully structured collections including Students, Instructors, Courses, Lessons, Quiz, Discussions, AI Chat, and Payments, all interconnected through ObjectId references to maintain data relationships. The implementation leverages Mongoose ODM for robust schema validation, type safety, and data modeling, while incorporating a Repository Pattern that abstracts data access operations and ensures clean separation between business logic and database operations. Advanced features include comprehensive indexing strategies for performance optimization, Redis caching for frequently accessed data, file storage integration with cloud services for multimedia content, and security measures such as input sanitization and password hashing. The database architecture supports the platform's complex requirements including multi-role authentication (students, instructors, admin), course enrollment with payment processing, interactive discussions, AI-powered chat assistance, and real-time video streaming, all while maintaining data integrity through strict validation rules and ensuring scalability through horizontal scaling capabilities and efficient connection pooling.
+Main Entities:
+- User Management:
++ admin: System administrator
++ instructor: Instructor
++ student: Student
+- Course Management:
++ course: Course (with instructor, categories, lessons)
++ categories: Course categories
++ lesson: Lessons in the course
++ materials: Learning materials
+Learning & Assessment:
++ enrollments: Student course enrollment
++ questions: Questions (can be for quiz/exam)
++ achievements: Achievements/certificates
++ reviews: Course evaluations
+Financial:
++ payouts: Payments to instructor
++ paymentTransaction: Student payment transactions
++ adminEarnings: Admin revenue
+- Interactive Features:
++ aiChat: AI chat to support learning
++ bookmarks: Bookmark favorite content
++ Important Relationships:
++ Instructor creates multiple courses
++ Course belongs to categories and has multiple lessons
++ Student can enroll multiple courses
++ Students can review courses and earn achievements
++ Payment system links students, courses and instructors
+	
+Figure  SEQ Figure \* ARABIC 18. Database Entity–relationship model
+API List:
+
+Figure  SEQ Figure \* ARABIC 19. Login API
+This is an API Documentation Interface showing the admin login endpoint configuration for my E-Learning system. This API documentation interface demonstrates a professional development approach with comprehensive endpoint documentation, security configuration, and interactive testing capabilities essential for maintaining and scaling my Online course marketplace's backend services.
+
+Figure  SEQ Figure \* ARABIC 20. Courses API
+This is an API Documentation Interface showing a course management endpoint for my system. This API documentation demonstrates a course management system with proper administrative oversight, ensuring educational content quality and platform integrity through systematic course approval workflows.
+
+Figure  SEQ Figure \* ARABIC 21. View Learners API
+This is an API Documentation Interface showing the learner/student management endpoint for my E-Learning system. This API endpoint demonstrates comprehensive student management capabilities that enable administrators to effectively oversee the learning community, monitor platform usage, and maintain educational quality standards while ensuring proper data security and privacy protection.
+
+Figure  SEQ Figure \* ARABIC 22. Content Moderation API
+This is an Expanded API Documentation Interface showing the comprehensive admin management endpoints for my E-Learning system. This comprehensive API documentation demonstrates a full-featured administrative system that provides complete platform control, content moderation, user management, and business intelligence capabilities essential for operating a professional online course marketplace at scale.
+	
+		Student interface:
+	
+Figure  SEQ Figure \* ARABIC 23. Student Home Page
+	
+	My Online course marketplace web application homepage is the first page students see when they land on the site. This is usually where the main information is located, including the dashboard, available courses, and important links to other parts of the site.
+	Function: 
+		Display available courses
+		Provides quick links to courses
+		Show recommended courses
+		Links to dashboard
+		Links to account management
+		
+Figure  SEQ Figure \* ARABIC 24. Edit Profile Page
+		
+		Account management page includes:
+		Change profile photo
+		Change password
+		Link to dashboard
+		Links to courses enrolled
+		
+Figure  SEQ Figure \* ARABIC 25. Student’s Course Page
+		
+		The website provides a search bar and filters so students can find the courses they like. If a students has not paid for the course, they will not be able to attend the course, except for free courses.
+		
+Figure  SEQ Figure \* ARABIC 26. Course Selection Page
+		Students can also see the prices of previous courses and reviews, to decide if it is right for them.
+		If the student has not paid for the course, they will be redirected to the payment page.
+		
+Figure  SEQ Figure \* ARABIC 27. Course Payment Page
+		Payment information include:
+		Course Information
+		Course Overview: Course description section
+		Course Content: "Course helps you master basic syntax and logic of Python programming language"
+			Action Buttons
+		CONFIRM PAYMENT (green button) - Confirm payment
+		CANCEL (white button) - Cancel transaction
+		Security & Validation
+		Course ID validation system
+		Payment status verification
+		Price integrity checking
+		User Experience
+		Modal overlay - Blurs background to focus on popup
+		Clear pricing display - Shows promotional vs original price clearly
+		Urgency creation - Countdown timer creates sense of urgency
+		Dual action options - Allows user to confirm or cancel
+		
+		
+		
+		
+Figure  SEQ Figure \* ARABIC 28. Choose Payment Method
+		
+		The website integrates with the vnpay application to enhance user experience, especially for students in Vietnam. This is the VNPAY payment method selection page with the following functions:
+		1. Payment apps supporting VNPAY QR
+		QR Code payment: Payment via QR code scanning
+		QR Code display: Shows QR code for scanning
+		Mobile app integration: Integration with mobile banking apps
+		2. Domestic cards and bank accounts
+		Domestic card payment: Payment with domestic cards
+		Bank account: Bank account payment
+		Bank building icon: Banking institution symbol
+		3. International payment cards
+		International card payment: International payment cards
+		Supported cards: 
+		VISA
+		Mastercard
+		JCB
+		UnionPay
+		American Express
+		Credit card icon: Credit card symbol
+		4. VNPAY Application
+		VNPAY app: Official VNPAY application
+		VNPAY logo: Brand logo
+		Technical Features:
+		Multi-payment gateway: Support for multiple payment methods
+		Security integration: Integration of security standards
+		Mobile responsive: Responsive design for mobile devices
+		
+Figure  SEQ Figure \* ARABIC 29. Payment Successful.
+		After successfully paying for the course, the system will return the course page as "Enrolled" and from here, students can start participating in the course.The website also integrates an AI assistant to help answer students' questions, providing additional necessary knowledge quickly and conveniently.
+		
+		
+Figure  SEQ Figure \* ARABIC 30. AI Assistant
+		Model in use:
+		- Model name: gpt-4.0-turbo
+		- Version: GPT-4.0 Turbo (OpenAI)
+		- Type: Large Language Model (LLM)
+		- Capabilities: Text generation, conversation,…
+		Tasks:
+		- Muiltilingual: Vietnamese and English support
+		- Answer learning questions clear and easy-to-understand explanations
+		- Support instructors create content, exams, exercises,…
+		- Encourage critical thinking, promote active learning
+		Context & Memory Management Context Window:
+		- Message history: Last 10 messages 
+		- Benefit: AI remembers recent conversation
+		AI integration creates a symbiotic learning ecosystem that empowers both students and educators. For students, AI offers 24/7 personalized support—answering questions, explaining concepts, generating practice materials, and adapting to individual learning styles. This ensures continuous, judgment-free learning anytime. For educators, AI reduces workload by handling routine queries and supporting content creation, assessment generation, and data-driven insights. This allows teachers to focus on complex, high-impact instruction and refine their methods based on real learning patterns. The result is a self-improving cycle: better AI support leads to stronger student performance, which informs better teaching, enhancing outcomes across the educational community.
+		4. Teacher’s Interface:
+		
+Figure  SEQ Figure \* ARABIC 31. Teacher's Home Page
+		Home page of teacher includes: 
+		Navigation Menu (Sidebar)
+		Key Metrics Dashboard
+		Recent Courses Section
+		Recent Activity
+		Quick Actions Panel
+		This interface provides a complete overview for instructors to manage courses, track performance, and interact with students.
+		
+		
+Figure  SEQ Figure \* ARABIC 32. Teacher's Course List
+		Core Features:
+		- Course Listing – Displays a list of all courses
+		- Search & Filter – Search and filter by status
+		- CRUD Operations – Create, view, edit, delete courses
+		- Status Management – Track status (Pending/Active)
+		Target Users:
+		- Instructors: Manage your courses
+		- Admins: Browse and control all content
+		
+		
+		
+		
+Figure  SEQ Figure \* ARABIC 33. Add Course
+		This is the Course Creation Interface that allows Instructors to create new courses with all the necessary information.
+		Key Sections:
+		- Basic Info: Title, About, Duration
+		- Classification: Category, Level, Tags
+		- Content: Description, Syllabus, Requirements
+		- Media: Intro Video, Thumbnail, Guidelines
+		- Pricing: Free/Paid toggle
+		After the course is created, the system will send a request to the Admin for approval.
+5. Admin Interface
+		Admin Dashboard TutorTrek is designed as a command center with 4 main functional groups:
+		- Navigation & Control – Navigation and Control
+		- Real-time Monitoring 
+		- Data Analytics 
+		- Quick Actions 
+		
+Figure  SEQ Figure \* ARABIC 34. Admin Home Page
+		Navigation and control:
+		Dashboard: Overview (active)
+		Instructors: Manage instructors
+		Students: Manage students
+		Categories: Manage course categories
+		Courses: Manage courses
+		Settings: System configuration
+		Logout: Secure logout
+		Revenue Tracking: The line chart shows revenue patterns over months. This chart helps admin easily manage the profits that the website brings, and at the same time provides data to base on the website development plan later.
+		
+Figure  SEQ Figure \* ARABIC 35. Manage Student (Admin)
+Admin can manage students by viewing information, activity status and has the right to block students if there is a problem or when necessary.
+
+Figure  SEQ Figure \* ARABIC 36. Manage Course (Admin)
+Admin can also view and manage courses that instructors have created, including adding, editing, and deleting those courses. The website also provides a earch box to quickly Search a particular category, and save time when there are multiple categories.
+
+
+CONCLUSION
+After a period of research and study, closely guided by the lecturer, the project named " Design and Implementation of an Online Course Marketplace” was completed according to the original plan. During the development process, I encountered many obstacles while still studying the remaining subjects at school, but after all the efforts and hard work, I completed the system within the scheduled time frame and accumulated a lot of experience, especially in strengthening my skills in web design, system analysis as well as time management. This project also helped me have a more general view of the software industry in general and website development thinking in particular. I successfully implemented the main features as stated in the project requirements and improved my ability to detect and solve problems during the development process. However, there are still some limitations. Although I have been exposed to many different programming languages, I have not specialized in any language. In addition, the current version of the website is not yet fully equipped for real-world deployment. Some functions are still incomplete or not fully optimized, which may affect the user experience, and the system's data security is not yet strong. Looking forward, I plan to continue improving and refining the website to enhance its performance and usability. I also plan to add more features to bring the website closer to real-world application standards.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REFERENCES
+[1] Microsoft, "The TypeScript Handbook," TypeScript Documentation, 2024. [Online]. Available: https://www.typescriptlang.org/docs/handbook/ [2] Meta Platforms, "React Documentation," react.dev, 2024. [Online]. Available: https://react.dev/ [3] OpenJS Foundation, "Node.js Documentation," Node.js v18+, 2024. [Online]. Available: https://nodejs.org/docs/latest/api/ [4] OpenJS Foundation, "Express.js Documentation," 2024. [Online]. Available: https://expressjs.com/ [5] MongoDB Inc., "MongoDB Manual," MongoDB Documentation, 2024. [Online]. Available: https://www.mongodb.com/docs/manual/ [6] MongooseJS, "Mongoose Documentation," 2024. [Online]. Available: https://mongoosejs.com/docs/ [7] Redis Ltd., "Redis Documentation," 2024. [Online]. Available: https://redis.io/docs/ [8] M. Jones, D. Bradley, and N. Sakimura, "JSON Web Token (JWT)," RFC 7519, Internet Engineering Task Force (IETF), May 2015. [Online]. Available: https://datatracker.ietf.org/doc/html/rfc7519 [9] R. C. Martin, Clean Architecture: A Craftsman's Guide to Software Structure and Design. Boston, MA, USA: Prentice Hall, 2017. [10] Amazon Web Services, "Amazon Simple Storage Service (S3) User Guide," AWS Documentation, 2024. [Online]. Available: https://docs.aws.amazon.com/s3/
+
+
+

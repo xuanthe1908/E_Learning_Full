@@ -29,24 +29,29 @@ const FilterCourseSelectBox: React.FC<Props> = ({ handleSelect }) => {
     fetchAllCategories();
   }, []);
   const handleSelectChange = (selectedOption: any) => {
-    handleSelect(selectedOption?.value || "");
+    handleSelect(selectedOption?.value ?? "");
   };
+
+  const allOption = { value: "", label: "All" };
+  const categoryOptions =
+    categories?.map((category) => ({
+      value: category?.name,
+      label: category?.name,
+    })) ?? [];
+
   return (
     <Select
       className='basic-single lg:w-1/2  p-4'
       closeMenuOnSelect={false}
       classNamePrefix='select'
       components={animatedComponents}
-      defaultValue={null}
-      isClearable={true}
+      defaultValue={allOption}
+      isClearable={false}
       isSearchable={true}
       name='color'
       onChange={handleSelectChange}
       placeholder='Filter by Categories'
-      options={categories?.map((category) => ({
-        value: category?.name,
-        label: category?.name,
-      }))}
+      options={[allOption, ...categoryOptions]}
     />
   );
 };

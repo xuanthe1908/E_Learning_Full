@@ -25,14 +25,16 @@ export const unblockStudentService = async (
 
 export const getAllStudentsService = async (endpoint: string) => {
   const response = await api.get(
-    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}`
+    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}`,
+    { headers: { "Cache-Control": "no-cache" } }
   );
   return response.data;
 };
 
 export const getAllBlockedStudentsService = async (endpoint: string) => {
   const response = await api.get(
-    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}`
+    `${CONFIG_KEYS.API_BASE_URL}/${endpoint}`,
+    { headers: { "Cache-Control": "no-cache" } }
   );
   return response.data;
 };

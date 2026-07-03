@@ -1,71 +1,44 @@
 import React, { useState } from "react";
 import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,     
-  TabPanel,
-} from "@material-tailwind/react";
-import {
   Square3Stack3DIcon,
   UserCircleIcon,
-  Cog6ToothIcon,
 } from "@heroicons/react/24/solid";
 import BlockedStudents from "./blocked-students";
 import ViewStudents from "./view-students";
 
-interface TabData {
-  label: string;
-  value: string;
-  icon: React.ElementType;
-}
+type TabValue = "all" | "blocked";
+
+const TABS: { label: string; value: TabValue; icon: React.ElementType }[] = [
+  { label: "All students", value: "all", icon: Square3Stack3DIcon },
+  { label: "Blocked", value: "blocked", icon: UserCircleIcon },
+];
 
 export default function StudentsTab() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [updated,setUpdated] = useState(false)
-
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-  };
-
-  const data: TabData[] = [
-    {
-      label: "All students",
-      value: "all",
-      icon: Square3Stack3DIcon,
-    },
-    {
-      label: "Blocked",
-      value: "blocked",
-      icon: UserCircleIcon,
-    },
-  ];
-
-  const tabComponents: { [key: string]: JSX.Element } = {
-    all: <ViewStudents updated={updated} setUpdated={setUpdated}/>, // Replace with the component you want to show for "All students"
-    blocked: <BlockedStudents updated={updated} setUpdated={setUpdated} />, // Replace with the component you want to show for "Blocked"
-    // Add more components for other tabs if needed
-  };
+  const [activeTab, setActiveTab] = useState<TabValue>("all");
 
   return (
-    <Tabs value={activeTab} onChange={handleTabChange} className="p-0.5">
-      <TabsHeader className="ml-3.5 mr-3.5">  
-        {data.map(({ label, value, icon: Icon }) => (
-          <Tab key={value} value={value} >
-            <div className="flex items-center  gap-2">
-              <Icon className="w-5 h-5" />
-              {label}
-            </div> 
-          </Tab>
+    <div className="p-0.5">
+      <div className="mx-3.5 flex gap-1 rounded-lg bg-blue-gray-50 p-1">
+        {TABS.map(({ label, value, icon: Icon }) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setActiveTab(value)}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === value
+                ? "bg-white text-blue-gray-900 shadow-sm"
+                : "text-blue-gray-600 hover:text-blue-gray-900"
+            }`}
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+          </button>
         ))}
-      </TabsHeader>
-      <TabsBody>
-        {data.map(({ value }) => (
-          <TabPanel key={value} value={value} className="pt-5">
-            {tabComponents[value]}
-          </TabPanel>
-        ))}
-      </TabsBody>
-    </Tabs>
+      </div>
+
+      <div className="pt-5">
+        {activeTab === "all" ? <ViewStudents /> : <BlockedStudents />}
+      </div>
+    </div>
   );
 }

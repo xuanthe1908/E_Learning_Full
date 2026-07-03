@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsLoggedIn } from '../redux/reducers/authSlice';
 import { toast } from 'react-toastify';
+import { getApiErrorMessage, getApiErrorStatus } from '../utils/CustomApiError';
 import {
   createAiChat,
   getUserChats,
@@ -36,10 +37,9 @@ export const useAiChat = () => {
       if (response.success) {
         setChats(response.data);
       }
-    } catch (error: any) {
-      // Chỉ hiển thị error nếu không phải lỗi 401 (unauthorized)
-      if (error.response?.status !== 401) {
-        toast.error(error.response?.data?.message || 'Lỗi khi tải danh sách chat');
+    } catch (error: unknown) {
+      if (getApiErrorStatus(error) !== 401) {
+        toast.error(getApiErrorMessage(error, 'Lỗi khi tải danh sách chat'));
       }
     } finally {
       setLoading(false);
@@ -63,11 +63,11 @@ export const useAiChat = () => {
         toast.success('Tạo phiên chat mới thành công');
         return newChat;
       }
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      if (getApiErrorStatus(error) === 401) {
         toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
       } else {
-        toast.error(error.response?.data?.message || 'Lỗi khi tạo chat mới');
+        toast.error(getApiErrorMessage(error, 'Lỗi khi tạo chat mới'));
       }
       throw error;
     } finally {
@@ -88,11 +88,11 @@ export const useAiChat = () => {
       if (response.success) {
         setCurrentChat(response.data);
       }
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      if (getApiErrorStatus(error) === 401) {
         toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
       } else {
-        toast.error(error.response?.data?.message || 'Lỗi khi tải chi tiết chat');
+        toast.error(getApiErrorMessage(error, 'Lỗi khi tải chi tiết chat'));
       }
     } finally {
       setLoading(false);
@@ -139,13 +139,14 @@ export const useAiChat = () => {
 
       return response.data;
     }
-  } catch (error: any) {
-    if (error.response?.status === 401) {
+  } catch (error: unknown) {
+    const status = getApiErrorStatus(error);
+    if (status === 401) {
       toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
-    } else if (error.response?.status === 429) {
+    } else if (status === 429) {
       toast.error('Quá nhiều tin nhắn. Vui lòng thử lại sau 1 phút');
     } else {
-      toast.error(error.response?.data?.message || 'Lỗi khi gửi tin nhắn');
+      toast.error(getApiErrorMessage(error, 'Lỗi khi gửi tin nhắn'));
     }
     throw error;
   } finally {
@@ -169,11 +170,11 @@ export const useAiChat = () => {
         ));
         toast.success('Cập nhật chat thành công');
       }
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      if (getApiErrorStatus(error) === 401) {
         toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
       } else {
-        toast.error(error.response?.data?.message || 'Lỗi khi cập nhật chat');
+        toast.error(getApiErrorMessage(error, 'Lỗi khi cập nhật chat'));
       }
     }
   }, [isLoggedIn]);
@@ -194,11 +195,11 @@ export const useAiChat = () => {
         }
         toast.success('Xóa chat thành công');
       }
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error: unknown) {
+      if (getApiErrorStatus(error) === 401) {
         toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại');
       } else {
-        toast.error(error.response?.data?.message || 'Lỗi khi xóa chat');
+        toast.error(getApiErrorMessage(error, 'Lỗi khi xóa chat'));
       }
     }
   }, [currentChat, isLoggedIn]);

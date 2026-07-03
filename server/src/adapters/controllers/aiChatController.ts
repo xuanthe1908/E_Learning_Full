@@ -185,11 +185,7 @@ const aiChatController = (
   // Gọi AI service để tạo phản hồi
   const aiResponse = await aiService.generateResponse(messages, context);
 
-  if (!aiResponse.success) {
-    throw new AppError('Lỗi khi tạo phản hồi AI: ' + aiResponse.error, HttpStatusCodes.INTERNAL_SERVER_ERROR);
-  }
-
-  // Thêm phản hồi của AI
+  // Thêm phản hồi của AI (dùng nội dung fallback nếu API lỗi)
   const assistantMessage = {
     role: 'assistant' as const,
     content: aiResponse.content,

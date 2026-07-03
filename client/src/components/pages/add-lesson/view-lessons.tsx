@@ -123,7 +123,7 @@ const ViewLessons: React.FC = () => {
         <AddLessonForm/>
       ) : (
         <>
-          <CardBody className='overflow-scroll px-0'>
+          <CardBody className='overflow-x-auto px-0'>
             <ul className='mt-4 w-full min-w-max text-left'>
               {lessons?.map(
                 (

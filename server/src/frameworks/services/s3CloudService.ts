@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ObjectCannedACL } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { CloudFrontClient, GetDistributionCommand } from '@aws-sdk/client-cloudfront';
 import configKeys from '../../config';
@@ -91,7 +91,7 @@ export const s3Service = () => {
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: 'public-read', 
+        ACL: 'public-read' as ObjectCannedACL,
       };
 
       const command = new PutObjectCommand(params);

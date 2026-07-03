@@ -56,6 +56,14 @@ const courseRouter = (redisClient: RedisClient) => {
     controller.editCourse
   );
 
+  router.put(
+    '/admin/edit-course/:courseId',
+    jwtAuthMiddleware,
+    roleCheckMiddleware('admin'),
+    upload.array('files'),
+    controller.adminEditCourse
+  );
+
   router.get(
     '/get-all-courses',
     cachingMiddleware(redisClient, 'all-courses'), 

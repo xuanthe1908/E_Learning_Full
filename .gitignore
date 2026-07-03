@@ -36,3 +36,8 @@ logs/
 # Windows
 Thumbs.db
 dump.rdb
+
+# Local package caches (do not commit — exceeds GitHub size limit)
+.npm-cache/
+.yarn-cache/
+.tmp/

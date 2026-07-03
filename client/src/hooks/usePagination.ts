@@ -15,24 +15,23 @@ const usePagination = <T>(data: T[], itemsPerPage: number): PaginationResult<T> 
   const [currentData, setCurrentData] = useState<T[]>([]);
 
   useEffect(() => {
-    // ✅ Kiểm tra data hợp lệ
     if (!data || !Array.isArray(data) || itemsPerPage <= 0) {
       setTotalPages(1);
-      return;
-    }
-    
-    const pages = Math.ceil(data.length / itemsPerPage);
-    setTotalPages(pages > 0 ? pages : 1);
-  }, [data, itemsPerPage]);
-
-  useEffect(() => {
-    // ✅ Kiểm tra data hợp lệ trước khi slice
-    if (!data || !Array.isArray(data) || itemsPerPage <= 0) {
       setCurrentData([]);
       return;
     }
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
+    const pages = Math.ceil(data.length / itemsPerPage);
+    const safeTotalPages = pages > 0 ? pages : 1;
+    setTotalPages(safeTotalPages);
+
+    const safePage = currentPage > safeTotalPages ? 1 : currentPage;
+    if (safePage !== currentPage) {
+      setCurrentPage(safePage);
+      return;
+    }
+
+    const startIndex = (safePage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     setCurrentData(data.slice(startIndex, endIndex));
   }, [data, currentPage, itemsPerPage]);

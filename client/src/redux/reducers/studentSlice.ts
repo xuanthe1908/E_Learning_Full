@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { getStudentDetails } from "../../api/endpoints/student";
 import { ApiResponseStudent } from "../../api/types/apiResponses/api-response-student";
 import decodeJwtToken from "../../utils/decode";
+import { fetchStudentData } from "../thunks/studentThunks";
 
 interface StudentData {
   studentDetails: ApiResponseStudent | null;
@@ -20,19 +20,6 @@ const initialState: StudentData = {
   isFetching: false,
   error: null,
 };
-
-// Async Thunk action creator to fetch user data
-export const fetchStudentData = createAsyncThunk(
-  "student/fetchStudentData",
-  async () => {
-    try {
-      const response = await getStudentDetails();
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error?.response?.data?.message || "Failed to fetch student data");
-    }
-  }
-);
 
 const studentSlice = createSlice({
   name: "student",
@@ -63,6 +50,8 @@ const studentSlice = createSlice({
 });
 
 export const { setDetails, clearDetails } = studentSlice.actions;
+
+export { fetchStudentData } from "../thunks/studentThunks";
 
 export const selectStudent = (state: RootState) => state.student;
 

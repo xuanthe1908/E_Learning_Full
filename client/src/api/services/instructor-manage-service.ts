@@ -1,5 +1,4 @@
 import api from "../middlewares/protected-interceptor";
-import axiosInstance from "../middlewares/interceptor";
 import CONFIG_KEYS from "../../config";
 export const getInstructors = async (endpoint: string) => {
   const response = await api.get(
@@ -70,7 +69,7 @@ export const getBlockedInstructor = async (endpoint: string) => {
 };
 
 export const getIndividualInstructor = async (endpoint:string,instructorId:string)=>{
-  const response = await axiosInstance.get(
+  const response = await api.get(
     `${CONFIG_KEYS.API_BASE_URL}/${endpoint}/${instructorId}`
   );
   return response;

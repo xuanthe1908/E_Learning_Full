@@ -91,6 +91,7 @@ const courseController = (
         cloudService,
         dbRepositoryCourse
       );
+      await dbRepositoryCache.clearCache('all-courses');
       console.log(response)
       res.status(201).json({
         status: 'success',
@@ -114,12 +115,37 @@ const courseController = (
       cloudService,
       dbRepositoryCourse
     );
+    await dbRepositoryCache.clearCache('all-courses');
     res.status(200).json({
       status: 'success',
       message: 'Successfully updated the course',
       data: response
     });
   });
+
+  const adminEditCourse = asyncHandler(
+    async (req: CustomRequest, res: Response) => {
+      const course: EditCourseInfo = req.body;
+      const files: Express.Multer.File[] = req.files as Express.Multer.File[];
+      const adminId = req.user?.Id;
+      const courseId: string = req.params.courseId;
+      const response = await editCourseU(
+        courseId,
+        adminId,
+        files,
+        course,
+        cloudService,
+        dbRepositoryCourse,
+        { isAdmin: true }
+      );
+      await dbRepositoryCache.clearCache('all-courses');
+      res.status(200).json({
+        status: 'success',
+        message: 'Successfully updated the course',
+        data: response
+      });
+    }
+  );
 
   const getAllCourses = asyncHandler(async (req: Request, res: Response) => {
     const courses = await getAllCourseU(cloudService, dbRepositoryCourse);
@@ -424,6 +450,7 @@ const courseController = (
   return {
     addCourse,
     editCourse,
+    adminEditCourse,
     getAllCourses,
     getIndividualCourse,
     getCoursesByInstructor,

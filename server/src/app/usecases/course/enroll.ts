@@ -3,6 +3,9 @@ import HttpStatusCodes from '../../../constants/HttpStatusCodes';
 import AppError from '../../../utils/appError';
 import { PaymentInterface } from '@src/app/repositories/paymentDbRepository';
 import { PaymentInfo } from '@src/types/payment';
+import { marketplaceDbRepository } from '../../../frameworks/database/mongodb/repositories/marketplaceRepoMongoDb';
+
+const marketplaceRepo = marketplaceDbRepository();
 
 export const enrollStudentU = async (
   courseId: string,
@@ -56,10 +59,25 @@ export const enrollStudentU = async (
     
     await Promise.all([
       courseDbRepository.enrollStudent(courseId, studentId),
-      paymentDbRepository.savePayment(payment)
+      paymentDbRepository.savePayment(payment),
     ]);
+
+    if (course?.instructorId) {
+      await marketplaceRepo.recordPaidEnrollment({
+        studentId,
+        courseId,
+        instructorId: String(course.instructorId),
+        amount: payment.amount,
+        currency: payment.currency,
+        paymentId: payment.paymentId,
+      });
+    }
   } else {
-    // Free course
     await courseDbRepository.enrollStudent(courseId, studentId);
+  }
+
+  await marketplaceRepo.createEnrollment(studentId, courseId);
+  if (course?.title) {
+    await marketplaceRepo.grantCourseAchievement(studentId, courseId, course.title);
   }
 };
